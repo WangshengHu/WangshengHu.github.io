@@ -4,7 +4,7 @@
   <title><![CDATA[Lost & Found]]></title>
   <link href="http://wangshenghu.github.io/atom.xml" rel="self"/>
   <link href="http://wangshenghu.github.io/"/>
-  <updated>2016-05-07T17:24:30+08:00</updated>
+  <updated>2016-05-07T17:28:33+08:00</updated>
   <id>http://wangshenghu.github.io/</id>
   <author>
     <name><![CDATA[WangshengHu]]></name>
@@ -139,6 +139,10 @@
 1. 将<code>\source\_includes\head.html</code>文件中的google的jquery脚本地址改成<a href="http://developer.baidu.com/wiki/index.php?title=docs/cplat/libs">百度</a>的。<br/>
 2. 将<code>\source\_includes\custom\head.html</code>文件中的google font请求注释掉。<br/>
 3. 将<code>_config.yml</code>文件中的twitter内容注释掉。</p>
+
+<h2>参考文献</h2>
+
+<p><a href="http://tianweili.github.io/blog/2015/01/11/setup-octopress-blog/">Octopress博客的个性化配置</a></p>
 ]]></content>
   </entry>
   

@@ -4,7 +4,7 @@
   <title><![CDATA[Lost & Found]]></title>
   <link href="http://wangshenghu.github.io/atom.xml" rel="self"/>
   <link href="http://wangshenghu.github.io/"/>
-  <updated>2016-05-07T17:28:33+08:00</updated>
+  <updated>2016-05-07T20:32:58+08:00</updated>
   <id>http://wangshenghu.github.io/</id>
   <author>
     <name><![CDATA[WangshengHu]]></name>
@@ -79,14 +79,15 @@
 </pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;section&gt;</span>
 </span><span class='line'>  <span class="nt">&lt;h1&gt;</span>Categories<span class="nt">&lt;/h1&gt;</span>
 </span><span class='line'>  <span class="nt">&lt;ul</span> <span class="na">id=</span><span class="s">&quot;categories&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>    <li class='category'><a href='http://wangshenghu.github.io/blog/categories/笔记/'>笔记 (2)</a></li>
+</span><span class='line'>    <li class='category'><a href='http://wangshenghu.github.io/blog/categories/bi-ji/'>笔记 (2)</a></li>
 
 </span><span class='line'>  <span class="nt">&lt;/ul&gt;</span>
 </span><span class='line'><span class="nt">&lt;/section&gt;</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>最后在<code>_config.yml</code>中<code>default_asides:</code>一栏添加<code>asides/category_list.html</code>（或<code>custom\asides\category_list.html</code>）即可。</p>
+<p>最后在<code>_config.yml</code>中<code>default_asides:</code>一栏添加<code>asides/category_list.html</code>（或<code>custom\asides\category_list.html</code>）即可。<br/>
+<strong>注意：上述步骤有一个问题，那就是如果category包含中文的话生成的侧边栏链接会是404页面（因为链接中不能包含中文），需要将<code>category_url</code>改成<code>category.to_url.downcase</code>，将中文转换成拼音。</strong></p>
 
 <h3>2. 首页文章缺省显示</h3>
 

@@ -4,7 +4,7 @@
   <title><![CDATA[Lost & Found]]></title>
   <link href="http://wangshenghu.github.io/atom.xml" rel="self"/>
   <link href="http://wangshenghu.github.io/"/>
-  <updated>2016-05-07T20:32:58+08:00</updated>
+  <updated>2016-05-07T20:34:03+08:00</updated>
   <id>http://wangshenghu.github.io/</id>
   <author>
     <name><![CDATA[WangshengHu]]></name>
@@ -143,7 +143,8 @@
 
 <h2>参考文献</h2>
 
-<p><a href="http://tianweili.github.io/blog/2015/01/11/setup-octopress-blog/">Octopress博客的个性化配置</a></p>
+<p><a href="http://tianweili.github.io/blog/2015/01/11/setup-octopress-blog/">Octopress博客的个性化配置</a>
+<a href="https://shengmingzhiqing.com/blog/octopress-lean-modification-5.html/">Octopress 精益修改 (5)</a></p>
 ]]></content>
   </entry>
   

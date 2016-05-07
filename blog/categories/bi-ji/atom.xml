@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 笔记 | My Octopress Blog]]></title>
   <link href="http://wangshenghu.github.io/blog/categories/bi-ji/atom.xml" rel="self"/>
   <link href="http://wangshenghu.github.io/"/>
-  <updated>2016-05-07T11:26:50+08:00</updated>
+  <updated>2016-05-07T13:25:19+08:00</updated>
   <id>http://wangshenghu.github.io/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -90,7 +90,7 @@ rake preview
 <p>在上一步中运行<code>rake deploy</code>后会将生成的静态html页面push到Github，但源码还是在本地。为方便维护，我们可以将源码也push到Github。
 <code>bash
 git add .
-git commit -m 'source code'
+git commit -m "source code"
 git push origin source
 </code></p>
 

@@ -4,7 +4,7 @@
   <title><![CDATA[My Octopress Blog]]></title>
   <link href="http://wangshenghu.github.io/atom.xml" rel="self"/>
   <link href="http://wangshenghu.github.io/"/>
-  <updated>2016-05-07T11:26:50+08:00</updated>
+  <updated>2016-05-07T13:25:19+08:00</updated>
   <id>http://wangshenghu.github.io/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -105,7 +105,7 @@
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>git add .
-</span><span class='line'>git commit -m <span class="s1">&#39;source code&#39;</span>
+</span><span class='line'>git commit -m <span class="s2">&quot;source code&quot;</span>
 </span><span class='line'>git push origin <span class="nb">source</span>
 </span></code></pre></td></tr></table></div></figure>
 

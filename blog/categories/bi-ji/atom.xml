@@ -1,17 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: 笔记 | My Octopress Blog]]></title>
+  <title><![CDATA[Category: 笔记 | Lost & Found]]></title>
   <link href="http://wangshenghu.github.io/blog/categories/bi-ji/atom.xml" rel="self"/>
   <link href="http://wangshenghu.github.io/"/>
-  <updated>2016-05-07T13:25:19+08:00</updated>
+  <updated>2016-05-07T17:24:30+08:00</updated>
   <id>http://wangshenghu.github.io/</id>
   <author>
-    <name><![CDATA[Your Name]]></name>
+    <name><![CDATA[WangshengHu]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Octopress的个性化设置]]></title>
+    <link href="http://wangshenghu.github.io/blog/2016/05/07/personal-settings-of-octopress/"/>
+    <updated>2016-05-07T13:30:22+08:00</updated>
+    <id>http://wangshenghu.github.io/blog/2016/05/07/personal-settings-of-octopress</id>
+    <content type="html"><![CDATA[<h2>写在前面</h2>
+
+<p>本文主要记录一些关于octopress的个性化配置方法。</p>
+
+<!--more-->
+
+
+<h2>个性化配置</h2>
+
+<h3>1. 增加Categories列表</h3>
+
+<p>首先在<code>plugins</code>目录下添加<code>category_list_tag.rb</code>文件，代码如下：
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">Jekyll</span>
+</span><span class='line'>  <span class="k">class</span> <span class="nc">CategoryListTag</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="no">Liquid</span><span class="o">::</span><span class="no">Tag</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">html</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">ldquo</span><span class="p">;</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;</span>
+</span><span class='line'>      <span class="n">categories</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">registers</span><span class="o">[</span><span class="ss">:site</span><span class="o">].</span><span class="n">categories</span><span class="o">.</span><span class="n">keys</span>
+</span><span class='line'>      <span class="n">categories</span><span class="o">.</span><span class="n">sort</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">category</span><span class="o">|</span>
+</span><span class='line'>        <span class="n">posts_in_category</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">registers</span><span class="o">[</span><span class="ss">:site</span><span class="o">].</span><span class="n">categories</span><span class="o">[</span><span class="n">category</span><span class="o">].</span><span class="n">size</span>
+</span><span class='line'>        <span class="n">category_dir</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">registers</span><span class="o">[</span><span class="ss">:site</span><span class="o">].</span><span class="n">config</span><span class="o">[&amp;</span><span class="n">lsquo</span><span class="p">;</span><span class="n">category_dir</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="p">;</span><span class="o">]</span>
+</span><span class='line'>        <span class="n">category_url</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">category_dir</span><span class="p">,</span> <span class="n">category</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="sr">/_|\P{Word}/</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">lsquo</span><span class="p">;</span><span class="o">-&amp;</span><span class="n">rsquo</span><span class="p">;)</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="sr">/-{2,}/</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">lsquo</span><span class="p">;</span><span class="o">-&amp;</span><span class="n">rsquo</span><span class="p">;)</span><span class="o">.</span><span class="n">downcase</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">html</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="o">&amp;</span><span class="n">ldquo</span><span class="p">;</span><span class="o">&lt;</span><span class="n">li</span> <span class="n">class</span><span class="o">=</span><span class="s1">&#39;category&#39;</span><span class="o">&gt;&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s1">&#39;http://wangshenghu.github.io/#{category_url}/&#39;</span><span class="o">&gt;</span><span class="c1">#{category} (#{posts_in_category})&lt;/a&gt;&lt;/li&gt;\n&amp;rdquo;</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>      <span class="n">html</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;Liquid::Template.register_tag(&amp;lsquo;category_list&amp;rsquo;, Jekyll::CategoryListTag)</span>
+</span><span class='line'><span class="sr">&lt;code&gt;</span>
+</span><span class='line'><span class="sr">然后在`\source\_includes\asides`目录（或`\source\_includes\custom\asides`目录）下添加`category_list.html`文件，代码如下：</span>
+</span><span class='line'><span class="sr">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="n">html</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">section</span><span class="o">&gt;</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="no">Categories</span><span class="o">&lt;</span><span class="sr">/h1&gt;</span>
+</span><span class='line'><span class="sr">  &lt;ul id=&quot;categories&quot;&gt;</span>
+</span><span class='line'><span class="sr">    <li class='category'><a href='/blog/categories/笔记/'>笔记 (2)</a></li>
+</span>
+</span><span class='line'><span class="sr">  &lt;/u</span><span class="n">l</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="sr">/section&gt;</span>
+</span><span class='line'><span class="sr">&lt;code&gt;``</span>
+</span><span class='line'><span class="sr">最后在&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="n">_config</span><span class="o">.</span><span class="n">yml</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="err">中</span><span class="o">&lt;</span><span class="sr">/code&gt;default_asides:&lt;code&gt;一栏添加&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="n">asides</span><span class="o">/</span><span class="n">category_list</span><span class="o">.</span><span class="n">html</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="err">（或</span><span class="o">&lt;</span><span class="sr">/code&gt;custom\asides\category_list.html`）即可。&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h3</span><span class="o">&gt;</span><span class="mi">2</span><span class="o">.</span> <span class="err">首页文章缺省显示</span><span class="o">&lt;</span><span class="sr">/h3&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;只需要在每篇你写的markdown格式的博文中在你想要在首页显示的文字后面加上&lt;code&gt;&amp;lt;!--more--&amp;gt;&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">即可。</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;h3&gt;3. 设置链接默认在新窗口打开&lt;/</span><span class="n">h3</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span><span class="err">在</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="p">\</span><span class="n">source</span><span class="p">\</span><span class="n">_includes</span><span class="p">\</span><span class="n">custom</span><span class="p">\</span><span class="n">head</span><span class="o">.</span><span class="n">html</span><span class="o">&lt;</span><span class="sr">/code&gt;文件中添加如下代码：</span>
+</span></code></pre></td></tr></table></div></figure>html</p>
+
+<script>
+    function addBlankTargetForLinks () {
+      $('a[href^="http"]').each(function(){
+          $(this).attr('target', '_blank');
+      });
+    }
+
+    $(document).bind('DOMNodeInserted', function(event) {
+      addBlankTargetForLinks();
+    });
+</script>
+
+
+<p>```</p>
+
+<h3>4. 在首页添加选项卡</h3>
+
+<p>首先运行<code>rake new_page['about']</code>，在<code>source</code>目录下会新生成一个<code>about</code>目录，里面包含一个<code>index.markdown</code>文件。编辑该文件，然后运行<code>rake generate</code>将会在<code>public</code>目录下生成一个对应的<code>index.html</code>文件。然后编辑<code>\source\_includes\custom\navigation.html</code>文件，即可将生成的about页面链接添加到首页选项卡。</p>
+
+<h3>5. 添加disqus评论功能</h3>
+
+<p>只需要编辑<code>_config.yml</code>中相应部分即可。具体操作为在<code>_config.yml</code>文件中对应位置填写自己的账号。</p>
+
+<h3>6. 添加访客计数功能</h3>
+
+<p>我采用了Flag Counter，直接去<a href="http://www.flagcounter.com/">官网</a>生成html代码，然后拷贝到<code>source\_includes\asides\flag_counter.html</code>文件（需新建），最后在<code>_config.yml</code>中<code>default_asides:</code>一栏添加<code>asides/flag_counter.html</code>即可。</p>
+
+<h3>7. 优化加载速度</h3>
+
+<p>由于国内墙的原因，请求墙外网站资源的速度极慢，因此需要删除某些用到国外网站资源的功能。具体如下：<br/>
+1. 将<code>\source\_includes\head.html</code>文件中的google的jquery脚本地址改成<a href="http://developer.baidu.com/wiki/index.php?title=docs/cplat/libs">百度</a>的。<br/>
+2. 将<code>\source\_includes\custom\head.html</code>文件中的google font请求注释掉。<br/>
+3. 将<code>_config.yml</code>文件中的twitter内容注释掉。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[第一篇博客 - 如何配置octopress+github博客]]></title>
@@ -21,6 +149,9 @@
     <content type="html"><![CDATA[<h2>写在前面</h2>
 
 <p>很久以前就想配置属于自己的博客了，可是一直光说不做，前不久系统升了win10，顺便就想把这个事情也给做了。在配置过程中遇到诸多问题，记录下来方便以后查阅。</p>
+
+<!--more-->
+
 
 <h2>搭建环境</h2>
 

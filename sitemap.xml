@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>http://wangshenghu.github.io/blog/2016/05/07/personal-settings-of-octopress/</loc>
+<lastmod>2016-05-07T13:30:22+08:00</lastmod>
+</url>
+<url>
 <loc>http://wangshenghu.github.io/blog/2016/05/06/first-blog-how-to-configure-this/</loc>
 <lastmod>2016-05-06T20:45:26+08:00</lastmod>
+</url>
+<url>
+<loc>http://wangshenghu.github.io/404.html</loc>
+</url>
+<url>
+<loc>http://wangshenghu.github.io/</loc>
 </url>
 <url>
 <loc>http://wangshenghu.github.io/blog/archives/</loc>
 </url>
 <url>
-<loc>http://wangshenghu.github.io/</loc>
+<loc>http://wangshenghu.github.io/about/</loc>
 </url>
 <url>
 <loc>http://wangshenghu.github.io/blog/categories/bi-ji/</loc>

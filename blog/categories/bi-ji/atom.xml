@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: 笔记 | My Octopress Blog]]></title>
+  <link href="http://wangshenghu.github.io/blog/categories/bi-ji/atom.xml" rel="self"/>
+  <link href="http://wangshenghu.github.io/"/>
+  <updated>2016-05-07T10:40:55+08:00</updated>
+  <id>http://wangshenghu.github.io/</id>
+  <author>
+    <name><![CDATA[Your Name]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[第一篇博客 - 如何配置octopress+github博客]]></title>
+    <link href="http://wangshenghu.github.io/blog/2016/05/06/first-blog-how-to-configure-this/"/>
+    <updated>2016-05-06T20:45:26+08:00</updated>
+    <id>http://wangshenghu.github.io/blog/2016/05/06/first-blog-how-to-configure-this</id>
+    <content type="html"><![CDATA[<h2>写在前面</h2>
+
+<p>很久以前就想配置属于自己的博客了，可是一直光说不做，前不久系统升了win10，顺便就想把这个事情也给做了。在配置过程中遇到诸多问题，记录下来方便以后查阅。</p>
+
+<h2>搭建环境</h2>
+
+<p>我的操作系统是windows10 64bit企业版。</p>
+
+<h2>配置流程</h2>
+
+<ol>
+<li>安装Git for Windows
+直接去<a href="https://git-scm.com/">git官网</a>下载安装即可。</li>
+<li>安装Ruby
+去<a href="http://rubyinstaller.org/downloads/">RubyInstaller</a>下载Ruby。注意安装时勾选添加到系统环境变量，或者稍后自己手动设置。<strong>注意：我在配置时用最新版本Ruby2.3.0到最后一步bundle install时总是失败，无奈改成Ruby2.2.4就成功了。</strong></li>
+<li>安装Python2.7
+去<a href="https://www.python.org/downloads/">Python官网</a>下载安装。注意安装时勾选添加到系统环境变量，或者稍后自己手动设置。<br/>
+安装后运行<code>easy_install pygments</code>安装代码高亮脚本。</li>
+<li>安装octopress<br/>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> <span class="se">\&amp;</span>lt<span class="p">;</span>wherever_you_want_to_save_your_blog&gt;
+</span><span class='line'>git clone git://github.com/imathis/octopress.git <span class="se">\&amp;</span>lt<span class="p">;</span>your_dir&gt;&lt;/li&gt;
+</span><span class='line'>&lt;/ol&gt;
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;gem install bundle
+</span><span class='line'>bundle install&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;rake install
+</span><span class='line'>rake preview
+</span><span class='line'>&lt;code&gt;
+</span><span class='line'>之后在浏览器输入localhost:4000就可以查看了。
+</span><span class='line'>5. 部署到Github
+</span><span class='line'>在Github上新建一个Repository，命名为<span class="sb">`</span>username.github.io<span class="sb">`</span>。然后在cmd中进行部署。
+</span><span class='line'>&lt;/code&gt;bash
+</span><span class='line'><span class="nb">cd</span> <span class="se">\&amp;</span>lt<span class="p">;</span>wherever_your_octopress_is&gt;
+</span><span class='line'>rake setup_github_pages
+</span><span class='line'>&lt;a <span class="nv">href</span><span class="o">=</span><span class="s2">&quot;https://github.com/your_username/your_username.github.io&quot;</span>&gt;https://github.com/your_username/your_username.github.io&lt;/a&gt;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;rake deploy&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;rake new_post<span class="o">[</span>title of post<span class="o">]</span>
+</span><span class='line'>rake new_site<span class="o">[</span>name of site<span class="o">]</span>&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;rake generate&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;rake deploy
+</span></code></pre></td></tr></table></div></figure>
+访问username.github.io即可查看，可能会有延迟，一般不超过1分钟。</p>
+]]></content>
+  </entry>
+  
+</feed>

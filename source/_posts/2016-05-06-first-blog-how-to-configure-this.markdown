@@ -8,6 +8,7 @@ categories: 笔记
 
 ## 写在前面
 很久以前就想配置属于自己的博客了，可是一直光说不做，前不久系统升了win10，顺便就想把这个事情也给做了。在配置过程中遇到诸多问题，记录下来方便以后查阅。
+<!--more-->
 ## 搭建环境
 我的操作系统是windows10 64bit企业版。
 ## 配置流程
@@ -51,7 +52,7 @@ rake deploy
 在上一步中运行`rake deploy`后会将生成的静态html页面push到Github，但源码还是在本地。为方便维护，我们可以将源码也push到Github。
 ```bash
 git add .
-git commit -m 'source code'
+git commit -m "source code"
 git push origin source
 ```
 ## 参考文献

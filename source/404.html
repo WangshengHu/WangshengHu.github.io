@@ -1,0 +1,13 @@
+---
+layout: page
+title: Sorry, The page has gone...
+footer: false
+---
+<h3> Are you founding these? </h3>
+<div id="blog-archives">
+{% for post in site.posts limit: 10 %}
+<article>
+  {% include archive_post.html %}
+</article>
+{% endfor %}
+</div>

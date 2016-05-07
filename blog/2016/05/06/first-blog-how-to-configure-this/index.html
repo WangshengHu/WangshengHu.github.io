@@ -9,7 +9,7 @@
   <meta name="author" content="Your Name">
 
   
-  <meta name="description" content="写在前面 很久以前就想配置属于自己的博客了，可是一直光说不做，前不久系统升了win10，顺便就想把这个事情也给做了。在配置过程中遇到诸多问题，记录下来方便以后查阅。 搭建环境 我的操作系统是windows10 64bit企业版。 配置流程 安装Git for Windows &hellip;">
+  <meta name="description" content="写在前面 很久以前就想配置属于自己的博客了，可是一直光说不做，前不久系统升了win10，顺便就想把这个事情也给做了。在配置过程中遇到诸多问题，记录下来方便以后查阅。 搭建环境 我的操作系统是windows10 64bit企业版。 配置流程 1. 安装Git for Windows &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -94,17 +94,20 @@
 
 <h2>配置流程</h2>
 
-<ol>
-<li>安装Git for Windows
-直接去<a href="https://git-scm.com/">git官网</a>下载安装即可。</li>
-<li>安装Ruby
-去<a href="http://rubyinstaller.org/downloads/">RubyInstaller</a>下载Ruby。注意安装时勾选添加到系统环境变量，或者稍后自己手动设置。<strong>注意：我在配置时用最新版本Ruby2.3.0到最后一步bundle install时总是失败，无奈改成Ruby2.2.4就成功了。</strong></li>
-<li>安装Python2.7
-去<a href="https://www.python.org/downloads/">Python官网</a>下载安装。注意安装时勾选添加到系统环境变量，或者稍后自己手动设置。<br/>
-安装后运行<code>easy_install pygments</code>安装代码高亮脚本。</li>
-<li>安装octopress</li>
-</ol>
+<h3>1. 安装Git for Windows</h3>
 
+<p>直接去<a href="https://git-scm.com/">git官网</a>下载安装即可。</p>
+
+<h3>2. 安装Ruby</h3>
+
+<p>去<a href="http://rubyinstaller.org/downloads/">RubyInstaller</a>下载Ruby。注意安装时勾选添加到系统环境变量，或者稍后自己手动设置。<strong>注意：我在配置时用最新版本Ruby2.3.0到最后一步bundle install时总是失败，无奈改成Ruby2.2.4就成功了。</strong></p>
+
+<h3>3. 安装Python2.7</h3>
+
+<p>去<a href="https://www.python.org/downloads/">Python官网</a>下载安装。注意安装时勾选添加到系统环境变量，或者稍后自己手动设置。<br/>
+安装后运行<code>easy_install pygments</code>安装代码高亮脚本。</p>
+
+<h3>4. 安装octopress</h3>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -114,8 +117,8 @@
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> <span class="se">\&lt;</span>wherever_you_want_to_save_your_blog<span class="se">\&gt;</span>
-</span><span class='line'>git clone git://github.com/imathis/octopress.git <span class="se">\&lt;</span>your_dir<span class="se">\&gt;</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> &lt;wherever_you_want_to_save_your_blog&gt;
+</span><span class='line'>git clone git://github.com/imathis/octopress.git &lt;your_dir&gt;
 </span><span class='line'>
 </span><span class='line'>gem install bundle
 </span><span class='line'>bundle install
@@ -125,9 +128,11 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>之后在浏览器输入localhost:4000就可以查看了。
-5. 部署到Github
-在Github上新建一个Repository，命名为<code>username.github.io</code>。然后在cmd中进行部署。</p>
+<p>之后在浏览器输入localhost:4000就可以查看了。</p>
+
+<h3>5. 部署到Github</h3>
+
+<p>在Github上新建一个Repository，命名为<code>username.github.io</code>。然后在cmd中进行部署。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -141,14 +146,14 @@
 <span class='line-number'>10</span>
 <span class='line-number'>11</span>
 <span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> <span class="se">\&lt;</span>wherever_your_octopress_is<span class="se">\&gt;</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> &lt;wherever_your_octopress_is&gt;
 </span><span class='line'>rake setup_github_pages
 </span><span class='line'>https://github.com/your_username/your_username.github.io
 </span><span class='line'>
 </span><span class='line'>rake deploy
 </span><span class='line'>
-</span><span class='line'>rake new_post<span class="o">[</span>title of post<span class="o">]</span>
-</span><span class='line'>rake new_site<span class="o">[</span>name of site<span class="o">]</span>
+</span><span class='line'>rake new_post<span class="o">[</span><span class="s1">&#39;title of post&#39;</span><span class="o">]</span>
+</span><span class='line'>rake new_site<span class="o">[</span><span class="s1">&#39;name of site&#39;</span><span class="o">]</span>
 </span><span class='line'>
 </span><span class='line'>rake generate
 </span><span class='line'>
@@ -157,6 +162,24 @@
 
 
 <p>访问username.github.io即可查看，可能会有延迟，一般不超过1分钟。</p>
+
+<h3>6. 源码维护</h3>
+
+<p>在上一步中运行<code>rake deploy</code>后会将生成的静态html页面push到Github，但源码还是在本地。为方便维护，我们可以将源码也push到Github。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>git add .
+</span><span class='line'>git commit -m <span class="s1">&#39;source code&#39;</span>
+</span><span class='line'>git push origin <span class="nb">source</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>参考文献</h2>
+
+<p><a href="http://silentming.net/blog/2015/11/13/build-blog-on-github-with-octopress/">Octopress博客(1)-在windows 10上使用octopress搭建个人博客</a><br/>
+<a href="https://segmentfault.com/markdown">Markdown 编辑器语法指南</a></p>
 </div>
 
 

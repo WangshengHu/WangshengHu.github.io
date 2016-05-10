@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 算法 | Lost & Found]]></title>
   <link href="http://wangshenghu.github.io/blog/categories/suan-fa/atom.xml" rel="self"/>
   <link href="http://wangshenghu.github.io/"/>
-  <updated>2016-05-10T17:03:19+08:00</updated>
+  <updated>2016-05-10T18:10:34+08:00</updated>
   <id>http://wangshenghu.github.io/</id>
   <author>
     <name><![CDATA[WangshengHu]]></name>
@@ -12,6 +12,155 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[hihoCoder#1175 - 拓扑排序·二]]></title>
+    <link href="http://wangshenghu.github.io/blog/2016/05/10/hihocoder-topology-sort/"/>
+    <updated>2016-05-10T17:45:11+08:00</updated>
+    <id>http://wangshenghu.github.io/blog/2016/05/10/hihocoder-topology-sort</id>
+    <content type="html"><![CDATA[<h2>题目</h2>
+
+<p>给定一个有向无环图，在任意个节点上投放“病毒”，“病毒”会沿着有向边传播。计算最终该图中总共有多少“病毒”。<br/>
+具体描述请见<a href="http://hihocoder.com/problemset/problem/1175">hihoCoder</a>。</p>
+
+<!--more-->
+
+
+<h2>解题思路</h2>
+
+<p>因为是有向无环图，可以找到一个“起始点”，该点入度为0。从该点出发进行广度优先搜索，该点处理完后可以直接从图中移除。依次重复此操作。</p>
+
+<h2>时间复杂度</h2>
+
+<p>每个节点入队一次，每条边遍历依次，时间复杂度为N + M。</p>
+
+<h2>代码</h2>
+
+<pre><code class="c++">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;queue&gt;
+using namespace std;
+
+struct Vertex {
+    int sum = 0;
+    int degree = 0;
+    vector&lt;int&gt; neighbors;
+};
+
+int calSum(vector&lt;Vertex&gt; A) {
+    queue&lt;int&gt; queue;
+
+    for (int i = 0; i &lt; A.size(); i++)
+        if (A[i].degree == 0)
+            queue.push(i);
+
+    int sum = 0;
+    do {
+        int root = queue.front();
+        queue.pop();
+        int curSum = A[root].sum;
+        sum += curSum % 142857;
+        sum %= 142857;
+        vector&lt;int&gt; &amp;neighbors = A[root].neighbors;
+        for (int i = 0; i &lt; neighbors.size(); i++) {
+            A[neighbors[i]].sum += curSum;
+            A[neighbors[i]].sum %= 142857;
+            A[neighbors[i]].degree--;
+            if (A[neighbors[i]].degree == 0)
+                queue.push(neighbors[i]);
+        }
+    } while (!queue.empty());
+
+    return sum;
+}
+
+int main() {
+    int N = 0, M = 0, K = 0;
+    cin &gt;&gt; N &gt;&gt; M &gt;&gt; K;
+    vector&lt;Vertex&gt; A = vector&lt;Vertex&gt;(N);
+    for (int i = 0; i &lt; K; i++) {
+        int a = 0;
+        cin &gt;&gt; a;
+        A[a - 1].sum++;
+    }
+    for (int i = 0; i &lt; M; i++) {
+        int a = 0, b = 0;
+        cin &gt;&gt; a &gt;&gt; b;
+        A[a - 1].neighbors.push_back(b - 1);
+        A[b - 1].degree++;
+    }
+
+    cout &lt;&lt; calSum(A);
+
+    return 0;
+}
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[hihoCoder#1152 - Lucky Substrings]]></title>
+    <link href="http://wangshenghu.github.io/blog/2016/05/10/hihocoder-lucky-substrings/"/>
+    <updated>2016-05-10T17:37:44+08:00</updated>
+    <id>http://wangshenghu.github.io/blog/2016/05/10/hihocoder-lucky-substrings</id>
+    <content type="html"><![CDATA[<h2>题目</h2>
+
+<p>如果一个字符串的所有不同字符数量是一个斐波那契数，那它就是一个Lucky String。给定一个仅包含小写字母的字符串，按字典序输出其所有非空的Lucky Subtring。<br/>
+具体描述请见<a href="http://hihocoder.com/problemset/problem/1152">hihoCoder</a>。</p>
+
+<!--more-->
+
+
+<h2>解题思路</h2>
+
+<p>暴力搜索。</p>
+
+<h2>时间复杂度</h2>
+
+<p>遍历一遍字符串，对每个字符又要进行一次遍历，时间复杂度为N<sup>2</sup>。</p>
+
+<h2>代码</h2>
+
+<pre><code class="c++">#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;set&gt;
+#include &lt;map&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+set&lt;string&gt; luckySubstr(string str) {
+    set&lt;string&gt; substrs;
+    int fib[] = { 1, 2, 3, 5, 8, 13, 21 };
+    for (int i = 0; i &lt; str.size(); i++) {
+        set&lt;char&gt; chars;
+        string curstr = "";
+        for (int j = i; j &lt; str.size(); j++) {
+            curstr += str[j];
+            if (chars.find(str[j]) == chars.end())
+                chars.insert(str[j]);
+
+            for (int k = 0; k &lt; 7; k++)
+                if (fib[k] == chars.size())
+                    substrs.insert(curstr);
+        }
+    }
+
+    return substrs;
+}
+
+int main() {
+    string str;
+    cin &gt;&gt; str;
+
+    set&lt;string&gt; substrs = luckySubstr(str);
+    for (auto it = substrs.begin(); it != substrs.end(); it++)
+        cout &lt;&lt; it-&gt;data() &lt;&lt; endl;
+
+    return 0;
+}
+</code></pre>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[hihoCoder - 2月29日]]></title>
@@ -332,166 +481,6 @@ int main() {
 <li>每次<code>priority_queue</code>进队时都会调用<code>Node</code>结构体的复制构造器，在<code>Node</code>结构体复杂的时候很耗时，应尽量降低<code>Node</code>结构体的复杂度。</li>
 </ol>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[HihoCoder#1135 - Magic Box]]></title>
-    <link href="http://wangshenghu.github.io/blog/2016/05/10/hihocoder-magic-box/"/>
-    <updated>2016-05-10T12:03:52+08:00</updated>
-    <id>http://wangshenghu.github.io/blog/2016/05/10/hihocoder-magic-box</id>
-    <content type="html"><![CDATA[<h2>题目</h2>
-
-<p>一个Magic Box，不断往里放三种颜色的球（红色R，黄色Y，蓝色B），一旦这三种球数目之差为x，y，z（无序），则所有球消失。给定一个放球的序列，求盒子中球最多时刻球的数目。<br/>
-具体描述请见<a href="http://hihocoder.com/problemset/problem/1135">hihoCoder</a>。</p>
-
-<!--more-->
-
-
-<h2>解题思路</h2>
-
-<p>直接暴力解。</p>
-
-<h2>时间复杂度</h2>
-
-<p>给定序列循环一遍，时间复杂度为N。</p>
-
-<h2>代码</h2>
-
-<pre><code class="c++">#include &lt;iostream&gt;
-#include &lt;string&gt;
-#include &lt;cmath&gt;
-using namespace std;
-
-int maxLen(string seq, int x, int y, int z) {
-    int max = 0;
-    int len = 0;
-    int r = 0, g = 0, b = 0;
-    for (int i = 0; i &lt; seq.size(); i++) {
-        if (seq[i] == 'R')
-            r++;
-        else if (seq[i] == 'B')
-            g++;
-        else if (seq[i] == 'Y')
-            b++;
-        len++;
-        if ((abs(r - g) == x &amp;&amp; abs(g - b) == y &amp;&amp; abs(b - r) == z) ||
-            (abs(r - g) == x &amp;&amp; abs(b - r) == y &amp;&amp; abs(g - b) == z) ||
-            (abs(g - b) == x &amp;&amp; abs(r - g) == y &amp;&amp; abs(b - r) == z) ||
-            (abs(g - b) == x &amp;&amp; abs(b - r) == y &amp;&amp; abs(r - g) == z) ||
-            (abs(b - r) == x &amp;&amp; abs(g - b) == y &amp;&amp; abs(r - g) == z) ||
-            (abs(b - r) == x &amp;&amp; abs(r - g) == y &amp;&amp; abs(g - b) == z)) {
-            r = 0;
-            g = 0;
-            b = 0;
-            if (max &lt; len)
-                max = len;
-            len = 0;
-        }
-    }
-
-    if (max &lt; len)
-        max = len;
-
-    return max;
-}
-
-int main() {
-    int x = 0, y = 0, z = 0;
-    string charSeq;
-    cin &gt;&gt; x &gt;&gt; y &gt;&gt; z;
-    cin &gt;&gt; charSeq;
-    cout &lt;&lt; maxLen(charSeq, x, y, z);
-}
-</code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[hihoCoder#1121 - 二分图一·二分图判定]]></title>
-    <link href="http://wangshenghu.github.io/blog/2016/05/08/hihocoder-bipartite-graph-1/"/>
-    <updated>2016-05-08T14:30:14+08:00</updated>
-    <id>http://wangshenghu.github.io/blog/2016/05/08/hihocoder-bipartite-graph-1</id>
-    <content type="html"><![CDATA[<h2>题目</h2>
-
-<p>判定是否存在一个合理的染色方案，使得我们所建立的无向图满足每一条边两端的顶点颜色都不相同。<br/>
-具体描述请见<a href="http://hihocoder.com/problemset/problem/1121">hihoCoder</a>。</p>
-
-<!--more-->
-
-
-<h2>解题思路</h2>
-
-<p>广度优先搜素（采用栈实现），首先任选一个未染色节点进行染色，并将其所有邻居节点染不同色，然后对每个邻居节点重复此操作。如果发现某一时刻一个节点与其邻居节点同色，则返回假；否则遍历完所有节点，返回真。</p>
-
-<h2>时间复杂度</h2>
-
-<p>由于每个节点入栈一次，每条边检查两次，时间复杂度为N + M。</p>
-
-<h2>代码</h2>
-
-<pre><code class="c++">#include &lt;iostream&gt;
-#include &lt;vector&gt;
-#include &lt;queue&gt;
-using namespace std;
-
-struct Vertex {
-    int color = -1;
-    vector&lt;int&gt; neighbors;
-};
-
-bool check(Vertex *graph, int N) {
-    int root = 1;
-    do {
-        queue&lt;int&gt; visited;
-        visited.push(root);
-        graph[root].color = 0;
-        while (!visited.empty()) {
-            int root = visited.front();
-            visited.pop();
-            vector&lt;int&gt; neighbors = graph[root].neighbors;
-            for (int i = 0; i &lt; neighbors.size(); i++) {
-                if (graph[neighbors[i]].color == -1) {
-                    graph[neighbors[i]].color = 1 - graph[root].color;
-                    visited.push(neighbors[i]);
-                }
-                else if (graph[neighbors[i]].color == graph[root].color)
-                    return false;
-            }
-        }
-
-        root = 0;
-        for (int i = 1; i &lt; N + 1; i++)
-            if (graph[i].color == -1) {
-                root = i;
-                break;
-            }
-    } while (root != 0);
-
-    return true;
-}
-
-int main() {
-    int T = 0;
-    cin &gt;&gt; T;
-    for (int i = 0; i &lt; T; i++) {
-        int N = 0, M = 0;
-        cin &gt;&gt; N &gt;&gt; M;
-        Vertex *graph = new Vertex[N + 1];
-        for (int j = 0; j &lt; M; j++) {
-            int a = 0, b = 0;
-            cin &gt;&gt; a &gt;&gt; b;
-            graph[a].neighbors.push_back(b);
-            graph[b].neighbors.push_back(a);
-        }
-
-        cout &lt;&lt; (check(graph, N) ? "Correct" : "Wrong") &lt;&lt; endl;
-
-        delete[] graph;
-    }
-    return 0;
-}
-</code></pre>
 ]]></content>
   </entry>
   

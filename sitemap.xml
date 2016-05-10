@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>http://wangshenghu.github.io/blog/2016/05/10/hihocoder-topology-sort/</loc>
+<lastmod>2016-05-10T17:45:11+08:00</lastmod>
+</url>
+<url>
+<loc>http://wangshenghu.github.io/blog/2016/05/10/hihocoder-lucky-substrings/</loc>
+<lastmod>2016-05-10T17:37:44+08:00</lastmod>
+</url>
+<url>
 <loc>http://wangshenghu.github.io/blog/2016/05/10/hihocoder-leap-year/</loc>
 <lastmod>2016-05-10T16:55:41+08:00</lastmod>
 </url>

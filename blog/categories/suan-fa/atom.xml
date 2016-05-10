@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 算法 | Lost & Found]]></title>
   <link href="http://wangshenghu.github.io/blog/categories/suan-fa/atom.xml" rel="self"/>
   <link href="http://wangshenghu.github.io/"/>
-  <updated>2016-05-10T11:59:43+08:00</updated>
+  <updated>2016-05-10T12:11:17+08:00</updated>
   <id>http://wangshenghu.github.io/</id>
   <author>
     <name><![CDATA[WangshengHu]]></name>
@@ -12,6 +12,75 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[HihoCoder#1135 - Magic Box]]></title>
+    <link href="http://wangshenghu.github.io/blog/2016/05/10/hihocoder-magic-box/"/>
+    <updated>2016-05-10T12:03:52+08:00</updated>
+    <id>http://wangshenghu.github.io/blog/2016/05/10/hihocoder-magic-box</id>
+    <content type="html"><![CDATA[<h2>题目</h2>
+
+<p>一个Magic Box，不断往里放三种颜色的球（红色R，黄色Y，蓝色B），一旦这三种球数目之差为x，y，z（无序），则所有球消失。给定一个放球的序列，求盒子中球最多时刻球的数目。<br/>
+具体描述请见<a href="http://hihocoder.com/problemset/problem/1135">hihoCoder</a>。</p>
+
+<h2>解题思路</h2>
+
+<p>直接暴力解。</p>
+
+<h2>时间复杂度</h2>
+
+<p>给定序列循环一遍，时间复杂度为N。</p>
+
+<h2>代码</h2>
+
+<pre><code class="c++">#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;cmath&gt;
+using namespace std;
+
+int maxLen(string seq, int x, int y, int z) {
+    int max = 0;
+    int len = 0;
+    int r = 0, g = 0, b = 0;
+    for (int i = 0; i &lt; seq.size(); i++) {
+        if (seq[i] == 'R')
+            r++;
+        else if (seq[i] == 'B')
+            g++;
+        else if (seq[i] == 'Y')
+            b++;
+        len++;
+        if ((abs(r - g) == x &amp;&amp; abs(g - b) == y &amp;&amp; abs(b - r) == z) ||
+            (abs(r - g) == x &amp;&amp; abs(b - r) == y &amp;&amp; abs(g - b) == z) ||
+            (abs(g - b) == x &amp;&amp; abs(r - g) == y &amp;&amp; abs(b - r) == z) ||
+            (abs(g - b) == x &amp;&amp; abs(b - r) == y &amp;&amp; abs(r - g) == z) ||
+            (abs(b - r) == x &amp;&amp; abs(g - b) == y &amp;&amp; abs(r - g) == z) ||
+            (abs(b - r) == x &amp;&amp; abs(r - g) == y &amp;&amp; abs(g - b) == z)) {
+            r = 0;
+            g = 0;
+            b = 0;
+            if (max &lt; len)
+                max = len;
+            len = 0;
+        }
+    }
+
+    if (max &lt; len)
+        max = len;
+
+    return max;
+}
+
+int main() {
+    int x = 0, y = 0, z = 0;
+    string charSeq;
+    cin &gt;&gt; x &gt;&gt; y &gt;&gt; z;
+    cin &gt;&gt; charSeq;
+    cout &lt;&lt; maxLen(charSeq, x, y, z);
+}
+</code></pre>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[hihoCoder#1121 - 二分图一·二分图判定]]></title>

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 算法 | Lost & Found]]></title>
   <link href="http://wangshenghu.github.io/blog/categories/suan-fa/atom.xml" rel="self"/>
   <link href="http://wangshenghu.github.io/"/>
-  <updated>2016-05-10T12:12:12+08:00</updated>
+  <updated>2016-05-10T17:03:19+08:00</updated>
   <id>http://wangshenghu.github.io/</id>
   <author>
     <name><![CDATA[WangshengHu]]></name>
@@ -12,6 +12,328 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[hihoCoder - 2月29日]]></title>
+    <link href="http://wangshenghu.github.io/blog/2016/05/10/hihocoder-leap-year/"/>
+    <updated>2016-05-10T16:55:41+08:00</updated>
+    <id>http://wangshenghu.github.io/blog/2016/05/10/hihocoder-leap-year</id>
+    <content type="html"><![CDATA[<h2>题目</h2>
+
+<p>给定两个日期，计算这两个日期之间有多少个2月29日（包括起始日期）。<br/>
+具体描述请见<a href="http://hihocoder.com/problemset/problem/1148">hihoCoder</a>。</p>
+
+<!--more-->
+
+
+<h2>解题思路</h2>
+
+<p>先简化问题，简化起始、终止年份，然后分情况讨论即可。</p>
+
+<h2>时间复杂度</h2>
+
+<p>时间复杂度为1。</p>
+
+<h2>代码</h2>
+
+<pre><code class="c++">#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;unordered_map&gt;
+using namespace std;
+
+unordered_map&lt;string, int&gt; months;
+
+int getMonth(string str) {
+    return months[str];
+}
+
+int calYears(int start, int end) {
+    if (start == end) {
+        if (start % 4 == 0)
+            if (start % 100 != 0 || start % 400 == 0)
+                return 1;
+
+        return 0;
+    }
+
+    int start1 = start;
+    while (start1 % 4 != 0)
+        start1++;
+    int start2 = start1;
+    while (start2 % 100 != 0)
+        start2 += 4;
+    int start3 = start2;
+    while (start3 % 400 != 0)
+        start3 += 100;
+
+    int end1 = end;
+    while (end1 % 4 != 0)
+        end1--;
+    int end2 = end1;
+    while (end2 % 100 != 0)
+        end2 -= 4;
+    int end3 = end2;
+    while (end3 % 400 != 0)
+        end3 -= 100;
+
+    int num1 = 0;
+    if (end1 - start1 &lt; 0)
+        return 0;
+    num1 = (end1 - start1) / 4 + 1;
+
+    int num2 = 0;
+    if (end2 - start2 &lt; 0)
+        num2 = 0;
+    num2 = (end2 - start2) / 100 + 1;
+
+    int num3 = 0;
+    if (end3 - start3 &lt; 0)
+        num3 = 0;
+    num3 = (end3 - start3) / 400 + 1;
+
+    return num1 - num2 + num3;
+}
+
+int processStr(string mon, int day, int year, bool start) {
+    int month = months[mon];
+    if (start) {
+        if (month &lt; 2 || (month == 2 &amp;&amp; day &lt;= 29))
+            return year;
+
+        return year + 1;
+    }
+    else {
+        if (month &gt; 2 || (month == 2 &amp;&amp; day == 29))
+            return year;
+
+        return year - 1;
+    }
+}
+
+int main() {
+    months["January"] = 1;
+    months["February"] = 2;
+    months["March"] = 3;
+    months["April"] = 4;
+    months["May"] = 5;
+    months["June"] = 6;
+    months["July"] = 7;
+    months["August"] = 8;
+    months["September"] = 9;
+    months["October"] = 10;
+    months["November"] = 11;
+    months["December"] = 12;
+
+    int T = 0;
+    cin &gt;&gt; T;
+    for (int i = 0; i &lt; T; i++) {
+        string month;
+        int day;
+        string comma;
+        int year;
+        cin &gt;&gt; month &gt;&gt; day &gt;&gt; comma &gt;&gt; year;
+        int start = processStr(month, day, year, true);
+        cin &gt;&gt; month &gt;&gt; day &gt;&gt; comma &gt;&gt; year;
+        int end = processStr(month, day, year, false);
+
+        cout &lt;&lt; "Case #" &lt;&lt; i + 1 &lt;&lt; ": " &lt;&lt; calYears(start, end) &lt;&lt; endl;
+    }
+
+    return 0;
+}
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[hihoCoder#1143 - 骨牌覆盖问题·一]]></title>
+    <link href="http://wangshenghu.github.io/blog/2016/05/10/hihocoder-gupaifugaiwenti-1/"/>
+    <updated>2016-05-10T15:44:00+08:00</updated>
+    <id>http://wangshenghu.github.io/blog/2016/05/10/hihocoder-gupaifugaiwenti-1</id>
+    <content type="html"><![CDATA[<h2>题目</h2>
+
+<p>一个2xN的棋盘，用1x2的骨牌进行覆盖，一共有多少种不同的覆盖方法。<br/>
+具体描述请见<a href="http://hihocoder.com/problemset/problem/1143">hihoCoder</a>。</p>
+
+<!--more-->
+
+
+<h2>解题思路</h2>
+
+<p>动态规划，F<sub>n</sub> = F<sub>n-1</sub> + F<sub>n-2</sub>。即斐波那契数列。</p>
+
+<h2>时间复杂度</h2>
+
+<p>时间复杂度为N（可以用快速幂算法缩减到logN），空间复杂度为1。</p>
+
+<h2>代码</h2>
+
+<pre><code class="c++">#include &lt;iostream&gt;
+using namespace std;
+
+int fib(int N) {
+    int f0 = 0, f1 = 1;
+    for (int i = 0; i &lt; N; i++) {
+        int tmp = f1;
+        f1 = (f0 + f1) % 19999997;
+        f0 = tmp;
+    }
+
+    return f1;
+}
+
+int main() {
+    int N = 0;
+    cin &gt;&gt; N;
+
+    cout &lt;&lt; fib(N) &lt;&lt; endl;
+
+    return 0;
+}
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[hihoCoder#1138 - Islands Travel]]></title>
+    <link href="http://wangshenghu.github.io/blog/2016/05/10/hihocoder-islands-travel/"/>
+    <updated>2016-05-10T15:13:21+08:00</updated>
+    <id>http://wangshenghu.github.io/blog/2016/05/10/hihocoder-islands-travel</id>
+    <content type="html"><![CDATA[<h2>题目</h2>
+
+<p>给定N个节点，坐标分别为(X<sub>1</sub>, Y<sub>1</sub>),&hellip;(X<sub>N</sub>, Y<sub>N</sub>)，任意两点之间的距离定义为min{|X<sub>i</sub> - X<sub>j</sub>|, |Y<sub>i</sub>| - Y<sub>j</sub>}，求X<sub>1</sub>到X<sub>N</sub>的最短距离。<br/>
+具体描述请见<a href="http://hihocoder.com/problemset/problem/1138">hihoCoder</a>。</p>
+
+<!--more-->
+
+
+<h2>解题思路</h2>
+
+<p>本题如果采用暴力解法，直接计算出所有点对距离然后采用Dijkstra或者SPFA是不行的，因为这是一个完全图，光是计算所有点对间的距离时间复杂度就已经是N<sup>2</sup>了。因此需要优化Dijkstra算法的输入数据。采用数学知识进行分析，可以发现对任意一个点，我们只需要考虑x轴上一左一右离它最近的两个点，以及y轴上一上一下离它最近的两个点。这样一来边数就从N<sup>2</sup>减到了4N，采用堆实现的Dijkstra即可。</p>
+
+<h2>时间复杂度</h2>
+
+<p>堆实现的Dijkstra的时间复杂度为MlogN，其中M = 4N，所以时间复杂度为NlogN。</p>
+
+<h2>代码</h2>
+
+<pre><code class="c++">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;queue&gt;
+#include &lt;bitset&gt;
+#include &lt;algorithm&gt;
+#include &lt;cmath&gt;
+using namespace std;
+
+struct Node {
+    int id = -1;
+    int d = -1;
+    vector&lt;int&gt; neighbors;
+    vector&lt;int&gt; edges;
+};
+
+struct NodeCmp {
+    bool operator()(const Node &amp;a, const Node &amp;b) const {
+        return b.d &lt; a.d;
+    }
+};
+
+int dijkstra(Node* graph, int N, int s, int t) {
+    bitset&lt;100001&gt; set;
+    set.reset();
+    priority_queue&lt;Node, vector&lt;Node&gt;, NodeCmp&gt; heap;
+    graph[s].d = 0;
+    set[s] = 1;
+    for (int i = 0; i &lt; graph[s].neighbors.size(); i++) {
+        graph[graph[s].neighbors[i]].d = graph[s].edges[i];
+        heap.push(graph[graph[s].neighbors[i]]);
+    }
+
+    int i = 0;
+    while (i &lt; N - 1) {
+        Node nearestNode = heap.top();
+        heap.pop();
+        if (set[nearestNode.id])
+            continue;
+        i++;
+        set[nearestNode.id] = 1;
+        for (int j = 0; j &lt; nearestNode.neighbors.size(); j++) {
+            if (graph[nearestNode.neighbors[j]].d == -1 || nearestNode.edges[j] + nearestNode.d &lt; graph[nearestNode.neighbors[j]].d)
+                graph[nearestNode.neighbors[j]].d = nearestNode.edges[j] + nearestNode.d;
+            heap.push(graph[nearestNode.neighbors[j]]);
+        }
+    }
+
+    return graph[t].d;
+}
+
+struct Point {
+    int id = 0;
+    int x = 0;
+    int y = 0;
+    Point(int i, int xv, int yv) {
+        id = i;
+        x = xv;
+        y = yv;
+    }
+};
+
+bool xComp(const Point &amp;a, const Point &amp;b) {
+    return a.x &lt; b.x;
+}
+
+bool yComp(const Point &amp;a, const Point &amp;b) {
+    return a.y &lt; b.y;
+}
+
+int main() {
+    int N = 0;
+    cin &gt;&gt; N;
+    vector&lt;Point&gt; coord;
+    for (int i = 1; i &lt; N + 1; i++) {
+        int x = 0, y = 0;
+        cin &gt;&gt; x &gt;&gt; y;
+        coord.push_back(Point(i, x, y));
+    }
+    Node* graph = new Node[N + 1];
+    for (int i = 0; i &lt; N + 1; i++)
+        graph[i].id = i;
+    sort(coord.begin(), coord.end(), xComp);
+    for (int i = 0; i &lt; N - 1; i++) {
+        int a = coord[i].id;
+        int b = coord[i + 1].id;
+        int edge = min(abs(coord[i].x - coord[i + 1].x), abs(coord[i].y - coord[i + 1].y));
+        graph[a].neighbors.push_back(b);
+        graph[a].edges.push_back(edge);
+        graph[b].neighbors.push_back(a);
+        graph[b].edges.push_back(edge);
+    }
+    sort(coord.begin(), coord.end(), yComp);
+    for (int i = 0; i &lt; N - 1; i++) {
+        int a = coord[i].id;
+        int b = coord[i + 1].id;
+        int edge = min(abs(coord[i].x - coord[i + 1].x), abs(coord[i].y - coord[i + 1].y));
+        graph[a].neighbors.push_back(b);
+        graph[a].edges.push_back(edge);
+        graph[b].neighbors.push_back(a);
+        graph[b].edges.push_back(edge);
+    }
+
+    cout &lt;&lt; dijkstra(graph, N, 1, N) &lt;&lt; endl;
+
+    return 0;
+}
+</code></pre>
+
+<h2>问题</h2>
+
+<ol>
+<li>上述代码堆的实现直接使用了C++ STL里的<code>priority_queue</code>，它的数据类型不能是指针。</li>
+<li>每次<code>priority_queue</code>进队时都会调用<code>Node</code>结构体的复制构造器，在<code>Node</code>结构体复杂的时候很耗时，应尽量降低<code>Node</code>结构体的复杂度。</li>
+</ol>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[HihoCoder#1135 - Magic Box]]></title>

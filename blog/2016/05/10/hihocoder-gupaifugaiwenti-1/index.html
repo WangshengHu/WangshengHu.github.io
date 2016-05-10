@@ -5,11 +5,18 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>第一篇博客 - 如何配置octopress+github博客 - Lost & Found</title>
+  <title>hihoCoder#1143 - 骨牌覆盖问题·一 - Lost & Found</title>
   <meta name="author" content="WangshengHu">
 
   
-  <meta name="description" content="写在前面 很久以前就想配置属于自己的博客了，可是一直光说不做，前不久系统升了win10，顺便就想把这个事情也给做了。在配置过程中遇到诸多问题，记录下来方便以后查阅。 搭建环境 我的操作系统是windows10 64bit企业版。 配置流程 1. 安装Git for Windows &hellip;">
+  <meta name="description" content="题目 一个2xN的棋盘，用1x2的骨牌进行覆盖，一共有多少种不同的覆盖方法。
+具体描述请见hihoCoder。 解题思路 动态规划，Fn = Fn-1 + Fn-2。即斐波那契数列。 时间复杂度 时间复杂度为N（可以用快速幂算法缩减到logN），空间复杂度为1。 代码 1
+2
+3
+4
+5
+6
+7 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +25,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://wangshenghu.github.io/blog/2016/05/06/first-blog-how-to-configure-this/">
+  <link rel="canonical" href="http://wangshenghu.github.io/blog/2016/05/10/hihocoder-gupaifugaiwenti-1/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Lost & Found" type="application/atom+xml">
@@ -81,7 +88,7 @@
   
   <header>
     
-      <h1 class="entry-title">第一篇博客 - 如何配置octopress+github博客</h1>
+      <h1 class="entry-title">hihoCoder#1143 - 骨牌覆盖问题·一</h1>
     
     
       <p class="meta">
@@ -90,65 +97,30 @@
 
 
 
-<time class='entry-date' datetime='2016-05-06T20:45:26+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>8:45 pm</span></time>
+<time class='entry-date' datetime='2016-05-10T15:44:00+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>3:44 pm</span></time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><h2>写在前面</h2>
+<div class="entry-content"><h2>题目</h2>
 
-<p>很久以前就想配置属于自己的博客了，可是一直光说不做，前不久系统升了win10，顺便就想把这个事情也给做了。在配置过程中遇到诸多问题，记录下来方便以后查阅。</p>
+<p>一个2xN的棋盘，用1x2的骨牌进行覆盖，一共有多少种不同的覆盖方法。<br/>
+具体描述请见<a href="http://hihocoder.com/problemset/problem/1143">hihoCoder</a>。</p>
 
 <!--more-->
 
 
-<h2>搭建环境</h2>
+<h2>解题思路</h2>
 
-<p>我的操作系统是windows10 64bit企业版。</p>
+<p>动态规划，F<sub>n</sub> = F<sub>n-1</sub> + F<sub>n-2</sub>。即斐波那契数列。</p>
 
-<h2>配置流程</h2>
+<h2>时间复杂度</h2>
 
-<h3>1. 安装Git for Windows</h3>
+<p>时间复杂度为N（可以用快速幂算法缩减到logN），空间复杂度为1。</p>
 
-<p>直接去<a href="https://git-scm.com/">git官网</a>下载安装即可。</p>
-
-<h3>2. 安装Ruby</h3>
-
-<p>去<a href="http://rubyinstaller.org/downloads/">RubyInstaller</a>下载Ruby。注意安装时勾选添加到系统环境变量，或者稍后自己手动设置。<strong>注意：我在配置时用最新版本Ruby2.3.0到最后一步bundle install时总是失败，无奈改成Ruby2.2.4就成功了。</strong></p>
-
-<h3>3. 安装Python2.7</h3>
-
-<p>去<a href="https://www.python.org/downloads/">Python官网</a>下载安装。注意安装时勾选添加到系统环境变量，或者稍后自己手动设置。<br/>
-安装后运行<code>easy_install pygments</code>安装代码高亮脚本。</p>
-
-<h3>4. 安装octopress</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> &lt;wherever_you_want_to_save_your_blog&gt;
-</span><span class='line'>git clone git://github.com/imathis/octopress.git &lt;your_dir&gt;
-</span><span class='line'>
-</span><span class='line'>gem install bundle
-</span><span class='line'>bundle install
-</span><span class='line'>
-</span><span class='line'>rake install
-</span><span class='line'>rake preview
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>之后在浏览器输入localhost:4000就可以查看了。</p>
-
-<h3>5. 部署到Github</h3>
-
-<p>在Github上新建一个Repository，命名为<code>username.github.io</code>。然后在cmd中进行部署。</p>
+<h2>代码</h2>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -162,40 +134,40 @@
 <span class='line-number'>10</span>
 <span class='line-number'>11</span>
 <span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> &lt;wherever_your_octopress_is&gt;
-</span><span class='line'>rake setup_github_pages
-</span><span class='line'>https://github.com/your_username/your_username.github.io
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="cp">#include &lt;iostream&gt;</span>
+</span><span class='line'><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
 </span><span class='line'>
-</span><span class='line'>rake deploy
+</span><span class='line'><span class="kt">int</span> <span class="nf">fib</span><span class="p">(</span><span class="kt">int</span> <span class="n">N</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">f0</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">f1</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">N</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="kt">int</span> <span class="n">tmp</span> <span class="o">=</span> <span class="n">f1</span><span class="p">;</span>
+</span><span class='line'>      <span class="n">f1</span> <span class="o">=</span> <span class="p">(</span><span class="n">f0</span> <span class="o">+</span> <span class="n">f1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">19999997</span><span class="p">;</span>
+</span><span class='line'>      <span class="n">f0</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'>rake new_post<span class="o">[</span><span class="s1">&#39;title of post&#39;</span><span class="o">]</span>
-</span><span class='line'>rake new_site<span class="o">[</span><span class="s1">&#39;name of site&#39;</span><span class="o">]</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">f1</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'>rake generate
+</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">N</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">N</span><span class="p">;</span>
 </span><span class='line'>
-</span><span class='line'>rake deploy
+</span><span class='line'>  <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">fib</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
-<p>访问username.github.io即可查看，可能会有延迟，一般不超过1分钟。</p>
-
-<h3>6. 源码维护</h3>
-
-<p>在上一步中运行<code>rake deploy</code>后会将生成的静态html页面push到Github，但源码还是在本地。为方便维护，我们可以将源码也push到Github。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>git add .
-</span><span class='line'>git commit -m <span class="s2">&quot;source code&quot;</span>
-</span><span class='line'>git push origin <span class="nb">source</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>参考文献</h2>
-
-<p><a href="http://silentming.net/blog/2015/11/13/build-blog-on-github-with-octopress/">Octopress博客(1)-在windows 10上使用octopress搭建个人博客</a><br/>
-<a href="https://segmentfault.com/markdown">Markdown 编辑器语法指南</a></p>
 </div>
 
 
@@ -211,12 +183,12 @@
 
 
 
-<time class='entry-date' datetime='2016-05-06T20:45:26+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>8:45 pm</span></time>
+<time class='entry-date' datetime='2016-05-10T15:44:00+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>3:44 pm</span></time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/bi-ji/'>笔记</a>
+    <a class='category' href='/blog/categories/suan-fa/'>算法</a>
   
 </span>
 
@@ -232,8 +204,10 @@
     
     <p class="meta">
       
+        <a class="basic-alignment left" href="/blog/2016/05/10/hihocoder-islands-travel/" title="Previous Post: hihoCoder#1138 - Islands Travel">&laquo; hihoCoder#1138 - Islands Travel</a>
       
-        <a class="basic-alignment right" href="/blog/2016/05/07/personal-settings-of-octopress/" title="Next Post: Octopress的个性化设置">Octopress的个性化设置 &raquo;</a>
+      
+        <a class="basic-alignment right" href="/blog/2016/05/10/hihocoder-leap-year/" title="Next Post: hihoCoder - 2月29日">hihoCoder - 2月29日 &raquo;</a>
       
     </p>
   </footer>
@@ -335,8 +309,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://wangshenghu.github.io/blog/2016/05/06/first-blog-how-to-configure-this/';
-        var disqus_url = 'http://wangshenghu.github.io/blog/2016/05/06/first-blog-how-to-configure-this/';
+        var disqus_identifier = 'http://wangshenghu.github.io/blog/2016/05/10/hihocoder-gupaifugaiwenti-1/';
+        var disqus_url = 'http://wangshenghu.github.io/blog/2016/05/10/hihocoder-gupaifugaiwenti-1/';
         var disqus_script = 'embed.js';
       
     (function () {

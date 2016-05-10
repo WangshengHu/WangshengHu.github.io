@@ -1,0 +1,504 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>hihoCoder#1138 - Islands Travel - Lost & Found</title>
+  <meta name="author" content="WangshengHu">
+
+  
+  <meta name="description" content="题目 给定N个节点，坐标分别为(X1, Y1),&hellip;(XN, YN)，任意两点之间的距离定义为min{|Xi - Xj|, |Yi| - Yj}，求X1到XN的最短距离。
+具体描述请见hihoCoder。 解题思路 本题如果采用暴力解法， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://wangshenghu.github.io/blog/2016/05/10/hihocoder-islands-travel/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Lost & Found" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>-->
+  <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<script>
+    function addBlankTargetForLinks () {
+      $('a[href^="http"]').each(function(){
+          $(this).attr('target', '_blank');
+      });
+    }
+
+    $(document).bind('DOMNodeInserted', function(event) {
+      addBlankTargetForLinks();
+    });
+</script>
+<!--<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">-->
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Lost & Found</a></h1>
+  
+    <h2>Looking for myself...</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="wangshenghu.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">hihoCoder#1138 - Islands Travel</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-05-10T15:13:21+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>3:13 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h2>题目</h2>
+
+<p>给定N个节点，坐标分别为(X<sub>1</sub>, Y<sub>1</sub>),&hellip;(X<sub>N</sub>, Y<sub>N</sub>)，任意两点之间的距离定义为min{|X<sub>i</sub> - X<sub>j</sub>|, |Y<sub>i</sub>| - Y<sub>j</sub>}，求X<sub>1</sub>到X<sub>N</sub>的最短距离。<br/>
+具体描述请见<a href="http://hihocoder.com/problemset/problem/1138">hihoCoder</a>。</p>
+
+<!--more-->
+
+
+<h2>解题思路</h2>
+
+<p>本题如果采用暴力解法，直接计算出所有点对距离然后采用Dijkstra或者SPFA是不行的，因为这是一个完全图，光是计算所有点对间的距离时间复杂度就已经是N<sup>2</sup>了。因此需要优化Dijkstra算法的输入数据。采用数学知识进行分析，可以发现对任意一个点，我们只需要考虑x轴上一左一右离它最近的两个点，以及y轴上一上一下离它最近的两个点。这样一来边数就从N<sup>2</sup>减到了4N，采用堆实现的Dijkstra即可。</p>
+
+<h2>时间复杂度</h2>
+
+<p>堆实现的Dijkstra的时间复杂度为MlogN，其中M = 4N，所以时间复杂度为NlogN。</p>
+
+<h2>代码</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="cp">#include &lt;iostream&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;vector&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;queue&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;bitset&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;algorithm&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;cmath&gt;</span>
+</span><span class='line'><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">struct</span> <span class="n">Node</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">id</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">d</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">neighbors</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">edges</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">struct</span> <span class="n">NodeCmp</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kt">bool</span> <span class="k">operator</span><span class="p">()(</span><span class="k">const</span> <span class="n">Node</span> <span class="o">&amp;</span><span class="n">a</span><span class="p">,</span> <span class="k">const</span> <span class="n">Node</span> <span class="o">&amp;</span><span class="n">b</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="n">b</span><span class="p">.</span><span class="n">d</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">.</span><span class="n">d</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="nf">dijkstra</span><span class="p">(</span><span class="n">Node</span><span class="o">*</span> <span class="n">graph</span><span class="p">,</span> <span class="kt">int</span> <span class="n">N</span><span class="p">,</span> <span class="kt">int</span> <span class="n">s</span><span class="p">,</span> <span class="kt">int</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="n">bitset</span><span class="o">&lt;</span><span class="mi">100001</span><span class="o">&gt;</span> <span class="n">set</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">set</span><span class="p">.</span><span class="n">reset</span><span class="p">();</span>
+</span><span class='line'>  <span class="n">priority_queue</span><span class="o">&lt;</span><span class="n">Node</span><span class="p">,</span> <span class="n">vector</span><span class="o">&lt;</span><span class="n">Node</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">NodeCmp</span><span class="o">&gt;</span> <span class="n">heap</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">graph</span><span class="p">[</span><span class="n">s</span><span class="p">].</span><span class="n">d</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">set</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">graph</span><span class="p">[</span><span class="n">s</span><span class="p">].</span><span class="n">neighbors</span><span class="p">.</span><span class="n">size</span><span class="p">();</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">graph</span><span class="p">[</span><span class="n">graph</span><span class="p">[</span><span class="n">s</span><span class="p">].</span><span class="n">neighbors</span><span class="p">[</span><span class="n">i</span><span class="p">]].</span><span class="n">d</span> <span class="o">=</span> <span class="n">graph</span><span class="p">[</span><span class="n">s</span><span class="p">].</span><span class="n">edges</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+</span><span class='line'>      <span class="n">heap</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">graph</span><span class="p">[</span><span class="n">graph</span><span class="p">[</span><span class="n">s</span><span class="p">].</span><span class="n">neighbors</span><span class="p">[</span><span class="n">i</span><span class="p">]]);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">while</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">Node</span> <span class="n">nearestNode</span> <span class="o">=</span> <span class="n">heap</span><span class="p">.</span><span class="n">top</span><span class="p">();</span>
+</span><span class='line'>      <span class="n">heap</span><span class="p">.</span><span class="n">pop</span><span class="p">();</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="n">set</span><span class="p">[</span><span class="n">nearestNode</span><span class="p">.</span><span class="n">id</span><span class="p">])</span>
+</span><span class='line'>          <span class="k">continue</span><span class="p">;</span>
+</span><span class='line'>      <span class="n">i</span><span class="o">++</span><span class="p">;</span>
+</span><span class='line'>      <span class="n">set</span><span class="p">[</span><span class="n">nearestNode</span><span class="p">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>      <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">nearestNode</span><span class="p">.</span><span class="n">neighbors</span><span class="p">.</span><span class="n">size</span><span class="p">();</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="k">if</span> <span class="p">(</span><span class="n">graph</span><span class="p">[</span><span class="n">nearestNode</span><span class="p">.</span><span class="n">neighbors</span><span class="p">[</span><span class="n">j</span><span class="p">]].</span><span class="n">d</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="o">||</span> <span class="n">nearestNode</span><span class="p">.</span><span class="n">edges</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">nearestNode</span><span class="p">.</span><span class="n">d</span> <span class="o">&lt;</span> <span class="n">graph</span><span class="p">[</span><span class="n">nearestNode</span><span class="p">.</span><span class="n">neighbors</span><span class="p">[</span><span class="n">j</span><span class="p">]].</span><span class="n">d</span><span class="p">)</span>
+</span><span class='line'>              <span class="n">graph</span><span class="p">[</span><span class="n">nearestNode</span><span class="p">.</span><span class="n">neighbors</span><span class="p">[</span><span class="n">j</span><span class="p">]].</span><span class="n">d</span> <span class="o">=</span> <span class="n">nearestNode</span><span class="p">.</span><span class="n">edges</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">nearestNode</span><span class="p">.</span><span class="n">d</span><span class="p">;</span>
+</span><span class='line'>          <span class="n">heap</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">graph</span><span class="p">[</span><span class="n">nearestNode</span><span class="p">.</span><span class="n">neighbors</span><span class="p">[</span><span class="n">j</span><span class="p">]]);</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="n">graph</span><span class="p">[</span><span class="n">t</span><span class="p">].</span><span class="n">d</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">struct</span> <span class="n">Point</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">id</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">Point</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="kt">int</span> <span class="n">xv</span><span class="p">,</span> <span class="kt">int</span> <span class="n">yv</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">id</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
+</span><span class='line'>      <span class="n">x</span> <span class="o">=</span> <span class="n">xv</span><span class="p">;</span>
+</span><span class='line'>      <span class="n">y</span> <span class="o">=</span> <span class="n">yv</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">bool</span> <span class="nf">xComp</span><span class="p">(</span><span class="k">const</span> <span class="n">Point</span> <span class="o">&amp;</span><span class="n">a</span><span class="p">,</span> <span class="k">const</span> <span class="n">Point</span> <span class="o">&amp;</span><span class="n">b</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">a</span><span class="p">.</span><span class="n">x</span> <span class="o">&lt;</span> <span class="n">b</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">bool</span> <span class="nf">yComp</span><span class="p">(</span><span class="k">const</span> <span class="n">Point</span> <span class="o">&amp;</span><span class="n">a</span><span class="p">,</span> <span class="k">const</span> <span class="n">Point</span> <span class="o">&amp;</span><span class="n">b</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">a</span><span class="p">.</span><span class="n">y</span> <span class="o">&lt;</span> <span class="n">b</span><span class="p">.</span><span class="n">y</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">N</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">N</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">vector</span><span class="o">&lt;</span><span class="n">Point</span><span class="o">&gt;</span> <span class="n">coord</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">N</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>      <span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">x</span> <span class="o">&gt;&gt;</span> <span class="n">y</span><span class="p">;</span>
+</span><span class='line'>      <span class="n">coord</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">Point</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">));</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="n">Node</span><span class="o">*</span> <span class="n">graph</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Node</span><span class="p">[</span><span class="n">N</span> <span class="o">+</span> <span class="mi">1</span><span class="p">];</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">N</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">graph</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">id</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">sort</span><span class="p">(</span><span class="n">coord</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">coord</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="n">xComp</span><span class="p">);</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="n">coord</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">id</span><span class="p">;</span>
+</span><span class='line'>      <span class="kt">int</span> <span class="n">b</span> <span class="o">=</span> <span class="n">coord</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">].</span><span class="n">id</span><span class="p">;</span>
+</span><span class='line'>      <span class="kt">int</span> <span class="n">edge</span> <span class="o">=</span> <span class="n">min</span><span class="p">(</span><span class="n">abs</span><span class="p">(</span><span class="n">coord</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">x</span> <span class="o">-</span> <span class="n">coord</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">].</span><span class="n">x</span><span class="p">),</span> <span class="n">abs</span><span class="p">(</span><span class="n">coord</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">y</span> <span class="o">-</span> <span class="n">coord</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">].</span><span class="n">y</span><span class="p">));</span>
+</span><span class='line'>      <span class="n">graph</span><span class="p">[</span><span class="n">a</span><span class="p">].</span><span class="n">neighbors</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">b</span><span class="p">);</span>
+</span><span class='line'>      <span class="n">graph</span><span class="p">[</span><span class="n">a</span><span class="p">].</span><span class="n">edges</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">edge</span><span class="p">);</span>
+</span><span class='line'>      <span class="n">graph</span><span class="p">[</span><span class="n">b</span><span class="p">].</span><span class="n">neighbors</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">a</span><span class="p">);</span>
+</span><span class='line'>      <span class="n">graph</span><span class="p">[</span><span class="n">b</span><span class="p">].</span><span class="n">edges</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">edge</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="n">sort</span><span class="p">(</span><span class="n">coord</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">coord</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="n">yComp</span><span class="p">);</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="n">coord</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">id</span><span class="p">;</span>
+</span><span class='line'>      <span class="kt">int</span> <span class="n">b</span> <span class="o">=</span> <span class="n">coord</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">].</span><span class="n">id</span><span class="p">;</span>
+</span><span class='line'>      <span class="kt">int</span> <span class="n">edge</span> <span class="o">=</span> <span class="n">min</span><span class="p">(</span><span class="n">abs</span><span class="p">(</span><span class="n">coord</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">x</span> <span class="o">-</span> <span class="n">coord</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">].</span><span class="n">x</span><span class="p">),</span> <span class="n">abs</span><span class="p">(</span><span class="n">coord</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">y</span> <span class="o">-</span> <span class="n">coord</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">].</span><span class="n">y</span><span class="p">));</span>
+</span><span class='line'>      <span class="n">graph</span><span class="p">[</span><span class="n">a</span><span class="p">].</span><span class="n">neighbors</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">b</span><span class="p">);</span>
+</span><span class='line'>      <span class="n">graph</span><span class="p">[</span><span class="n">a</span><span class="p">].</span><span class="n">edges</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">edge</span><span class="p">);</span>
+</span><span class='line'>      <span class="n">graph</span><span class="p">[</span><span class="n">b</span><span class="p">].</span><span class="n">neighbors</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">a</span><span class="p">);</span>
+</span><span class='line'>      <span class="n">graph</span><span class="p">[</span><span class="n">b</span><span class="p">].</span><span class="n">edges</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">edge</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">dijkstra</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>问题</h2>
+
+<ol>
+<li>上述代码堆的实现直接使用了C++ STL里的<code>priority_queue</code>，它的数据类型不能是指针。</li>
+<li>每次<code>priority_queue</code>进队时都会调用<code>Node</code>结构体的复制构造器，在<code>Node</code>结构体复杂的时候很耗时，应尽量降低<code>Node</code>结构体的复杂度。</li>
+</ol>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">WangshengHu</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2016-05-10T15:13:21+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>3:13 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/suan-fa/'>算法</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2016/05/10/hihocoder-magic-box/" title="Previous Post: HihoCoder#1135 - Magic Box">&laquo; HihoCoder#1135 - Magic Box</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2016/05/10/hihocoder-gupaifugaiwenti-1/" title="Next Post: hihoCoder#1143 - 骨牌覆盖问题·一">hihoCoder#1143 - 骨牌覆盖问题·一 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Categories</h1>
+  <ul id="categories">
+    <li class='category'><a href='/blog/categories/bi-ji/'>笔记 (2)</a></li>
+<li class='category'><a href='/blog/categories/suan-fa/'>算法 (5)</a></li>
+
+  </ul>
+</section><section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/05/10/hihocoder-leap-year/">hihoCoder - 2月29日</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/05/10/hihocoder-gupaifugaiwenti-1/">hihoCoder#1143 - 骨牌覆盖问题·一</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/05/10/hihocoder-islands-travel/">hihoCoder#1138 - Islands Travel</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/05/10/hihocoder-magic-box/">HihoCoder#1135 - Magic Box</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/05/08/hihocoder-bipartite-graph-1/">hihoCoder#1121 - 二分图一·二分图判定</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/WangshengHu">@WangshengHu</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'WangshengHu',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+<a href="http://info.flagcounter.com/uWGL"><img src="http://s01.flagcounter.com/countxl/uWGL/bg_FFFFFF/txt_000000/border_CCCCCC/columns_1/maxflags_10/viewers_0/labels_0/pageviews_0/flags_0/percent_0/" alt="Flag Counter" border="0"></a>
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 - WangshengHu -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'WangshengHu';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://wangshenghu.github.io/blog/2016/05/10/hihocoder-islands-travel/';
+        var disqus_url = 'http://wangshenghu.github.io/blog/2016/05/10/hihocoder-islands-travel/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

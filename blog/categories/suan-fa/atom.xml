@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: 算法 | Lost & Found]]></title>
+  <link href="http://wangshenghu.github.io/blog/categories/suan-fa/atom.xml" rel="self"/>
+  <link href="http://wangshenghu.github.io/"/>
+  <updated>2016-05-10T11:59:43+08:00</updated>
+  <id>http://wangshenghu.github.io/</id>
+  <author>
+    <name><![CDATA[WangshengHu]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[hihoCoder#1121 - 二分图一·二分图判定]]></title>
+    <link href="http://wangshenghu.github.io/blog/2016/05/08/hihocoder-bipartite-graph-1/"/>
+    <updated>2016-05-08T14:30:14+08:00</updated>
+    <id>http://wangshenghu.github.io/blog/2016/05/08/hihocoder-bipartite-graph-1</id>
+    <content type="html"><![CDATA[<h2>题目</h2>
+
+<p>判定是否存在一个合理的染色方案，使得我们所建立的无向图满足每一条边两端的顶点颜色都不相同。<br/>
+具体描述请见<a href="http://hihocoder.com/problemset/problem/1121">hihoCoder</a>。</p>
+
+<!--more-->
+
+
+<h2>解题思路</h2>
+
+<p>广度优先搜素（采用栈实现），首先任选一个未染色节点进行染色，并将其所有邻居节点染不同色，然后对每个邻居节点重复此操作。如果发现某一时刻一个节点与其邻居节点同色，则返回假；否则遍历完所有节点，返回真。</p>
+
+<h2>时间复杂度</h2>
+
+<p>由于每个节点入栈一次，每条边检查两次，时间复杂度为N + M。</p>
+
+<h2>代码</h2>
+
+<pre><code class="c++">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;queue&gt;
+using namespace std;
+
+struct Vertex {
+    int color = -1;
+    vector&lt;int&gt; neighbors;
+};
+
+bool check(Vertex *graph, int N) {
+    int root = 1;
+    do {
+        queue&lt;int&gt; visited;
+        visited.push(root);
+        graph[root].color = 0;
+        while (!visited.empty()) {
+            int root = visited.front();
+            visited.pop();
+            vector&lt;int&gt; neighbors = graph[root].neighbors;
+            for (int i = 0; i &lt; neighbors.size(); i++) {
+                if (graph[neighbors[i]].color == -1) {
+                    graph[neighbors[i]].color = 1 - graph[root].color;
+                    visited.push(neighbors[i]);
+                }
+                else if (graph[neighbors[i]].color == graph[root].color)
+                    return false;
+            }
+        }
+
+        root = 0;
+        for (int i = 1; i &lt; N + 1; i++)
+            if (graph[i].color == -1) {
+                root = i;
+                break;
+            }
+    } while (root != 0);
+
+    return true;
+}
+
+int main() {
+    int T = 0;
+    cin &gt;&gt; T;
+    for (int i = 0; i &lt; T; i++) {
+        int N = 0, M = 0;
+        cin &gt;&gt; N &gt;&gt; M;
+        Vertex *graph = new Vertex[N + 1];
+        for (int j = 0; j &lt; M; j++) {
+            int a = 0, b = 0;
+            cin &gt;&gt; a &gt;&gt; b;
+            graph[a].neighbors.push_back(b);
+            graph[b].neighbors.push_back(a);
+        }
+
+        cout &lt;&lt; (check(graph, N) ? "Correct" : "Wrong") &lt;&lt; endl;
+
+        delete[] graph;
+    }
+    return 0;
+}
+</code></pre>
+]]></content>
+  </entry>
+  
+</feed>

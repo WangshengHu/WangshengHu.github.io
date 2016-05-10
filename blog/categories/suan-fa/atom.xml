@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 算法 | Lost & Found]]></title>
   <link href="http://wangshenghu.github.io/blog/categories/suan-fa/atom.xml" rel="self"/>
   <link href="http://wangshenghu.github.io/"/>
-  <updated>2016-05-10T12:11:17+08:00</updated>
+  <updated>2016-05-10T12:12:12+08:00</updated>
   <id>http://wangshenghu.github.io/</id>
   <author>
     <name><![CDATA[WangshengHu]]></name>
@@ -22,6 +22,9 @@
 
 <p>一个Magic Box，不断往里放三种颜色的球（红色R，黄色Y，蓝色B），一旦这三种球数目之差为x，y，z（无序），则所有球消失。给定一个放球的序列，求盒子中球最多时刻球的数目。<br/>
 具体描述请见<a href="http://hihocoder.com/problemset/problem/1135">hihoCoder</a>。</p>
+
+<!--more-->
+
 
 <h2>解题思路</h2>
 

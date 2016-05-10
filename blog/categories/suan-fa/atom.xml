@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 算法 | Lost & Found]]></title>
   <link href="http://wangshenghu.github.io/blog/categories/suan-fa/atom.xml" rel="self"/>
   <link href="http://wangshenghu.github.io/"/>
-  <updated>2016-05-10T18:10:34+08:00</updated>
+  <updated>2016-05-10T20:16:30+08:00</updated>
   <id>http://wangshenghu.github.io/</id>
   <author>
     <name><![CDATA[WangshengHu]]></name>
@@ -12,6 +12,235 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[hihoCoder#1268 - 九宫]]></title>
+    <link href="http://wangshenghu.github.io/blog/2016/05/10/hihocoder-magic-square/"/>
+    <updated>2016-05-10T19:59:36+08:00</updated>
+    <id>http://wangshenghu.github.io/blog/2016/05/10/hihocoder-magic-square</id>
+    <content type="html"><![CDATA[<h2>题目</h2>
+
+<p>给定一个残缺的三阶幻方，判断是否只有一组可行解，如果只有一组可行解，打印之。<br/>
+具体描述请见<a href="http://hihocoder.com/problemset/problem/1268">hihoCoder</a>。</p>
+
+<!--more-->
+
+
+<h2>解题思路</h2>
+
+<p>对给定的残缺三阶幻方，首先可以通过行列斜之和为15尽可能进行补全；如果只有一种解，那一定可以填满9个数字，除了一种情况：“十字架”形。对“十字架”刑，实际上也只可能有一种解，可以根据已填数字推算出整个幻方。</p>
+
+<h2>时间复杂度</h2>
+
+<p>为常数。</p>
+
+<h2>代码</h2>
+
+<pre><code class="c++">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+bool check(int *square) {
+    int filled = 0;
+    for (int i = 0; i &lt; 9; i++)
+        filled += (square[i] != 0);
+    int lastFilled = 0;
+    do {
+        lastFilled = filled;
+        if (square[4] == 0) {
+            square[4] = 5;
+            filled++;
+        }
+        int state = (square[0] != 0) + (square[8] != 0);
+        if (state == 1) {
+            square[square[0] != 0 ? 8 : 0] = 10 - square[0] - square[8];
+            filled++;
+        }
+        state = (square[1] != 0) + (square[7] != 0);
+        if (state == 1) {
+            square[square[1] != 0 ? 7 : 1] = 10 - square[1] - square[7];
+            filled++;
+        }
+        state = (square[2] != 0) + (square[6] != 0);
+        if (state == 1) {
+            square[square[2] != 0 ? 6 : 2] = 10 - square[2] - square[6];
+            filled++;
+        }
+        state = (square[3] != 0) + (square[5] != 0);
+        if (state == 1) {
+            square[square[3] != 0 ? 5 : 3] = 10 - square[3] - square[5];
+            filled++;
+        }
+
+        state = (square[0] != 0) + (square[1] != 0) + (square[2] != 0);
+        if (state == 2) {
+            square[(square[1] == 0) + (square[2] == 0) * 2] = 15 - square[0] - square[1] - square[2];
+            filled++;
+        }
+        state = (square[2] != 0) + (square[5] != 0) + (square[8] != 0);
+        if (state == 2) {
+            square[(square[2] == 0) * 2 + (square[5] == 0) * 5 + (square[8] == 0) * 8] = 15 - square[2] - square[5] - square[8];
+            filled++;
+        }
+        state = (square[8] != 0) + (square[7] != 0) + (square[6] != 0);
+        if (state == 2) {
+            square[(square[8] == 0) * 8 + (square[7] == 0) * 7 + (square[6] == 0) * 6] = 15 - square[8] - square[7] - square[6];
+            filled++;
+        }
+        state = (square[6] != 0) + (square[3] != 0) + (square[0] != 0);
+        if (state == 2) {
+            square[(square[6] == 0) * 6 + (square[3] == 0) * 3] = 15 - square[6] - square[3] - square[0];
+            filled++;
+        }
+
+        state = (square[1] != 0) + (square[7] != 0) + (square[3] != 0) + (square[5] != 0) + (square[4] != 0);
+        int state1 = (square[0] == 0) + (square[2] == 0) + (square[6] == 0) + (square[8] == 0);
+        if (state == 5 &amp;&amp; state1 == 4) {
+            if ((square[1] == 9 &amp;&amp; square[3] == 3) || (square[1] == 3 &amp;&amp; square[3] == 9)) {
+                square[0] = 4;
+                filled++;
+            }
+            else if ((square[1] == 9 &amp;&amp; square[3] == 7) || (square[1] == 7 &amp;&amp; square[3] == 9)) {
+                square[0] = 2;
+                filled++;
+            }
+            else if ((square[1] == 1 &amp;&amp; square[3] == 3) || (square[1] == 3 &amp;&amp; square[3] == 1)) {
+                square[0] = 8;
+                filled++;
+            }
+            else if ((square[1] == 1 &amp;&amp; square[3] == 7) || (square[1] == 7 &amp;&amp; square[3] == 1)) {
+                square[0] = 6;
+                filled++;
+            }
+        }
+    } while (lastFilled != filled);
+
+    return (filled == 9);
+}
+
+int main() {
+    int *square = new int[9];
+    for (int i = 0; i &lt; 9; i++)
+        cin &gt;&gt; square[i];
+
+    if (check(square))
+        cout &lt;&lt; square[0] &lt;&lt; " " &lt;&lt; square[1] &lt;&lt; " " &lt;&lt; square[2] &lt;&lt; endl &lt;&lt; square[3] &lt;&lt; " "
+        &lt;&lt; square[4] &lt;&lt; " " &lt;&lt; square[5] &lt;&lt; endl &lt;&lt; square[6] &lt;&lt; " " &lt;&lt; square[7] &lt;&lt; " "
+        &lt;&lt; square[8] &lt;&lt; endl;
+    else
+        cout &lt;&lt; "Too Many" &lt;&lt; endl;
+
+    delete[] square;
+
+    return 0;
+}
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[hihoCoder#1223 - 不等式]]></title>
+    <link href="http://wangshenghu.github.io/blog/2016/05/10/hihocoder-inequation/"/>
+    <updated>2016-05-10T19:37:28+08:00</updated>
+    <id>http://wangshenghu.github.io/blog/2016/05/10/hihocoder-inequation</id>
+    <content type="html"><![CDATA[<h2>题目</h2>
+
+<p>给定n个关于X的不等式，最多有多少个成立。不等式形如X &lt; C，X &lt;= C，X = C， X > C, X >= C。<br/>
+具体描述请见<a href="http://hihocoder.com/problemset/problem/1223">hihoCoder</a>。</p>
+
+<!--more-->
+
+
+<h2>解题思路</h2>
+
+<p>想像在一个数轴上从左到右扫描，对任意不等式X &lt; C，在C左边时其成立，到C时其不成立；对X &lt;= C， 过了C其不成立；对X = C，到C成立，过C不成立；对X > C，过了C成立；对X >= C，到C成立。因此对任意一个C，我们采用两个标记<code>intOp</code>和<code>decOp</code>，<code>intOp</code>表示扫描到C点的执行操作，<code>decOP</code>表示扫描过C点的执行操作。<br/>
+起始时我们统计所有&lt;及&lt;=关系，并将其设为初始可满足不等式数；然后按C的递增序遍历所有不等式，并分别就到达C点及走过C点执行相应操作，计算当前可满足不等式数；最后统计最大可满足数。</p>
+
+<h2>时间复杂度</h2>
+
+<p>由于遍历一遍所有不等式，时间复杂度为N。需要注意我们要对输入不等式进行排序，因此时间复杂度为NlogN（实际实现中采用了C++ STL的map，自动排序）。</p>
+
+<h2>代码</h2>
+
+<pre><code class="c++">#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include &lt;string&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+
+struct Number {
+    int intOp = 0;
+    int decOp = 0;
+
+    Number(int eq, int ineq) {
+        intOp = eq;
+        decOp = ineq;
+    }
+};
+
+int calMax(map&lt;int, Number&gt; numbers, int init) {
+    int maxVal = init;
+    int curVal = init;
+    for (auto it = numbers.begin(); it != numbers.end(); it++) {
+        curVal += it-&gt;second.intOp;
+        maxVal = max(maxVal, curVal);
+        curVal += it-&gt;second.decOp;
+        maxVal = max(maxVal, curVal);
+    }
+
+    return maxVal;
+}
+
+bool process(string op, int c, map&lt;int, Number&gt; &amp;numbers) {
+    bool less = false;
+    int intOp = 0, decOp = 0;
+    if (op == "&lt;") {
+        intOp = -1;
+        less = true;
+    }
+    else if (op == "&lt;=") {
+        decOp = -1; 
+        less = true;
+    }
+    else if (op == "=") {
+        intOp = 1;
+        decOp = -1;
+    }
+    else if (op == "&gt;=")
+        intOp = 1;
+    else if (op == "&gt;")
+        decOp = 1;
+
+    if (numbers.find(c) != numbers.end()) {
+        numbers.find(c)-&gt;second.intOp += intOp;
+        numbers.find(c)-&gt;second.decOp += decOp;
+    }
+    else
+        numbers.insert(make_pair(c, Number(intOp, decOp)));
+
+    return less;
+}
+
+int main() {
+    int N = 0;
+    cin &gt;&gt; N;
+    map&lt;int, Number&gt; numbers;
+    int init = 0;
+    for (int i = 0; i &lt; N; i++) {
+        char x;
+        string op;
+        int c;
+        cin &gt;&gt; x &gt;&gt; op &gt;&gt; c;
+        init += process(op, c, numbers)? 1 : 0;
+    }
+
+    cout &lt;&lt; calMax(numbers, init) &lt;&lt; endl;
+
+    return 0;
+}
+</code></pre>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[hihoCoder#1175 - 拓扑排序·二]]></title>
@@ -291,196 +520,6 @@ int main() {
     return 0;
 }
 </code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[hihoCoder#1143 - 骨牌覆盖问题·一]]></title>
-    <link href="http://wangshenghu.github.io/blog/2016/05/10/hihocoder-gupaifugaiwenti-1/"/>
-    <updated>2016-05-10T15:44:00+08:00</updated>
-    <id>http://wangshenghu.github.io/blog/2016/05/10/hihocoder-gupaifugaiwenti-1</id>
-    <content type="html"><![CDATA[<h2>题目</h2>
-
-<p>一个2xN的棋盘，用1x2的骨牌进行覆盖，一共有多少种不同的覆盖方法。<br/>
-具体描述请见<a href="http://hihocoder.com/problemset/problem/1143">hihoCoder</a>。</p>
-
-<!--more-->
-
-
-<h2>解题思路</h2>
-
-<p>动态规划，F<sub>n</sub> = F<sub>n-1</sub> + F<sub>n-2</sub>。即斐波那契数列。</p>
-
-<h2>时间复杂度</h2>
-
-<p>时间复杂度为N（可以用快速幂算法缩减到logN），空间复杂度为1。</p>
-
-<h2>代码</h2>
-
-<pre><code class="c++">#include &lt;iostream&gt;
-using namespace std;
-
-int fib(int N) {
-    int f0 = 0, f1 = 1;
-    for (int i = 0; i &lt; N; i++) {
-        int tmp = f1;
-        f1 = (f0 + f1) % 19999997;
-        f0 = tmp;
-    }
-
-    return f1;
-}
-
-int main() {
-    int N = 0;
-    cin &gt;&gt; N;
-
-    cout &lt;&lt; fib(N) &lt;&lt; endl;
-
-    return 0;
-}
-</code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[hihoCoder#1138 - Islands Travel]]></title>
-    <link href="http://wangshenghu.github.io/blog/2016/05/10/hihocoder-islands-travel/"/>
-    <updated>2016-05-10T15:13:21+08:00</updated>
-    <id>http://wangshenghu.github.io/blog/2016/05/10/hihocoder-islands-travel</id>
-    <content type="html"><![CDATA[<h2>题目</h2>
-
-<p>给定N个节点，坐标分别为(X<sub>1</sub>, Y<sub>1</sub>),&hellip;(X<sub>N</sub>, Y<sub>N</sub>)，任意两点之间的距离定义为min{|X<sub>i</sub> - X<sub>j</sub>|, |Y<sub>i</sub>| - Y<sub>j</sub>}，求X<sub>1</sub>到X<sub>N</sub>的最短距离。<br/>
-具体描述请见<a href="http://hihocoder.com/problemset/problem/1138">hihoCoder</a>。</p>
-
-<!--more-->
-
-
-<h2>解题思路</h2>
-
-<p>本题如果采用暴力解法，直接计算出所有点对距离然后采用Dijkstra或者SPFA是不行的，因为这是一个完全图，光是计算所有点对间的距离时间复杂度就已经是N<sup>2</sup>了。因此需要优化Dijkstra算法的输入数据。采用数学知识进行分析，可以发现对任意一个点，我们只需要考虑x轴上一左一右离它最近的两个点，以及y轴上一上一下离它最近的两个点。这样一来边数就从N<sup>2</sup>减到了4N，采用堆实现的Dijkstra即可。</p>
-
-<h2>时间复杂度</h2>
-
-<p>堆实现的Dijkstra的时间复杂度为MlogN，其中M = 4N，所以时间复杂度为NlogN。</p>
-
-<h2>代码</h2>
-
-<pre><code class="c++">#include &lt;iostream&gt;
-#include &lt;vector&gt;
-#include &lt;queue&gt;
-#include &lt;bitset&gt;
-#include &lt;algorithm&gt;
-#include &lt;cmath&gt;
-using namespace std;
-
-struct Node {
-    int id = -1;
-    int d = -1;
-    vector&lt;int&gt; neighbors;
-    vector&lt;int&gt; edges;
-};
-
-struct NodeCmp {
-    bool operator()(const Node &amp;a, const Node &amp;b) const {
-        return b.d &lt; a.d;
-    }
-};
-
-int dijkstra(Node* graph, int N, int s, int t) {
-    bitset&lt;100001&gt; set;
-    set.reset();
-    priority_queue&lt;Node, vector&lt;Node&gt;, NodeCmp&gt; heap;
-    graph[s].d = 0;
-    set[s] = 1;
-    for (int i = 0; i &lt; graph[s].neighbors.size(); i++) {
-        graph[graph[s].neighbors[i]].d = graph[s].edges[i];
-        heap.push(graph[graph[s].neighbors[i]]);
-    }
-
-    int i = 0;
-    while (i &lt; N - 1) {
-        Node nearestNode = heap.top();
-        heap.pop();
-        if (set[nearestNode.id])
-            continue;
-        i++;
-        set[nearestNode.id] = 1;
-        for (int j = 0; j &lt; nearestNode.neighbors.size(); j++) {
-            if (graph[nearestNode.neighbors[j]].d == -1 || nearestNode.edges[j] + nearestNode.d &lt; graph[nearestNode.neighbors[j]].d)
-                graph[nearestNode.neighbors[j]].d = nearestNode.edges[j] + nearestNode.d;
-            heap.push(graph[nearestNode.neighbors[j]]);
-        }
-    }
-
-    return graph[t].d;
-}
-
-struct Point {
-    int id = 0;
-    int x = 0;
-    int y = 0;
-    Point(int i, int xv, int yv) {
-        id = i;
-        x = xv;
-        y = yv;
-    }
-};
-
-bool xComp(const Point &amp;a, const Point &amp;b) {
-    return a.x &lt; b.x;
-}
-
-bool yComp(const Point &amp;a, const Point &amp;b) {
-    return a.y &lt; b.y;
-}
-
-int main() {
-    int N = 0;
-    cin &gt;&gt; N;
-    vector&lt;Point&gt; coord;
-    for (int i = 1; i &lt; N + 1; i++) {
-        int x = 0, y = 0;
-        cin &gt;&gt; x &gt;&gt; y;
-        coord.push_back(Point(i, x, y));
-    }
-    Node* graph = new Node[N + 1];
-    for (int i = 0; i &lt; N + 1; i++)
-        graph[i].id = i;
-    sort(coord.begin(), coord.end(), xComp);
-    for (int i = 0; i &lt; N - 1; i++) {
-        int a = coord[i].id;
-        int b = coord[i + 1].id;
-        int edge = min(abs(coord[i].x - coord[i + 1].x), abs(coord[i].y - coord[i + 1].y));
-        graph[a].neighbors.push_back(b);
-        graph[a].edges.push_back(edge);
-        graph[b].neighbors.push_back(a);
-        graph[b].edges.push_back(edge);
-    }
-    sort(coord.begin(), coord.end(), yComp);
-    for (int i = 0; i &lt; N - 1; i++) {
-        int a = coord[i].id;
-        int b = coord[i + 1].id;
-        int edge = min(abs(coord[i].x - coord[i + 1].x), abs(coord[i].y - coord[i + 1].y));
-        graph[a].neighbors.push_back(b);
-        graph[a].edges.push_back(edge);
-        graph[b].neighbors.push_back(a);
-        graph[b].edges.push_back(edge);
-    }
-
-    cout &lt;&lt; dijkstra(graph, N, 1, N) &lt;&lt; endl;
-
-    return 0;
-}
-</code></pre>
-
-<h2>问题</h2>
-
-<ol>
-<li>上述代码堆的实现直接使用了C++ STL里的<code>priority_queue</code>，它的数据类型不能是指针。</li>
-<li>每次<code>priority_queue</code>进队时都会调用<code>Node</code>结构体的复制构造器，在<code>Node</code>结构体复杂的时候很耗时，应尽量降低<code>Node</code>结构体的复杂度。</li>
-</ol>
-
 ]]></content>
   </entry>
   

@@ -108,7 +108,7 @@
 
 <h2>解题思路</h2>
 
-<p>此题是著名的约瑟夫（Josephus）问题，直接暴力解的话时间复杂度是MN。考虑递推关系，可以得到f[n] = (f[n-1] + K) mod n。具体证明如下：<br/>
+<p>此题是著名的约瑟夫（Josephus）问题，直接暴力解的话时间复杂度是MN。考虑递推关系，可以得到<code>f[n] = (f[n-1] + K) mod n</code>。具体证明如下：<br/>
 假设n个人排好序：<br/>
 <code>0 1 2 3 ... n-1</code><br/>
 此时先执行第一遍报数，将位置T（(K-1) mod n）的人去掉，剩下的人排序：<br/>
@@ -118,15 +118,10 @@
 <code>0 1 2 3 4 5 6 7 8 9</code><br/>
 遍历一遍，经过两轮报数，剩下的序列是：<br/>
 <code>0 1 2 - 4 5 6 -8 9</code><br/>
-此时仍然可以用地推关系求解，从f[10]到f[8]，不过递推关系修改如下：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>f[n - n/K] &lt; n mod K: f[n] = f[n - n/K] - n mod K + n
-</span><span class='line'>f[n - n/K] &gt;= n mod K: f[n] = f[n - n/K] - n mod K + (f[n - n/K] - n mod K)/(K - 1)（遍历完一遍后余下的序列不连续）</span></code></pre></td></tr></table></div></figure>
-
-
-<p>注意当K > n之后问题回归到最开始的解法。</p>
+此时仍然可以用地推关系求解，从f[10]到f[8]，不过递推关系修改如下：
+<code>f[n - n/K] &lt; n mod K: f[n] = f[n - n/K] - n mod K + n</code><br/>
+<code>f[n - n/K] &gt;= n mod K: f[n] = f[n - n/K] - n mod K + (f[n - n/K] - n mod K)/(K - 1)（遍历完一遍后余下的序列不连续）</code><br/>
+注意当K > n之后问题回归到最开始的解法。</p>
 
 <h2>时间复杂度</h2>
 
@@ -245,6 +240,8 @@
         <a class="basic-alignment left" href="/blog/2016/05/11/hihocoder-buy-snack/" title="Previous Post: hihoCoder#1272 - 买零食">&laquo; hihoCoder#1272 - 买零食</a>
       
       
+        <a class="basic-alignment right" href="/blog/2016/05/11/hihocoder-trie/" title="Next Post: hihoCoder#1014 - Trie树">hihoCoder#1014 - Trie树 &raquo;</a>
+      
     </p>
   </footer>
 </article>
@@ -263,12 +260,20 @@
   <h1>Categories</h1>
   <ul id="categories">
     <li class='category'><a href='/blog/categories/bi-ji/'>笔记 (2)</a></li>
-<li class='category'><a href='/blog/categories/suan-fa/'>算法 (11)</a></li>
+<li class='category'><a href='/blog/categories/suan-fa/'>算法 (13)</a></li>
 
   </ul>
 </section><section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/05/11/hihocoder-kmp/">hihoCoder#1015 - KMP算法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/05/11/hihocoder-trie/">hihoCoder#1014 - Trie树</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2016/05/11/hihocoder-josephus/">hihoCoder#1296 - 数论三·约瑟夫问题</a>
@@ -280,14 +285,6 @@
     
       <li class="post">
         <a href="/blog/2016/05/10/hihocoder-magic-square/">hihoCoder#1268 - 九宫</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/05/10/hihocoder-inequation/">hihoCoder#1223 - 不等式</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/05/10/hihocoder-topology-sort/">hihoCoder#1175 - 拓扑排序·二</a>
       </li>
     
   </ul>

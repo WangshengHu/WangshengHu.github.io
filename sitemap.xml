@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>http://wangshenghu.github.io/blog/2016/05/11/hihocoder-kmp/</loc>
+<lastmod>2016-05-11T19:27:36+08:00</lastmod>
+</url>
+<url>
+<loc>http://wangshenghu.github.io/blog/2016/05/11/hihocoder-trie/</loc>
+<lastmod>2016-05-11T18:05:08+08:00</lastmod>
+</url>
+<url>
 <loc>http://wangshenghu.github.io/blog/2016/05/11/hihocoder-josephus/</loc>
 <lastmod>2016-05-11T13:41:29+08:00</lastmod>
 </url>
@@ -69,8 +77,5 @@
 </url>
 <url>
 <loc>http://wangshenghu.github.io/blog/categories/suan-fa/</loc>
-</url>
-<url>
-<loc>http://wangshenghu.github.io/posts/2/</loc>
 </url>
 </urlset>

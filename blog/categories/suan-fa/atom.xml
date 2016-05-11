@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 算法 | Lost & Found]]></title>
   <link href="http://wangshenghu.github.io/blog/categories/suan-fa/atom.xml" rel="self"/>
   <link href="http://wangshenghu.github.io/"/>
-  <updated>2016-05-11T17:58:44+08:00</updated>
+  <updated>2016-05-11T21:04:31+08:00</updated>
   <id>http://wangshenghu.github.io/</id>
   <author>
     <name><![CDATA[WangshengHu]]></name>
@@ -12,6 +12,227 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[hihoCoder#1015 - KMP算法]]></title>
+    <link href="http://wangshenghu.github.io/blog/2016/05/11/hihocoder-kmp/"/>
+    <updated>2016-05-11T19:27:36+08:00</updated>
+    <id>http://wangshenghu.github.io/blog/2016/05/11/hihocoder-kmp</id>
+    <content type="html"><![CDATA[<h2>题目</h2>
+
+<p>经典的模式字符串匹配问题。<br/>
+具体描述请见<a href="http://hihocoder.com/problemset/problem/1015">hihoCoder</a>。</p>
+
+<!--more-->
+
+
+<h2>解题思路</h2>
+
+<p>KMP算法主要利用了在一次匹配失败后收集信息，选取下一个起始点进行重新匹配，省去了大量冗余比较。<br/>
+首先，考察下述例子：<br/>
+<code>原串：  bababa</code><br/>
+<code>模式串：bababb</code><br/>
+我们给出两个标记，j是原串上当前遍历到的位置，i是模式串上当前遍历到的位置，那么可以发现一个性质：假设当前在模式串的i+1位置发生了不匹配，而且满足模式串[1, t]与[i-t+1, i]相等的最大的t为k，那么只有将模式串至少前进k-1才可能发生匹配，且只需要从原串上当前位置j，以及模式串上位置k+1继续比较。这个模式字符串的不同位置对应的k被称为next数组。<br/>
+暴力求解next数组将会是M<sup>2</sup>的时间复杂度，仔细思考可以发现求解next数组本身也可以利用上述想法。假设当前已经求出next[i]，我们可以考虑原串[1, i+1]与模式串[1, i]的匹配过程，可以发现最后求得的模式串匹配点即是next[i+1]。因此可以用递归的形式求解next数组。</p>
+
+<h2>时间复杂度</h2>
+
+<p>首先考虑每次匹配两个字符如果相同，则i++，进行一次比较，共n次；其次考虑两个字符不同，i不变，j=next[j]，模式串是永远往右移动的，最多n次。因此时间复杂度为N，加上计算next数组，时间复杂度为N + M。</p>
+
+<h2>代码</h2>
+
+<pre><code class="c++">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+void calNext(string str, int idx, int* next) {
+    if (idx &gt; str.size())
+        return;
+
+    int q = next[idx - 1];
+    while (q != -1) {
+        if (str[q] == str[idx - 1]) {
+            next[idx] = q + 1;
+            break;
+        }
+        q = next[q];
+    }
+    if (q == -1)
+        next[idx] = 0;
+    calNext(str, idx + 1, next);
+}
+
+int kmp(string str, string pattern) {
+    // resolve the NEXT array
+    int* next = new int[pattern.size() + 1];
+    next[0] = -1;
+    calNext(pattern, 1, next);
+
+    // pattern match
+    int m = 0;
+    int i = 0, j = 0;
+    for (; i &lt; str.size();) {
+        if (j == -1) {
+            i++;
+            j = 0;
+            continue;
+        }
+        int k = j;
+        for (; k &lt; pattern.size(); k++)
+            if (str[i + k - j] != pattern[k])
+                break;
+        if (k == pattern.size())
+            m++;
+        i += k - j;
+        j = next[k];
+    }
+
+    return m;
+}
+
+int main() {
+    int N = 0;
+    cin &gt;&gt; N;
+    for (int i = 0; i &lt; N; i++) {
+        string pattern, str;
+        cin &gt;&gt; pattern &gt;&gt; str;
+
+        cout &lt;&lt; kmp(str, pattern) &lt;&lt; endl;
+    }
+
+    return 0;
+}
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[hihoCoder#1014 - Trie树]]></title>
+    <link href="http://wangshenghu.github.io/blog/2016/05/11/hihocoder-trie/"/>
+    <updated>2016-05-11T18:05:08+08:00</updated>
+    <id>http://wangshenghu.github.io/blog/2016/05/11/hihocoder-trie</id>
+    <content type="html"><![CDATA[<h2>题目</h2>
+
+<p>Trie树就是字典树。对于一个给定的词典，任给一个字符串，输出词典中以该字符串为前缀的单词数目。<br/>
+具体描述请见<a href="http://hihocoder.com/problemset/problem/1014">hihoCoder</a>。</p>
+
+<!--more-->
+
+
+<h2>解题思路</h2>
+
+<p>在建立Trie树的同时我们就可以着手统计以某个字符串为前缀的节点个数，即每次添加一个新单词的时候，沿途更新所有经过的节点。</p>
+
+<h2>时间复杂度</h2>
+
+<p>单词查询用时26M（M：查询字符串的长度），单次插入用时26M。</p>
+
+<h2>代码</h2>
+
+<pre><code class="c++">#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+struct Node {
+    int L = 1;
+    char ch = ' ';
+    vector&lt;Node*&gt; successors;
+
+    Node(char c) {
+        ch = c;
+    }
+};
+
+class Trie {
+private:
+    Node* root;
+
+    void updatePrefix(Node* node, string word, int idx) {
+        if (idx == word.size())
+            return;
+
+        bool find = false;
+        for (int i = 0; i &lt; node-&gt;successors.size(); i++) {
+            if (node-&gt;successors[i]-&gt;ch == word[idx]) {
+                find = true;
+                node-&gt;successors[i]-&gt;L++;
+                updatePrefix(node-&gt;successors[i], word, idx + 1);
+                break;
+            }
+        }
+
+        if (!find) {
+            for (int i = idx; i &lt; word.size(); i++) {
+                node-&gt;successors.push_back(new Node(word[i]));
+                node = node-&gt;successors.back();
+            }
+        }
+    }
+
+    int findPrefix(Node* node, string query, int idx) {
+        for (int i = 0; i &lt; node-&gt;successors.size(); i++) {
+            if (node-&gt;successors[i]-&gt;ch == query[idx]) {
+                if (idx == query.size() - 1)
+                    return node-&gt;successors[i]-&gt;L;
+
+                return findPrefix(node-&gt;successors[i], query, idx + 1);
+            }
+        }
+
+        return 0;
+    }
+
+    void deleteTrie(Node* node) {
+        for (int i = 0; i &lt; node-&gt;successors.size(); i++)
+            deleteTrie(node-&gt;successors[i]);
+        delete node;
+    }
+
+public:
+    Trie() {
+        root = new Node('$');
+    }
+
+    ~Trie() {
+        deleteTrie(root);
+    }
+
+    void insert(string word) {
+        updatePrefix(root, word, 0);
+    }
+
+    int getStat(string query) {
+        return findPrefix(root, query, 0);
+    }
+};
+
+int main() {
+    int n = 0;
+    cin &gt;&gt; n;
+    string* words = new string[n];
+    for (int i = 0; i &lt; n; i++)
+        cin &gt;&gt; words[i];
+    int m = 0;
+    cin &gt;&gt; m;
+    string* queries = new string[m];
+    for (int i = 0; i &lt; m; i++)
+        cin &gt;&gt; queries[i];
+
+    Trie trie;
+    for (int i = 0; i &lt; n; i++)
+        trie.insert(words[i]);
+
+    for (int i = 0; i &lt; m; i++)
+        cout &lt;&lt; trie.getStat(queries[i]) &lt;&lt; endl;
+
+    delete[] words, queries;
+
+    return 0;
+}
+</code></pre>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[hihoCoder#1296 - 数论三·约瑟夫问题]]></title>
@@ -28,7 +249,7 @@
 
 <h2>解题思路</h2>
 
-<p>此题是著名的约瑟夫（Josephus）问题，直接暴力解的话时间复杂度是MN。考虑递推关系，可以得到f[n] = (f[n-1] + K) mod n。具体证明如下：<br/>
+<p>此题是著名的约瑟夫（Josephus）问题，直接暴力解的话时间复杂度是MN。考虑递推关系，可以得到<code>f[n] = (f[n-1] + K) mod n</code>。具体证明如下：<br/>
 假设n个人排好序：<br/>
 <code>0 1 2 3 ... n-1</code><br/>
 此时先执行第一遍报数，将位置T（(K-1) mod n）的人去掉，剩下的人排序：<br/>
@@ -39,10 +260,8 @@
 遍历一遍，经过两轮报数，剩下的序列是：<br/>
 <code>0 1 2 - 4 5 6 -8 9</code><br/>
 此时仍然可以用地推关系求解，从f[10]到f[8]，不过递推关系修改如下：
-<code>
-f[n - n/K] &lt; n mod K: f[n] = f[n - n/K] - n mod K + n
-f[n - n/K] &gt;= n mod K: f[n] = f[n - n/K] - n mod K + (f[n - n/K] - n mod K)/(K - 1)（遍历完一遍后余下的序列不连续）
-</code>
+<code>f[n - n/K] &lt; n mod K: f[n] = f[n - n/K] - n mod K + n</code><br/>
+<code>f[n - n/K] &gt;= n mod K: f[n] = f[n - n/K] - n mod K + (f[n - n/K] - n mod K)/(K - 1)（遍历完一遍后余下的序列不连续）</code><br/>
 注意当K > n之后问题回归到最开始的解法。</p>
 
 <h2>时间复杂度</h2>
@@ -300,195 +519,6 @@ int main() {
         cout &lt;&lt; "Too Many" &lt;&lt; endl;
 
     delete[] square;
-
-    return 0;
-}
-</code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[hihoCoder#1223 - 不等式]]></title>
-    <link href="http://wangshenghu.github.io/blog/2016/05/10/hihocoder-inequation/"/>
-    <updated>2016-05-10T19:37:28+08:00</updated>
-    <id>http://wangshenghu.github.io/blog/2016/05/10/hihocoder-inequation</id>
-    <content type="html"><![CDATA[<h2>题目</h2>
-
-<p>给定n个关于X的不等式，最多有多少个成立。不等式形如X &lt; C，X &lt;= C，X = C， X > C, X >= C。<br/>
-具体描述请见<a href="http://hihocoder.com/problemset/problem/1223">hihoCoder</a>。</p>
-
-<!--more-->
-
-
-<h2>解题思路</h2>
-
-<p>想像在一个数轴上从左到右扫描，对任意不等式X &lt; C，在C左边时其成立，到C时其不成立；对X &lt;= C， 过了C其不成立；对X = C，到C成立，过C不成立；对X > C，过了C成立；对X >= C，到C成立。因此对任意一个C，我们采用两个标记<code>intOp</code>和<code>decOp</code>，<code>intOp</code>表示扫描到C点的执行操作，<code>decOP</code>表示扫描过C点的执行操作。<br/>
-起始时我们统计所有&lt;及&lt;=关系，并将其设为初始可满足不等式数；然后按C的递增序遍历所有不等式，并分别就到达C点及走过C点执行相应操作，计算当前可满足不等式数；最后统计最大可满足数。</p>
-
-<h2>时间复杂度</h2>
-
-<p>由于遍历一遍所有不等式，时间复杂度为N。需要注意我们要对输入不等式进行排序，因此时间复杂度为NlogN（实际实现中采用了C++ STL的map，自动排序）。</p>
-
-<h2>代码</h2>
-
-<pre><code class="c++">#include &lt;iostream&gt;
-#include &lt;map&gt;
-#include &lt;string&gt;
-#include &lt;algorithm&gt;
-using namespace std;
-
-struct Number {
-    int intOp = 0;
-    int decOp = 0;
-
-    Number(int eq, int ineq) {
-        intOp = eq;
-        decOp = ineq;
-    }
-};
-
-int calMax(map&lt;int, Number&gt; numbers, int init) {
-    int maxVal = init;
-    int curVal = init;
-    for (auto it = numbers.begin(); it != numbers.end(); it++) {
-        curVal += it-&gt;second.intOp;
-        maxVal = max(maxVal, curVal);
-        curVal += it-&gt;second.decOp;
-        maxVal = max(maxVal, curVal);
-    }
-
-    return maxVal;
-}
-
-bool process(string op, int c, map&lt;int, Number&gt; &amp;numbers) {
-    bool less = false;
-    int intOp = 0, decOp = 0;
-    if (op == "&lt;") {
-        intOp = -1;
-        less = true;
-    }
-    else if (op == "&lt;=") {
-        decOp = -1; 
-        less = true;
-    }
-    else if (op == "=") {
-        intOp = 1;
-        decOp = -1;
-    }
-    else if (op == "&gt;=")
-        intOp = 1;
-    else if (op == "&gt;")
-        decOp = 1;
-
-    if (numbers.find(c) != numbers.end()) {
-        numbers.find(c)-&gt;second.intOp += intOp;
-        numbers.find(c)-&gt;second.decOp += decOp;
-    }
-    else
-        numbers.insert(make_pair(c, Number(intOp, decOp)));
-
-    return less;
-}
-
-int main() {
-    int N = 0;
-    cin &gt;&gt; N;
-    map&lt;int, Number&gt; numbers;
-    int init = 0;
-    for (int i = 0; i &lt; N; i++) {
-        char x;
-        string op;
-        int c;
-        cin &gt;&gt; x &gt;&gt; op &gt;&gt; c;
-        init += process(op, c, numbers)? 1 : 0;
-    }
-
-    cout &lt;&lt; calMax(numbers, init) &lt;&lt; endl;
-
-    return 0;
-}
-</code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[hihoCoder#1175 - 拓扑排序·二]]></title>
-    <link href="http://wangshenghu.github.io/blog/2016/05/10/hihocoder-topology-sort/"/>
-    <updated>2016-05-10T17:45:11+08:00</updated>
-    <id>http://wangshenghu.github.io/blog/2016/05/10/hihocoder-topology-sort</id>
-    <content type="html"><![CDATA[<h2>题目</h2>
-
-<p>给定一个有向无环图，在任意个节点上投放“病毒”，“病毒”会沿着有向边传播。计算最终该图中总共有多少“病毒”。<br/>
-具体描述请见<a href="http://hihocoder.com/problemset/problem/1175">hihoCoder</a>。</p>
-
-<!--more-->
-
-
-<h2>解题思路</h2>
-
-<p>因为是有向无环图，可以找到一个“起始点”，该点入度为0。从该点出发进行广度优先搜索，该点处理完后可以直接从图中移除。依次重复此操作。</p>
-
-<h2>时间复杂度</h2>
-
-<p>每个节点入队一次，每条边遍历依次，时间复杂度为N + M。</p>
-
-<h2>代码</h2>
-
-<pre><code class="c++">#include &lt;iostream&gt;
-#include &lt;vector&gt;
-#include &lt;queue&gt;
-using namespace std;
-
-struct Vertex {
-    int sum = 0;
-    int degree = 0;
-    vector&lt;int&gt; neighbors;
-};
-
-int calSum(vector&lt;Vertex&gt; A) {
-    queue&lt;int&gt; queue;
-
-    for (int i = 0; i &lt; A.size(); i++)
-        if (A[i].degree == 0)
-            queue.push(i);
-
-    int sum = 0;
-    do {
-        int root = queue.front();
-        queue.pop();
-        int curSum = A[root].sum;
-        sum += curSum % 142857;
-        sum %= 142857;
-        vector&lt;int&gt; &amp;neighbors = A[root].neighbors;
-        for (int i = 0; i &lt; neighbors.size(); i++) {
-            A[neighbors[i]].sum += curSum;
-            A[neighbors[i]].sum %= 142857;
-            A[neighbors[i]].degree--;
-            if (A[neighbors[i]].degree == 0)
-                queue.push(neighbors[i]);
-        }
-    } while (!queue.empty());
-
-    return sum;
-}
-
-int main() {
-    int N = 0, M = 0, K = 0;
-    cin &gt;&gt; N &gt;&gt; M &gt;&gt; K;
-    vector&lt;Vertex&gt; A = vector&lt;Vertex&gt;(N);
-    for (int i = 0; i &lt; K; i++) {
-        int a = 0;
-        cin &gt;&gt; a;
-        A[a - 1].sum++;
-    }
-    for (int i = 0; i &lt; M; i++) {
-        int a = 0, b = 0;
-        cin &gt;&gt; a &gt;&gt; b;
-        A[a - 1].neighbors.push_back(b - 1);
-        A[b - 1].degree++;
-    }
-
-    cout &lt;&lt; calSum(A);
 
     return 0;
 }

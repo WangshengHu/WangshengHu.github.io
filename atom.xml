@@ -4,7 +4,7 @@
   <title><![CDATA[Lost & Found]]></title>
   <link href="http://wangshenghu.github.io/atom.xml" rel="self"/>
   <link href="http://wangshenghu.github.io/"/>
-  <updated>2016-05-11T13:32:32+08:00</updated>
+  <updated>2016-05-11T17:58:44+08:00</updated>
   <id>http://wangshenghu.github.io/</id>
   <author>
     <name><![CDATA[WangshengHu]]></name>
@@ -12,6 +12,122 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[hihoCoder#1296 - 数论三·约瑟夫问题]]></title>
+    <link href="http://wangshenghu.github.io/blog/2016/05/11/hihocoder-josephus/"/>
+    <updated>2016-05-11T13:41:29+08:00</updated>
+    <id>http://wangshenghu.github.io/blog/2016/05/11/hihocoder-josephus</id>
+    <content type="html"><![CDATA[<h2>题目</h2>
+
+<p>N个人围成一个圈，编号为0&hellip;N-1，随机一个数字K，从0号开始按从1到K的顺序报数，报到K的人出局，下一个人从1开始，依此循环。最后留下的人为胜者。求胜者的编号。<br/>
+具体描述请见<a href="http://hihocoder.com/problemset/problem/1296">hihoCoder</a>。</p>
+
+<!--more-->
+
+
+<h2>解题思路</h2>
+
+<p>此题是著名的约瑟夫（Josephus）问题，直接暴力解的话时间复杂度是MN。考虑递推关系，可以得到f[n] = (f[n-1] + K) mod n。具体证明如下：<br/>
+假设n个人排好序：<br/>
+<code>0 1 2 3 ... n-1</code><br/>
+此时先执行第一遍报数，将位置T（(K-1) mod n）的人去掉，剩下的人排序：<br/>
+<code>0 1 2 ... T-1, T+1, T+2, ... n-1</code><br/>
+问题转换为从T+1开始，N-1个人的约瑟夫问题，此时胜者的编号应该为(f[n-1] + T+1) mod n，即(f[n-1] + K) mod n。证毕。<br/>
+此时时间复杂度为N，但仍可进行改进。每一次递减的幅度可以更大，比如N=10，K=4：<br/>
+<code>0 1 2 3 4 5 6 7 8 9</code><br/>
+遍历一遍，经过两轮报数，剩下的序列是：<br/>
+<code>0 1 2 - 4 5 6 -8 9</code><br/>
+此时仍然可以用地推关系求解，从f[10]到f[8]，不过递推关系修改如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>f[n - n/K] &lt; n mod K: f[n] = f[n - n/K] - n mod K + n
+</span><span class='line'>f[n - n/K] &gt;= n mod K: f[n] = f[n - n/K] - n mod K + (f[n - n/K] - n mod K)/(K - 1)（遍历完一遍后余下的序列不连续）</span></code></pre></td></tr></table></div></figure>
+
+
+<p>注意当K > n之后问题回归到最开始的解法。</p>
+
+<h2>时间复杂度</h2>
+
+<p>修改过后的算法时间复杂度为log<sub>K</sub>N + K。</p>
+
+<h2>代码</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="cp">#include &lt;iostream&gt;</span>
+</span><span class='line'><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="nf">josephus</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">,</span> <span class="kt">int</span> <span class="n">k</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">ret</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="o">&lt;</span> <span class="n">k</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+</span><span class='line'>          <span class="n">ret</span> <span class="o">=</span> <span class="p">(</span><span class="n">ret</span> <span class="o">+</span> <span class="n">k</span><span class="p">)</span> <span class="o">%</span> <span class="n">i</span><span class="p">;</span>
+</span><span class='line'>      <span class="k">return</span> <span class="n">ret</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">ret</span> <span class="o">=</span> <span class="n">josephus</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="n">n</span> <span class="o">/</span> <span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="p">);</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">ret</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="o">%</span> <span class="n">k</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">ret</span> <span class="o">=</span> <span class="n">ret</span> <span class="o">-</span> <span class="n">n</span> <span class="o">%</span> <span class="n">k</span> <span class="o">+</span> <span class="n">n</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">else</span>
+</span><span class='line'>      <span class="n">ret</span> <span class="o">=</span> <span class="n">ret</span> <span class="o">-</span> <span class="n">n</span> <span class="o">%</span> <span class="n">k</span> <span class="o">+</span> <span class="p">(</span><span class="n">ret</span> <span class="o">-</span> <span class="n">n</span> <span class="o">%</span> <span class="n">k</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="n">ret</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">t</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">t</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">t</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>      <span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">n</span> <span class="o">&gt;&gt;</span> <span class="n">k</span><span class="p">;</span>
+</span><span class='line'>      
+</span><span class='line'>      <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">josephus</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[hihoCoder#1272 - 买零食]]></title>

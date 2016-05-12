@@ -3,7 +3,7 @@ layout: post
 title: "hihoCoder#1175 - 拓扑排序·二"
 date: 2016-05-10 17:45:11 +0800
 comments: true
-categories: 算法
+categories: [算法, hihoCoder]
 ---
 
 ## 题目

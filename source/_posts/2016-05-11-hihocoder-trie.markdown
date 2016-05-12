@@ -3,7 +3,7 @@ layout: post
 title: "hihoCoder#1014 - Trie树"
 date: 2016-05-11 18:05:08 +0800
 comments: true
-categories: 算法
+categories: [算法, hihoCoder]
 ---
 
 ## 题目

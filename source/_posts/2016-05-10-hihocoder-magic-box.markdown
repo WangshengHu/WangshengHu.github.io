@@ -3,7 +3,7 @@ layout: post
 title: "HihoCoder#1135 - Magic Box"
 date: 2016-05-10 12:03:52 +0800
 comments: true
-categories: 算法
+categories: [算法, hihoCoder]
 ---
 
 ## 题目

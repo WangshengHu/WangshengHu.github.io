@@ -3,7 +3,7 @@ layout: post
 title: "hihoCoder#1143 - 骨牌覆盖问题·一"
 date: 2016-05-10 15:44:00 +0800
 comments: true
-categories: 算法
+categories: [算法, hihoCoder]
 ---
 
 ## 题目

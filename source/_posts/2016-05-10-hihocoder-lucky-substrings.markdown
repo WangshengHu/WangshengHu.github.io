@@ -3,7 +3,7 @@ layout: post
 title: "hihoCoder#1152 - Lucky Substrings"
 date: 2016-05-10 17:37:44 +0800
 comments: true
-categories: 算法
+categories: [算法, hihoCoder]
 ---
 
 ## 题目

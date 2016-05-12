@@ -3,7 +3,7 @@ layout: post
 title: "hihoCoder#1223 - 不等式"
 date: 2016-05-10 19:37:28 +0800
 comments: true
-categories: 算法
+categories: [算法, hihoCoder]
 ---
 
 ## 题目

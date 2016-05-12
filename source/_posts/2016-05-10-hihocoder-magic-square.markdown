@@ -3,7 +3,7 @@ layout: post
 title: "hihoCoder#1268 - 九宫"
 date: 2016-05-10 19:59:36 +0800
 comments: true
-categories: 算法
+categories: [算法, hihoCoder]
 ---
 
 ## 题目

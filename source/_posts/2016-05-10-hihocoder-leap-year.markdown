@@ -3,7 +3,7 @@ layout: post
 title: "hihoCoder - 2月29日"
 date: 2016-05-10 16:55:41 +0800
 comments: true
-categories: 算法
+categories: [算法, hihoCoder]
 ---
 
 ## 题目

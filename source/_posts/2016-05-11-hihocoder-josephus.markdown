@@ -3,7 +3,7 @@ layout: post
 title: "hihoCoder#1296 - 数论三·约瑟夫问题"
 date: 2016-05-11 13:41:29 +0800
 comments: true
-categories: 算法
+categories: [算法, hihoCoder]
 ---
 
 ## 题目

@@ -3,7 +3,7 @@ layout: post
 title: "hihoCoder#1272 - 买零食"
 date: 2016-05-11 12:23:11 +0800
 comments: true
-categories: 算法
+categories: [算法, hihoCoder]
 ---
 
 ## 题目

@@ -3,7 +3,7 @@ layout: post
 title: "hihoCoder#1121 - 二分图一·二分图判定"
 date: 2016-05-08 14:30:14 +0800
 comments: true
-categories: 算法
+categories: [算法, hihoCoder]
 ---
 
 ## 题目

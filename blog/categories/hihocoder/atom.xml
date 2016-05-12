@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: 算法 | Lost & Found]]></title>
-  <link href="http://wangshenghu.github.io/blog/categories/suan-fa/atom.xml" rel="self"/>
+  <title><![CDATA[Category: Hihocoder | Lost & Found]]></title>
+  <link href="http://wangshenghu.github.io/blog/categories/hihocoder/atom.xml" rel="self"/>
   <link href="http://wangshenghu.github.io/"/>
   <updated>2016-05-12T18:12:23+08:00</updated>
   <id>http://wangshenghu.github.io/</id>

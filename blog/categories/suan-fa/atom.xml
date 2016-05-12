@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 算法 | Lost & Found]]></title>
   <link href="http://wangshenghu.github.io/blog/categories/suan-fa/atom.xml" rel="self"/>
   <link href="http://wangshenghu.github.io/"/>
-  <updated>2016-05-12T18:12:23+08:00</updated>
+  <updated>2016-05-12T20:58:46+08:00</updated>
   <id>http://wangshenghu.github.io/</id>
   <author>
     <name><![CDATA[WangshengHu]]></name>
@@ -12,6 +12,220 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[hihoCoder#1041 - 国庆出游]]></title>
+    <link href="http://wangshenghu.github.io/blog/2016/05/12/hihocoder-city-travel/"/>
+    <updated>2016-05-12T20:18:50+08:00</updated>
+    <id>http://wangshenghu.github.io/blog/2016/05/12/hihocoder-city-travel</id>
+    <content type="html"><![CDATA[<h2>题目</h2>
+
+<p>n个节点构成一个树形网络（即n-1条边），从1号节点出发，经过每条边恰两次，给定其中m个节点的遍历顺序，问是否可能满足。<br/>
+具体描述请见<a href="http://hihocoder.com/problemset/problem/1041">hihoCoder</a>。</p>
+
+<!--more-->
+
+
+<h2>解题思路</h2>
+
+<p>仔细思考可以发现，一次遍历即是一次深度优先搜索的过程。对给定的m个节点的遍历顺序，我们可以先对这棵树进行预处理，在每个节点存储以该节点为根的子树所包含节点的集合。用一个队列保存m个节点的遍历顺序，在实际深搜的过程中，每次搜索到一个节点时我们都优先从其包含队首节点的子节点进行搜索。如果深搜结束后队列为空，则返回真；否则返回假。</p>
+
+<h2>时间复杂度</h2>
+
+<p>深度优先搜索的时间复杂度为N，对每个节点而言，其每个子节点都有可能会被重复检查（因为回溯的缘故），最坏情况是N<sup>2</sup>（树仅有两层，且每次队首节点都出现在最右侧）。</p>
+
+<h2>代码</h2>
+
+<pre><code class="c++">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;queue&gt;
+#include &lt;bitset&gt;
+using namespace std;
+
+struct Node {
+    int id = -1;
+    bool visited = false;
+    bool tagged = false;
+    bitset&lt;101&gt; subtree;
+    vector&lt;Node*&gt; successors;
+
+    Node() {
+        subtree.reset();
+    }
+};
+
+class Tree {
+private:
+    Node* root;
+
+    void collectSubtree(Node* node) {
+        node-&gt;tagged = true;
+        node-&gt;subtree[node-&gt;id] = 1;
+        for (int i = 0; i &lt; node-&gt;successors.size(); i++) {
+            if (!node-&gt;successors[i]-&gt;tagged) {
+                collectSubtree(node-&gt;successors[i]);
+                node-&gt;subtree |= node-&gt;successors[i]-&gt;subtree;
+            }
+        }
+    }
+
+    void traverseTree(Node* node, queue&lt;int&gt;&amp; seq) {
+        node-&gt;visited = true;
+        if (node-&gt;id == seq.front())
+            seq.pop();
+
+        int lastSize = seq.size();
+        while (!seq.empty()) {
+            for (int i = 0; i &lt; node-&gt;successors.size(); i++)
+                if (!node-&gt;successors[i]-&gt;visited &amp;&amp; node-&gt;successors[i]-&gt;subtree[seq.front()]) {
+                    traverseTree(node-&gt;successors[i], seq);
+                    break;
+                }
+            if (lastSize == seq.size())
+                break;
+            lastSize = seq.size();
+        }
+    }
+
+public:
+    Tree(Node* node) {
+        root = node;
+    }
+
+    bool traverse(queue&lt;int&gt; sequence) {
+        queue&lt;int&gt; seq = sequence;
+        collectSubtree(root);
+        traverseTree(root, seq);
+        return seq.empty();
+    }
+};
+
+int main() {
+    int T = 0;
+    cin &gt;&gt; T;
+    for (int i = 0; i &lt; T; i++) {
+        int n = 0, m = 0;
+        cin &gt;&gt; n;
+        Node* nodes = new Node[n + 1];
+        for (int i = 1; i &lt; n + 1; i++)
+            nodes[i].id = i;
+        for (int i = 0; i &lt; n - 1; i++) {
+            int a = 0, b = 0;
+            cin &gt;&gt; a &gt;&gt; b;
+            nodes[a].successors.push_back(nodes + b);
+            nodes[b].successors.push_back(nodes + a);
+        }
+        cin &gt;&gt; m;
+        queue&lt;int&gt; sequence;
+        for (int i = 0; i &lt; m; i++) {
+            int a = 0;
+            cin &gt;&gt; a;
+            sequence.push(a);
+        }
+        Tree tree = Tree(nodes + 1);
+
+        cout &lt;&lt; (tree.traverse(sequence) ? "YES" : "NO") &lt;&lt; endl;
+
+        delete[] nodes;
+    }
+
+    return 0;
+}
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[hihoCoder#1040 - 矩形判断]]></title>
+    <link href="http://wangshenghu.github.io/blog/2016/05/12/hihocoder-rectangle-check/"/>
+    <updated>2016-05-12T20:03:25+08:00</updated>
+    <id>http://wangshenghu.github.io/blog/2016/05/12/hihocoder-rectangle-check</id>
+    <content type="html"><![CDATA[<h2>题目</h2>
+
+<p>给出平面上4条线段，判断这4条线段是否恰好围成一个面积大于0的矩形。<br/>
+具体描述请见<a href="http://hihocoder.com/problemset/problem/1040">hihoCoder</a>。</p>
+
+<!--more-->
+
+
+<h2>解题思路</h2>
+
+<p>死条线段能够围成矩形的充要条件为：任意两条线段若相交必垂直，且相交次数恰好为4。</p>
+
+<h2>时间复杂度</h2>
+
+<p>时间复杂度为1。</p>
+
+<h2>代码</h2>
+
+<pre><code class="c++">#include &lt;iostream&gt;
+using namespace std;
+
+bool intersect(int* line1, int* line2) {
+    return ((line1[0] == line2[0] &amp;&amp; line1[1] == line2[1]) ||
+        (line1[0] == line2[2] &amp;&amp; line1[1] == line2[3]) ||
+        (line1[2] == line2[0] &amp;&amp; line1[3] == line2[1]) ||
+        (line1[2] == line2[2] &amp;&amp; line1[3] == line2[3]));
+}
+
+bool isVertical(int* line1, int* line2) {
+    int x1 = line1[2] - line1[0];
+    int y1 = line1[3] - line1[1];
+    int x2 = line2[2] - line2[0];
+    int y2 = line2[3] - line2[1];
+
+    return (x1 * x2 + y1 * y2) == 0;
+}
+
+bool isPoint(int* line) {
+    return (line[0] == line[2] &amp;&amp; line[1] == line[3]);
+}
+
+bool checkRec(int** coord) {
+    for (int i = 0; i &lt; 4; i++)
+        if (isPoint(coord[i]))
+            return false;
+
+    int count = 0;
+    for (int i = 0; i &lt; 4; i++) {
+        for (int j = i + 1; j &lt; 4; j++) {
+            if (intersect(coord[i], coord[j])) {
+                if (isVertical(coord[i], coord[j]))
+                    count++;
+                else
+                    return false;
+            }
+        }
+    }
+    if (count == 4)
+        return true;
+
+    return false;
+}
+
+int main() {
+    int T = 0;
+    cin &gt;&gt; T;
+    for (int i = 0; i &lt; T; i++) {
+        int** coord = new int*[4];
+        for (int i = 0; i &lt; 4; i++)
+            coord[i] = new int[4];
+        for (int i = 0; i &lt; 4; i++)
+            for (int j = 0; j &lt; 4; j++)
+                cin &gt;&gt; coord[i][j];
+
+        cout &lt;&lt; (checkRec(coord) ? "YES" : "NO") &lt;&lt; endl;
+
+        for (int i = 0; i &lt; 4; i++)
+            delete[] coord[i];
+        delete[] coord;
+    }
+
+    return 0;
+}
+</code></pre>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[hihoCoder#1038 - 01背包]]></title>
@@ -217,227 +431,6 @@ int main() {
 
         cout &lt;&lt; longestPalSubStr(str) &lt;&lt; endl;
     }
-
-    return 0;
-}
-</code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[hihoCoder#1015 - KMP算法]]></title>
-    <link href="http://wangshenghu.github.io/blog/2016/05/11/hihocoder-kmp/"/>
-    <updated>2016-05-11T19:27:36+08:00</updated>
-    <id>http://wangshenghu.github.io/blog/2016/05/11/hihocoder-kmp</id>
-    <content type="html"><![CDATA[<h2>题目</h2>
-
-<p>经典的模式字符串匹配问题。<br/>
-具体描述请见<a href="http://hihocoder.com/problemset/problem/1015">hihoCoder</a>。</p>
-
-<!--more-->
-
-
-<h2>解题思路</h2>
-
-<p>KMP算法主要利用了在一次匹配失败后收集信息，选取下一个起始点进行重新匹配，省去了大量冗余比较。<br/>
-首先，考察下述例子：<br/>
-<code>原串：  bababa</code><br/>
-<code>模式串：bababb</code><br/>
-我们给出两个标记，j是原串上当前遍历到的位置，i是模式串上当前遍历到的位置，那么可以发现一个性质：假设当前在模式串的i+1位置发生了不匹配，而且满足模式串[1, t]与[i-t+1, i]相等的最大的t为k，那么只有将模式串至少前进k-1才可能发生匹配，且只需要从原串上当前位置j，以及模式串上位置k+1继续比较。这个模式字符串的不同位置对应的k被称为next数组。<br/>
-暴力求解next数组将会是M<sup>2</sup>的时间复杂度，仔细思考可以发现求解next数组本身也可以利用上述想法。假设当前已经求出next[i]，我们可以考虑原串[1, i+1]与模式串[1, i]的匹配过程，可以发现最后求得的模式串匹配点即是next[i+1]。因此可以用递归的形式求解next数组。</p>
-
-<h2>时间复杂度</h2>
-
-<p>首先考虑每次i++的情况，进行一次比较，共n次；其次考虑i不变的情况，j=next[j]，模式串是永远往右移动的，最多n次。因此时间复杂度为N，加上计算next数组，时间复杂度为N + M。</p>
-
-<h2>代码</h2>
-
-<pre><code class="c++">#include &lt;iostream&gt;
-#include &lt;string&gt;
-using namespace std;
-
-void calNext(string str, int idx, int* next) {
-    if (idx &gt; str.size())
-        return;
-
-    int q = next[idx - 1];
-    while (q != -1) {
-        if (str[q] == str[idx - 1]) {
-            next[idx] = q + 1;
-            break;
-        }
-        q = next[q];
-    }
-    if (q == -1)
-        next[idx] = 0;
-    calNext(str, idx + 1, next);
-}
-
-int kmp(string str, string pattern) {
-    // resolve the NEXT array
-    int* next = new int[pattern.size() + 1];
-    next[0] = -1;
-    calNext(pattern, 1, next);
-
-    // pattern match
-    int m = 0;
-    int i = 0, j = 0;
-    for (; i &lt; str.size();) {
-        if (j == -1) {
-            i++;
-            j = 0;
-            continue;
-        }
-        int k = j;
-        for (; k &lt; pattern.size(); k++)
-            if (str[i + k - j] != pattern[k])
-                break;
-        if (k == pattern.size())
-            m++;
-        i += k - j;
-        j = next[k];
-    }
-
-    return m;
-}
-
-int main() {
-    int N = 0;
-    cin &gt;&gt; N;
-    for (int i = 0; i &lt; N; i++) {
-        string pattern, str;
-        cin &gt;&gt; pattern &gt;&gt; str;
-
-        cout &lt;&lt; kmp(str, pattern) &lt;&lt; endl;
-    }
-
-    return 0;
-}
-</code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[hihoCoder#1014 - Trie树]]></title>
-    <link href="http://wangshenghu.github.io/blog/2016/05/11/hihocoder-trie/"/>
-    <updated>2016-05-11T18:05:08+08:00</updated>
-    <id>http://wangshenghu.github.io/blog/2016/05/11/hihocoder-trie</id>
-    <content type="html"><![CDATA[<h2>题目</h2>
-
-<p>Trie树就是字典树。对于一个给定的词典，任给一个字符串，输出词典中以该字符串为前缀的单词数目。<br/>
-具体描述请见<a href="http://hihocoder.com/problemset/problem/1014">hihoCoder</a>。</p>
-
-<!--more-->
-
-
-<h2>解题思路</h2>
-
-<p>在建立Trie树的同时我们就可以着手统计以某个字符串为前缀的节点个数，即每次添加一个新单词的时候，沿途更新所有经过的节点。</p>
-
-<h2>时间复杂度</h2>
-
-<p>单词查询用时26M（M：查询字符串的长度），单次插入用时26M。</p>
-
-<h2>代码</h2>
-
-<pre><code class="c++">#include &lt;iostream&gt;
-#include &lt;string&gt;
-#include &lt;vector&gt;
-using namespace std;
-
-struct Node {
-    int L = 1;
-    char ch = ' ';
-    vector&lt;Node*&gt; successors;
-
-    Node(char c) {
-        ch = c;
-    }
-};
-
-class Trie {
-private:
-    Node* root;
-
-    void updatePrefix(Node* node, string word, int idx) {
-        if (idx == word.size())
-            return;
-
-        bool find = false;
-        for (int i = 0; i &lt; node-&gt;successors.size(); i++) {
-            if (node-&gt;successors[i]-&gt;ch == word[idx]) {
-                find = true;
-                node-&gt;successors[i]-&gt;L++;
-                updatePrefix(node-&gt;successors[i], word, idx + 1);
-                break;
-            }
-        }
-
-        if (!find) {
-            for (int i = idx; i &lt; word.size(); i++) {
-                node-&gt;successors.push_back(new Node(word[i]));
-                node = node-&gt;successors.back();
-            }
-        }
-    }
-
-    int findPrefix(Node* node, string query, int idx) {
-        for (int i = 0; i &lt; node-&gt;successors.size(); i++) {
-            if (node-&gt;successors[i]-&gt;ch == query[idx]) {
-                if (idx == query.size() - 1)
-                    return node-&gt;successors[i]-&gt;L;
-
-                return findPrefix(node-&gt;successors[i], query, idx + 1);
-            }
-        }
-
-        return 0;
-    }
-
-    void deleteTrie(Node* node) {
-        for (int i = 0; i &lt; node-&gt;successors.size(); i++)
-            deleteTrie(node-&gt;successors[i]);
-        delete node;
-    }
-
-public:
-    Trie() {
-        root = new Node('$');
-    }
-
-    ~Trie() {
-        deleteTrie(root);
-    }
-
-    void insert(string word) {
-        updatePrefix(root, word, 0);
-    }
-
-    int getStat(string query) {
-        return findPrefix(root, query, 0);
-    }
-};
-
-int main() {
-    int n = 0;
-    cin &gt;&gt; n;
-    string* words = new string[n];
-    for (int i = 0; i &lt; n; i++)
-        cin &gt;&gt; words[i];
-    int m = 0;
-    cin &gt;&gt; m;
-    string* queries = new string[m];
-    for (int i = 0; i &lt; m; i++)
-        cin &gt;&gt; queries[i];
-
-    Trie trie;
-    for (int i = 0; i &lt; n; i++)
-        trie.insert(words[i]);
-
-    for (int i = 0; i &lt; m; i++)
-        cout &lt;&lt; trie.getStat(queries[i]) &lt;&lt; endl;
-
-    delete[] words, queries;
 
     return 0;
 }

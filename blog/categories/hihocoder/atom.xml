@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Hihocoder | Lost & Found]]></title>
   <link href="http://wangshenghu.github.io/blog/categories/hihocoder/atom.xml" rel="self"/>
   <link href="http://wangshenghu.github.io/"/>
-  <updated>2016-05-12T21:41:59+08:00</updated>
+  <updated>2016-05-13T20:40:39+08:00</updated>
   <id>http://wangshenghu.github.io/</id>
   <author>
     <name><![CDATA[WangshengHu]]></name>
@@ -14,72 +14,115 @@
 
   
   <entry>
-    <title type="html"><![CDATA[hihoCoder#1043 - 完全背包]]></title>
-    <link href="http://wangshenghu.github.io/blog/2016/05/12/hihocoder-complete-backpack/"/>
-    <updated>2016-05-12T21:09:55+08:00</updated>
-    <id>http://wangshenghu.github.io/blog/2016/05/12/hihocoder-complete-backpack</id>
+    <title type="html"><![CDATA[hihoCoder#1055 - 刷油漆]]></title>
+    <link href="http://wangshenghu.github.io/blog/2016/05/13/hihocoder-painting/"/>
+    <updated>2016-05-13T16:49:39+08:00</updated>
+    <id>http://wangshenghu.github.io/blog/2016/05/13/hihocoder-painting</id>
     <content type="html"><![CDATA[<h2>题目</h2>
 
-<p>经典完全背包问题。<br/>
-具体描述请见<a href="http://hihocoder.com/problemset/problem/1043">hihoCoder</a>。</p>
+<p>给定一颗树，其中每个节点都有一个价值V，现将其中包含1号节点的M个连通的节点选出来，问可能的最大价值总和。<br/>
+具体描述请见<a href="http://hihocoder.com/problemset/problem/1055">hihoCoder</a>。</p>
 
 <!--more-->
 
 
 <h2>解题思路</h2>
 
-<p>动态规划。递推式为：<br/>
-<code>f[i, j] = max(f[i-1, j-C[i]*k] + V[i]*k)，其中0 &lt;= k &lt;= j/V[i]</code><br/>
-注意到<code>f[i, j-V[i]] = max(f[i-1, j-C[i]*k] + V[i]*(k-1))，其中1 &lt;= k &lt;= j/V[i]</code>，该递推式可进一步简化：<br/>
-<code>f[i, j] = max(f[i, j-V[i]] + V[i], f[i-1, j])</code></p>
+<p>关键在于将问题转化为动态规划。在考虑以t节点为根，选取m个节点的情况时:<br/>
+<code>f[t, m] = max(f[c, m1], f[c+1, m2], ..., f[c+k-1, mk] + v[t]), 其中c, c+1, ..., c+k-1为t节点的子节点，且sum(m1, m2, ..., mk) = m-1</code><br/>
+此时将c, c+1, &hellip;, c+k-1考虑成排好序的k件物品，背包容量为m-1，那么这就类似于背包问题。用F[c, m]表示从前c个子树里选取了m个节点能取得的最大值，则有如下递推式：<br/>
+<code>F[c, m] = max(F[c-1, m-i] + f[c, i]) 其中0&lt;=i&lt;=m</code><br/>
+且<code>f[t, m] = F[c+k-1, m-1] + V[t]</code>。注意该递推式可优化为：<br/>
+<code>f[t, m] = max(f[t, m-j-1] + f[c+i, j]) + V[t] 其中0&lt;=i&lt;k，0&lt;j&lt;=m-1</code>。<br/>
+这里用到了空间压缩的思想，注意迭代顺序。然后采用后序遍历，自底向上计算所有f[t, m]，最终结果就是f[1, M]的值。</p>
 
 <h2>时间复杂度</h2>
 
-<p>时间复杂度为MN，空间复杂度为2M，可进一步优化到M。</p>
+<p>时间复杂度为M<sup>2</sup>N。空间复杂度为MN。</p>
 
 <h2>代码</h2>
 
 <pre><code class="c++">#include &lt;iostream&gt;
+#include &lt;vector&gt;
 #include &lt;algorithm&gt;
 using namespace std;
 
-int maxValue(int* needs, int* values, int N, int M) {
-    int** V = new int*[2];
-    for (int i = 0; i &lt; 2; i++)
-        V[i] = new int[M + 1];
+struct Node {
+    int id = -1;
+    int score = 0;
+    bool visited = false;
+    vector&lt;Node*&gt; successors;
+};
 
-    for (int i = 0; i &lt; M + 1; i++)
-        V[0][i] = 0;
-    int curLine = 1;
-    for (int i = 0; i &lt; N; i++) {
-        for (int j = 0; j &lt; M + 1; j++) {
-            if (needs[i] &lt;= j)
-                V[curLine][j] = max(V[curLine][j - needs[i]] + values[i], V[1 - curLine][j]);
-            else
-                V[curLine][j] = V[1 - curLine][j];
+class Tree {
+private:
+    Node* root;
+    int** F;
+    int N, M;
+
+    void traverseTree(Node* node) {
+        node-&gt;visited = true;
+        for (int i = 0; i &lt; node-&gt;successors.size(); i++)
+            if (!node-&gt;successors[i]-&gt;visited)
+                traverseTree(node-&gt;successors[i]);
+
+        F[node-&gt;id][1] = node-&gt;score;
+        for (int i = 0; i &lt; node-&gt;successors.size(); i++) {
+            if (!node-&gt;successors[i]-&gt;visited) {
+                for (int j = M; j &gt;= 2; j--) {
+                    for (int k = 1; k &lt; j; k++)
+                        F[node-&gt;id][j] = max(F[node-&gt;id][j], F[node-&gt;id][j - k] + F[node-&gt;successors[i]-&gt;id][k]);
+                }
+            }
         }
-        curLine = 1 - curLine;
+
+        node-&gt;visited = false;
     }
 
-    int maxV = V[1 - curLine][M];
+public:
+    Tree(Node* node, int n, int m) {
+        N = n;
+        M = m;
+        root = node;
+        F = new int*[N + 1];
+        for (int i = 0; i &lt; N + 1; i++) {
+            F[i] = new int[M + 1];
+            for (int j = 0; j &lt; M + 1; j++)
+                F[i][j] = 0;
+        }
+    }
 
-    for (int i = 0; i &lt; 2; i++)
-        delete[] V[i];
-    delete[] V;
+    ~Tree() {
+        for (int i = 0; i &lt; N; i++)
+            delete[] F[i];
+        delete[] F;
+    }
 
-    return maxV;
-}
+    int maxScore() {
+        traverseTree(root);
+        return F[1][M];
+    }
+};
 
 int main() {
     int N = 0, M = 0;
     cin &gt;&gt; N &gt;&gt; M;
-    int *needs = new int[N], *values = new int[N];
-    for (int i = 0; i &lt; N; i++)
-        cin &gt;&gt; needs[i] &gt;&gt; values[i];
+    Node* nodes = new Node[N + 1];
+    for (int i = 1; i &lt; N + 1; i++) {
+        int s = 0;
+        cin &gt;&gt; s;
+        nodes[i].id = i;
+        nodes[i].score = s;
+    }
+    for (int i = 0; i &lt; N - 1; i++) {
+        int a = 0, b = 0;
+        cin &gt;&gt; a &gt;&gt; b;
+        nodes[a].successors.push_back(nodes + b);
+        nodes[b].successors.push_back(nodes + a);
+    }
+    Tree tree = Tree(nodes + 1, N, M);
 
-    cout &lt;&lt; maxValue(needs, values, N, M) &lt;&lt; endl;
-
-    delete[] needs, values;
+    cout &lt;&lt; tree.maxScore() &lt;&lt; endl;
 
     return 0;
 }
@@ -88,77 +131,137 @@ int main() {
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[hihoCoder#1041 - 国庆出游]]></title>
-    <link href="http://wangshenghu.github.io/blog/2016/05/12/hihocoder-city-travel/"/>
-    <updated>2016-05-12T20:18:50+08:00</updated>
-    <id>http://wangshenghu.github.io/blog/2016/05/12/hihocoder-city-travel</id>
+    <title type="html"><![CDATA[hihoCoder#1052 - 基因工程]]></title>
+    <link href="http://wangshenghu.github.io/blog/2016/05/13/hihocoder-gene-project/"/>
+    <updated>2016-05-13T16:24:07+08:00</updated>
+    <id>http://wangshenghu.github.io/blog/2016/05/13/hihocoder-gene-project</id>
     <content type="html"><![CDATA[<h2>题目</h2>
 
-<p>n个节点构成一个树形网络（即n-1条边），从1号节点出发，经过每条边恰两次，给定其中m个节点的遍历顺序，问是否可能满足。<br/>
-具体描述请见<a href="http://hihocoder.com/problemset/problem/1041">hihoCoder</a>。</p>
+<p>对一个长度为N的字符串，修改若干个字符使得其最前K个字符与最后K个完全一致。问最少修改数。<br/>
+具体描述请见<a href="http://hihocoder.com/problemset/problem/1052">hihoCoder</a>。</p>
 
 <!--more-->
 
 
 <h2>解题思路</h2>
 
-<p>仔细思考可以发现，一次遍历即是一次深度优先搜索的过程。对给定的m个节点的遍历顺序，我们可以先对这棵树进行预处理，在每个节点存储以该节点为根的子树所包含节点的集合。用一个队列保存m个节点的遍历顺序，在实际深搜的过程中，每次搜索到一个节点时我们都优先从其包含队首节点的子节点进行搜索。如果深搜结束后队列为空，则返回真；否则返回假。</p>
+<p>仔细思考，最简单的情况是最前K个与最后K个没有重合，那么就是<code>s[i] = s[N-K+i] 其中1&lt;=i&lt;=K</code>；如果重合的话则是每隔N - K个都必须相等，即<code>s[i] = s[i+(N-K)] 其中1&lt;=i&lt;=K</code>，式子不变，但是要循环检查。注意遍历最前K个时只需要逐个检查到N-K就可以了，后面的已经被前面的覆盖了。</p>
 
 <h2>时间复杂度</h2>
 
-<p>深度优先搜索的时间复杂度为N，对每个节点而言，其每个子节点都有可能会被重复检查（因为回溯的缘故），最坏情况是N<sup>2</sup>（树仅有两层，且每次队首节点都出现在最右侧）。</p>
+<p>时间复杂度为N。</p>
+
+<h2>代码</h2>
+
+<pre><code class="c++">#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+
+int modify(string str, int K) {
+    int minC = 0;
+    int interval = str.size() - K;
+    for (int i = 0; i &lt; interval; i++) {
+        int num = 0;
+        int A = 0, T = 0, C = 0, G = 0;
+        for (int j = i; j &lt; str.size(); j += interval) {
+            num++;
+            if (str[j] == 'A')
+                A++;
+            else if (str[j] == 'T')
+                T++;
+            else if (str[j] == 'C')
+                C++;
+            else if (str[j] == 'G')
+                G++;
+        }
+        int maxC = max(max(A, T), max(C, G));
+        minC += num - maxC;
+    }
+
+    return minC;
+}
+
+int main() {
+    int T = 0;
+    cin &gt;&gt; T;
+    for (int i = 0; i &lt; T; i++) {
+        string str;
+        cin &gt;&gt; str;
+        int K = 0;
+        cin &gt;&gt; K;
+
+        cout &lt;&lt; modify(str, K) &lt;&lt; endl;
+    }
+
+    return 0;
+}
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[hihoCoder#1050 - 树中的最长路]]></title>
+    <link href="http://wangshenghu.github.io/blog/2016/05/13/hihocoder-longest-path-in-tree/"/>
+    <updated>2016-05-13T16:01:46+08:00</updated>
+    <id>http://wangshenghu.github.io/blog/2016/05/13/hihocoder-longest-path-in-tree</id>
+    <content type="html"><![CDATA[<h2>题目</h2>
+
+<p>求一棵树中距离最长的两个节点的距离。<br/>
+具体描述请见<a href="http://hihocoder.com/problemset/problem/1050">hihoCoder</a>。</p>
+
+<!--more-->
+
+
+<h2>解题思路</h2>
+
+<p>仔细思考可以发现，对任一条路径，都存在一个“转折点”，路径从这个点开始会向下弯折。对任一个这样的“转折点”，最长的路径就发生在两条路径不重合的离该节点最长的两个节点。考虑如下性质：对任一个节点作为“转折点”，其所有子节点中最长路长度加1即为该节点最长路，所有子节点中次长路长度加1即为该节点次长路。因此可以用后序遍历求解。</p>
+
+<h2>时间复杂度</h2>
+
+<p>时间复杂度为N。</p>
 
 <h2>代码</h2>
 
 <pre><code class="c++">#include &lt;iostream&gt;
 #include &lt;vector&gt;
-#include &lt;queue&gt;
-#include &lt;bitset&gt;
+#include &lt;algorithm&gt;
 using namespace std;
 
 struct Node {
-    int id = -1;
+    int first = 0;
+    int second = 0;
     bool visited = false;
-    bool tagged = false;
-    bitset&lt;101&gt; subtree;
     vector&lt;Node*&gt; successors;
-
-    Node() {
-        subtree.reset();
-    }
 };
 
 class Tree {
 private:
     Node* root;
 
-    void collectSubtree(Node* node) {
-        node-&gt;tagged = true;
-        node-&gt;subtree[node-&gt;id] = 1;
+    int traverse(Node* node, int&amp; first) {
+        node-&gt;visited = true;
+        bool hasChild = false;
+        int maxLen = 0, maxFir = 0, secFir = 0;
         for (int i = 0; i &lt; node-&gt;successors.size(); i++) {
-            if (!node-&gt;successors[i]-&gt;tagged) {
-                collectSubtree(node-&gt;successors[i]);
-                node-&gt;subtree |= node-&gt;successors[i]-&gt;subtree;
+            if (node-&gt;successors[i]-&gt;visited == false) {
+                hasChild = true;
+                int fir = 0;
+                maxLen = max(maxLen, traverse(node-&gt;successors[i], fir));
+                if (maxFir &lt;= fir) {
+                    secFir = maxFir;
+                    maxFir = fir;
+                }
+                else
+                    secFir = max(secFir, fir);
             }
         }
-    }
-
-    void traverseTree(Node* node, queue&lt;int&gt;&amp; seq) {
-        node-&gt;visited = true;
-        if (node-&gt;id == seq.front())
-            seq.pop();
-
-        int lastSize = seq.size();
-        while (!seq.empty()) {
-            for (int i = 0; i &lt; node-&gt;successors.size(); i++)
-                if (!node-&gt;successors[i]-&gt;visited &amp;&amp; node-&gt;successors[i]-&gt;subtree[seq.front()]) {
-                    traverseTree(node-&gt;successors[i], seq);
-                    break;
-                }
-            if (lastSize == seq.size())
-                break;
-            lastSize = seq.size();
+        if (hasChild) {
+            first = maxFir + 1;
+            maxLen = max(maxLen, maxFir + secFir + 2);
         }
+
+        return maxLen;
     }
 
 public:
@@ -166,42 +269,27 @@ public:
         root = node;
     }
 
-    bool traverse(queue&lt;int&gt; sequence) {
-        queue&lt;int&gt; seq = sequence;
-        collectSubtree(root);
-        traverseTree(root, seq);
-        return seq.empty();
+    int longestPath() {
+        int first = 0;
+        return traverse(root, first);
     }
 };
 
 int main() {
-    int T = 0;
-    cin &gt;&gt; T;
-    for (int i = 0; i &lt; T; i++) {
-        int n = 0, m = 0;
-        cin &gt;&gt; n;
-        Node* nodes = new Node[n + 1];
-        for (int i = 1; i &lt; n + 1; i++)
-            nodes[i].id = i;
-        for (int i = 0; i &lt; n - 1; i++) {
-            int a = 0, b = 0;
-            cin &gt;&gt; a &gt;&gt; b;
-            nodes[a].successors.push_back(nodes + b);
-            nodes[b].successors.push_back(nodes + a);
-        }
-        cin &gt;&gt; m;
-        queue&lt;int&gt; sequence;
-        for (int i = 0; i &lt; m; i++) {
-            int a = 0;
-            cin &gt;&gt; a;
-            sequence.push(a);
-        }
-        Tree tree = Tree(nodes + 1);
-
-        cout &lt;&lt; (tree.traverse(sequence) ? "YES" : "NO") &lt;&lt; endl;
-
-        delete[] nodes;
+    int N = 0;
+    cin &gt;&gt; N;
+    Node* nodes = new Node[N];
+    for (int i = 0; i &lt; N - 1; i++) {
+        int a = 0, b = 0;
+        cin &gt;&gt; a &gt;&gt; b;
+        nodes[a - 1].successors.push_back(nodes + b - 1);
+        nodes[b - 1].successors.push_back(nodes + a - 1);
     }
+    Tree tree = Tree(nodes);
+
+    cout &lt;&lt; tree.longestPath();
+
+    delete[] nodes;
 
     return 0;
 }
@@ -210,222 +298,136 @@ int main() {
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[hihoCoder#1040 - 矩形判断]]></title>
-    <link href="http://wangshenghu.github.io/blog/2016/05/12/hihocoder-rectangle-check/"/>
-    <updated>2016-05-12T20:03:25+08:00</updated>
-    <id>http://wangshenghu.github.io/blog/2016/05/12/hihocoder-rectangle-check</id>
+    <title type="html"><![CDATA[hihoCoder#1049 - 后序遍历]]></title>
+    <link href="http://wangshenghu.github.io/blog/2016/05/13/hihocoder-post-order/"/>
+    <updated>2016-05-13T15:27:37+08:00</updated>
+    <id>http://wangshenghu.github.io/blog/2016/05/13/hihocoder-post-order</id>
     <content type="html"><![CDATA[<h2>题目</h2>
 
-<p>给出平面上4条线段，判断这4条线段是否恰好围成一个面积大于0的矩形。<br/>
-具体描述请见<a href="http://hihocoder.com/problemset/problem/1040">hihoCoder</a>。</p>
+<p>给出一棵二叉树的前序和中序遍历的结果，还原这棵二叉树并输出其后序遍历的结果。<br/>
+具体描述请见<a href="http://hihocoder.com/problemset/problem/1049">hihoCoder</a>。</p>
 
 <!--more-->
 
 
 <h2>解题思路</h2>
 
-<p>死条线段能够围成矩形的充要条件为：任意两条线段若相交必垂直，且相交次数恰好为4。</p>
+<p>经典问题。假设二叉树形如：<br/>
+<img src="/images/hihocoder-post-order-1.jpg"><br/>
+其前序为<code>ABDEGHCFIJ</code>，中序为'DBGEHACIJF'，后序为<code>DGHEBJIFCA</code>。由于前序遍历是<code>根节点</code>+<code>左子树</code>+<code>右子树</code>，中序遍历是<code>左子树</code>+<code>根节点</code>+<code>右子树</code>，因此<code>A</code>是根节点，且<code>BDEGH</code>是左子树的前序，<code>CFIJ</code>是左子树的中序，<code>DBGEH</code>为左子树的中序，<code>CIJF</code>为右子树的中序。此时我们可以发现后序即为<code>左子树</code>+<code>右子树</code>+<code>根节点</code>，即<code>A</code>一定是当前后序中最后的节点。因此可以递归的求出后序。</p>
 
 <h2>时间复杂度</h2>
 
-<p>时间复杂度为1。</p>
+<p>时间复杂度为N。</p>
 
 <h2>代码</h2>
 
 <pre><code class="c++">#include &lt;iostream&gt;
+#include &lt;string&gt;
 using namespace std;
 
-bool intersect(int* line1, int* line2) {
-    return ((line1[0] == line2[0] &amp;&amp; line1[1] == line2[1]) ||
-        (line1[0] == line2[2] &amp;&amp; line1[1] == line2[3]) ||
-        (line1[2] == line2[0] &amp;&amp; line1[3] == line2[1]) ||
-        (line1[2] == line2[2] &amp;&amp; line1[3] == line2[3]));
+string postOrder(string preOrder, string inOrder) {
+    int len = preOrder.size();
+    if (len == 0)
+        return "";
+
+    int idx = 0;
+    for (; idx &lt; len; idx++)
+        if (inOrder[idx] == preOrder[0])
+            break;
+
+    return postOrder(preOrder.substr(1, idx), inOrder.substr(0, idx)) +
+        postOrder(preOrder.substr(idx + 1, len - idx - 1), 
+            inOrder.substr(idx + 1, len - idx - 1)) + preOrder[0];
 }
 
-bool isVertical(int* line1, int* line2) {
-    int x1 = line1[2] - line1[0];
-    int y1 = line1[3] - line1[1];
-    int x2 = line2[2] - line2[0];
-    int y2 = line2[3] - line2[1];
+int main() {
+    string preOrder, inOrder;
+    cin &gt;&gt; preOrder &gt;&gt; inOrder;
 
-    return (x1 * x2 + y1 * y2) == 0;
+    cout &lt;&lt; postOrder(preOrder, inOrder);
+
+    return 0;
 }
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[hihoCoder#1044 - 状态压缩]]></title>
+    <link href="http://wangshenghu.github.io/blog/2016/05/13/hihocoder-state-compress/"/>
+    <updated>2016-05-13T10:40:45+08:00</updated>
+    <id>http://wangshenghu.github.io/blog/2016/05/13/hihocoder-state-compress</id>
+    <content type="html"><![CDATA[<h2>题目</h2>
 
-bool isPoint(int* line) {
-    return (line[0] == line[2] &amp;&amp; line[1] == line[3]);
-}
+<p>有连续的N个位置，编号为1&hellip;N，第i个位置有W<sub>i</sub>件物品。从某些位置收集物品，而连续的M个位置中不能有超过Q个位置的物品被收集。问最多能收集到的物品数量。<br/>
+具体描述请见<a href="http://hihocoder.com/problemset/problem/1044">hihoCoder</a>。</p>
 
-bool checkRec(int** coord) {
-    for (int i = 0; i &lt; 4; i++)
-        if (isPoint(coord[i]))
-            return false;
+<!--more-->
 
-    int count = 0;
-    for (int i = 0; i &lt; 4; i++) {
-        for (int j = i + 1; j &lt; 4; j++) {
-            if (intersect(coord[i], coord[j])) {
-                if (isVertical(coord[i], coord[j]))
-                    count++;
-                else
-                    return false;
+
+<h2>解题思路</h2>
+
+<p>动态规划。首先考虑如何列状态转移方程。<br/>
+首先计算第i个位置时需要考虑前M-1个位置是否已经取满Q个，来决定是否可以取第i个。如果单纯记录前M-1个位置里已取位置数，由于从i到i+1这个前M-1个位置也向前推进了1，我们无法决定第i+1个是否可取，递推式将无法向前推进。因此必须记录下前M-1个位置的状态。递推式为：<br/>
+<code>f[i, 0, p[1], p[2], ..., p[M-2]] = f[i-1, p[1], p[2], ..., p[M-1]] sum(p[j]) &gt;= Q</code><br/>
+<code>f[i, 1, p[1], p[2], ..., p[M-2]] = f[i-1, p[1], p[2], ..., p[M-1]] sum(p[j]) &lt; Q</code><br/>
+但是这样用来存储状态的数组维度太高，考虑用二进制数表示不同状态，则递推式改进为：<br/>
+<code>f[i, s/2] = f[i-1, s] sum(s在二进制下的各位数字) &gt;= Q</code><br/>
+<code>f[i, s/2 + 2&lt;sup&gt;M-2&lt;/sup&gt;] = f[i-1, s] + W[i] sum(s在二进制下的各位数字) &lt; Q</code></p>
+
+<h2>时间复杂度</h2>
+
+<p>时间复杂度为2<sup>M</sup>N。</p>
+
+<h2>代码</h2>
+
+<pre><code class="c++">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;cmath&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+
+int calMax(int *W, int N, int M, int Q) {
+    int states = 1 &lt;&lt; (M - 1);
+    vector&lt;vector&lt;int&gt;&gt; sum(N, vector&lt;int&gt;(states, -1));
+    sum[0][0] = 0;
+    sum[0][1 &lt;&lt; (M - 2)] = W[0];
+
+    for (int i = 1; i &lt; N; i++) {
+        for (int j = 0; j &lt; states; j++) {
+            if (sum[i - 1][j] != -1) {
+                int s = 0;
+                int t = j;
+                for (int k = 0; k &lt; M - 1; k++) {
+                    s += t &amp; 1;
+                    t &gt;&gt;= 1;
+                }
+                if (s &lt; Q)
+                    sum[i][(j &gt;&gt; 1) + (1 &lt;&lt; (M - 2))] = max(sum[i - 1][j] + W[i], sum[i][(j &gt;&gt; 1) + (1 &lt;&lt; (M - 2))]);
+                sum[i][j &gt;&gt; 1] = max(sum[i - 1][j], sum[i][j &gt;&gt; 1]);
             }
         }
     }
-    if (count == 4)
-        return true;
 
-    return false;
+    int maxSum = 0;
+    for (int i = 0; i &lt; states; i++)
+        if (sum[N - 1][i] &gt; maxSum)
+            maxSum = sum[N - 1][i];
+
+    return maxSum;
 }
 
 int main() {
-    int T = 0;
-    cin &gt;&gt; T;
-    for (int i = 0; i &lt; T; i++) {
-        int** coord = new int*[4];
-        for (int i = 0; i &lt; 4; i++)
-            coord[i] = new int[4];
-        for (int i = 0; i &lt; 4; i++)
-            for (int j = 0; j &lt; 4; j++)
-                cin &gt;&gt; coord[i][j];
-
-        cout &lt;&lt; (checkRec(coord) ? "YES" : "NO") &lt;&lt; endl;
-
-        for (int i = 0; i &lt; 4; i++)
-            delete[] coord[i];
-        delete[] coord;
-    }
-
-    return 0;
-}
-</code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[hihoCoder#1038 - 01背包]]></title>
-    <link href="http://wangshenghu.github.io/blog/2016/05/12/hihocoder-01-package/"/>
-    <updated>2016-05-12T17:57:15+08:00</updated>
-    <id>http://wangshenghu.github.io/blog/2016/05/12/hihocoder-01-package</id>
-    <content type="html"><![CDATA[<h2>题目</h2>
-
-<p>经典01背包问题。给定有限空间M，N件物品，每件物品对应体积C及价值V，求最大能获得的价值总和。<br/>
-具体描述请见<a href="http://hihocoder.com/problemset/problem/1038">hihoCoder</a>。</p>
-
-<!--more-->
-
-
-<h2>解题思路</h2>
-
-<p>动态规划。递推式为：<br/>
-<code>f[i, j] = max(f[i-1, j-C[i]] + V[i], f[i-1, j])</code></p>
-
-<h2>时间复杂度</h2>
-
-<p>时间复杂度为MN，空间复杂度为2M，进一步可优化为M。</p>
-
-<h2>代码</h2>
-
-<pre><code class="c++">#include &lt;iostream&gt;
-#include &lt;algorithm&gt;
-using namespace std;
-
-int maxValue(int* needs, int* values, int N, int M) {
-    int** V = new int*[2];
-    for (int i = 0; i &lt; 2; i++)
-        V[i] = new int[M + 1];
-
-    for (int i = 0; i &lt; M + 1; i++)
-        V[0][i] = 0;
-    int curLine = 1;
-    for (int i = 0; i &lt; N; i++) {
-        for (int j = 0; j &lt; M + 1; j++) {
-            if (needs[i] &lt;= j)
-                V[curLine][j] = max(V[1 - curLine][j - needs[i]] + values[i], V[1 - curLine][j]);
-            else
-                V[curLine][j] = V[1 - curLine][j];
-        }
-        curLine = 1 - curLine;
-    }
-
-    int maxV = V[1 - curLine][M];
-
-    for (int i = 0; i &lt; 2; i++)
-        delete[] V[i];
-    delete[] V;
-
-    return maxV;
-}
-
-int main() {
-    int N = 0, M = 0;
-    cin &gt;&gt; N &gt;&gt; M;
-    int *needs = new int[N], *values = new int[N];
+    int N = 0, M = 0, Q = 0;
+    cin &gt;&gt; N &gt;&gt; M &gt;&gt; Q;
+    int *W = new int[N];
     for (int i = 0; i &lt; N; i++)
-        cin &gt;&gt; needs[i] &gt;&gt; values[i];
+        cin &gt;&gt; W[i];
 
-    cout &lt;&lt; maxValue(needs, values, N, M) &lt;&lt; endl;
+    cout &lt;&lt; calMax(W, N, M, Q);
 
-    delete[] needs, values;
-
-    return 0;
-}
-</code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[hihoCoder#1037 - 数字三角形]]></title>
-    <link href="http://wangshenghu.github.io/blog/2016/05/12/hihocoder-number-triangle/"/>
-    <updated>2016-05-12T17:32:59+08:00</updated>
-    <id>http://wangshenghu.github.io/blog/2016/05/12/hihocoder-number-triangle</id>
-    <content type="html"><![CDATA[<h2>题目</h2>
-
-<p>一个三角形的n层迷宫，第i层有i个格子，每个格子里有一些礼品，第i层编号为j的格子可以通向第i+1层编号为j、j+1的格子。通道是单向的。求问从第1层第一个格子开始，一直走到迷宫最高层，最多能获得多少礼品。<br/>
-具体描述请见<a href="http://hihocoder.com/problemset/problem/1037">hihoCoder</a>。</p>
-
-<!--more-->
-
-
-<h2>解题思路</h2>
-
-<p>很简单的动态规划。递推式：<br/>
-<code>f[i+1, j] = max(f[i, j-1], f[i, j]) + V[i+1, j]</code></p>
-
-<h2>时间复杂度</h2>
-
-<p>时间复杂度为N<sup>2</sup>，空间复杂度为1（因为输入数据的矩阵维度与需要计算的一致）。</p>
-
-<h2>代码</h2>
-
-<pre><code class="c++">#include &lt;iostream&gt;
-#include &lt;algorithm&gt;
-using namespace std;
-
-int maxA(int** A, int n) {
-    for (int i = 1; i &lt; n; i++) {
-        A[i][0] = A[i - 1][0] + A[i][0];
-        for (int j = 1; j &lt;= i; j++)
-            A[i][j] = max(A[i - 1][j - 1], A[i - 1][j]) + A[i][j];
-    }
-
-    int maxV = 0;
-    for (int i = 0; i &lt; n; i++)
-        maxV = max(maxV, A[n - 1][i]);
-
-    return maxV;
-}
-
-int main() {
-    int n = 0;
-    cin &gt;&gt; n;
-    int** A = new int*[n];
-    for (int i = 0; i &lt; n; i++)
-        A[i] = new int[n];
-    for (int i = 0; i &lt; n; i++)
-        for (int j = 0; j &lt;= i; j++)
-            cin &gt;&gt; A[i][j];
-
-    cout &lt;&lt; maxA(A, n) &lt;&lt; endl;
+    delete[] W;
 
     return 0;
 }

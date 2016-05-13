@@ -36,7 +36,7 @@ Liquid::Template.register_tag('category_list', Jekyll::CategoryListTag)
 <section>
   <h1>Categories</h1>
   <ul id="categories">
-  	{% raw %}{% category_list %}{% endraw %}
+    {% raw %}{% category_list %}{% endraw %}
   </ul>
 </section>
 ```

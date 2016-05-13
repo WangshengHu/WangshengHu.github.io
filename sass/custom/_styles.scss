@@ -1,2 +1,14 @@
 // This File is imported last, and will override other styles in the cascade
 // Add styles here to make changes without digging in too much
+html {
+  background: #555555 url("/images/bg-flower-blue.jpg");
+  //background: #555555;
+}
+
+body > div { 
+  //background-image: none; 
+} //侧边栏
+
+body > div > div { //文章内容
+  //background-image: none; 
+}

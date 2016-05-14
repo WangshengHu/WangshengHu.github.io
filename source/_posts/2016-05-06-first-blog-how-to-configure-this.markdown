@@ -40,8 +40,10 @@ https://github.com/your_username/your_username.github.io
 
 rake deploy
 
+# 新建一篇博文
 rake new_post['title of post']
-rake new_site['name of site']
+# 新建一个网页
+rake new_page['name of page']
 
 rake generate
 

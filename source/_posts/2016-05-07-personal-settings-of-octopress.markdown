@@ -40,9 +40,9 @@ Liquid::Template.register_tag('category_list', Jekyll::CategoryListTag)
   </ul>
 </section>
 ```
-最后在`_config.yml`中`default_asides:`一栏添加`asides/category_list.html`（或`custom\asides\category_list.html`）即可。  
-**注意：上述步骤有一个问题，那就是如果category包含中文的话生成的侧边栏链接会是404页面（因为链接中不能包含中文），需要将`category_url`改成`category.to_url.downcase`，将中文转换成拼音。**  
-**另外，上面代码中`{% raw %}{% category_list %}{% endraw %}`必须采用`{% raw %}{% RAW %}{% endraw %}`your_content`{% raw %}{% ENDRAW %}{% endraw %}`才能正常显示。**
+最后在`_config.yml`中`default_asides:`一栏添加`asides/category_list.html`（或`custom/asides/category_list.html`）即可。  
+**注意：上述步骤有一个问题，那就是如果category包含中文的话生成的侧边栏链接会是404页面（因为链接中不能包含中文），需要将`category_list_tag.rb`文件中第11行代码里的`category_url`改成`category.to_url.downcase`，该代码会将中文转换成拼音。**  
+**另外，上面代码中第4行`{% raw %}{% category_list %}{% endraw %}`若想在网页上正确显示必须使用`{% raw %}{% RAW %}{% endraw %}`your_content`{% raw %}{% ENDRAW %}{% endraw %}`（将大写改成小写）。这是markdown里强制显示原始字符串而不进行解释的语法**
 ### 2. 首页文章缺省显示
 只需要在每篇你写的markdown格式的博文中在你想要在首页显示的文字后面加上`<!--more-->`即可。
 ### 3. 设置链接默认在新窗口打开

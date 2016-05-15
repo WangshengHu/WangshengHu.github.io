@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 算法 | Lost & Found]]></title>
   <link href="http://wangshenghu.github.io/blog/categories/suan-fa/atom.xml" rel="self"/>
   <link href="http://wangshenghu.github.io/"/>
-  <updated>2016-05-15T12:45:40+08:00</updated>
+  <updated>2016-05-15T16:35:48+08:00</updated>
   <id>http://wangshenghu.github.io/</id>
   <author>
     <name><![CDATA[WangshengHu]]></name>
@@ -12,6 +12,360 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[hihoCoder#1067 - 最近公共祖先·二]]></title>
+    <link href="http://wangshenghu.github.io/blog/2016/05/15/hihocoder-lowest-common-ancestor-2/"/>
+    <updated>2016-05-15T15:02:25+08:00</updated>
+    <id>http://wangshenghu.github.io/blog/2016/05/15/hihocoder-lowest-common-ancestor-2</id>
+    <content type="html"><![CDATA[<h2>题目</h2>
+
+<p>给定N对节点之间的继承关系（一个节点仅有一个父节点），并且所有这些节点有一个共同的根节点，给定任意两个节点，求它们的最近公共祖先节点。<br/>
+具体描述请见<a href="http://hihocoder.com/problemset/problem/1067">hihoCoder</a>。</p>
+
+<!--more-->
+
+
+<h2>解题思路</h2>
+
+<p>这次用到的算法称为离线算法，因为要求一次收集若干次询问统一处理。仔细思考，可以发现：<br/>
+对树进行深度优先搜索，并且对节点进行染色（进去时染灰色，离开时染黑色），当遍历到某个询问的节点时，查看另一个节点，若未染色，则继续；若是灰色，则结果就是该灰色节点；若是黑色，则结果就是该黑色节点向上的第一个灰色节点（黑色节点表示其子树已经全部访问完，灰色节点表示当前仍在其子树中）。<br/>
+接下来的问题是如何快速查找一个黑色节点向上的第一个灰色节点。仔细思考，发现当刚要离开一个节点时，其所有子树中的节点向上的第一个灰色节点即为其自身，那么当该节点染黑后，以该节点为根节点的子树中所有节点向上的第一个灰色节点就变成了该节点的父节点。这很类似于并查集。</p>
+
+<h2>时间复杂度</h2>
+
+<p>DFS的时间复杂度是N，共M次询问，其中并查集的合并及查找共2M + N次，时间复杂度为2N + 2M。</p>
+
+<h2>代码</h2>
+
+<pre><code class="c++">#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;unordered_map&gt;
+using namespace std;
+
+struct Node {
+    string name;
+    vector&lt;Node*&gt; successors;
+    int visited = 0;
+    string ancestor;
+
+    Node(string n) :name(n) {}
+};
+
+struct Query {
+    string to;
+    string ans;
+
+    Query() :ans("") {}
+};
+
+unordered_map&lt;string, Node*&gt; tree;
+Query* Q1;
+Query* Q2;
+unordered_map&lt;string, vector&lt;Query*&gt;&gt; queries;
+
+string find(Node* node) {
+    if (node-&gt;ancestor == node-&gt;name)
+        return node-&gt;name;
+    node-&gt;ancestor = find(tree[node-&gt;ancestor]);
+    return node-&gt;ancestor;
+}
+
+void dfs(Node* root) {
+    root-&gt;visited = 1;
+    root-&gt;ancestor = root-&gt;name;
+    if (queries.find(root-&gt;name) != queries.end()) {
+        for (int i = 0; i &lt; queries[root-&gt;name].size(); i++) {
+            if (tree[queries[root-&gt;name][i]-&gt;to]-&gt;visited &gt; 0)
+                queries[root-&gt;name][i]-&gt;ans = find(tree[queries[root-&gt;name][i]-&gt;to]);
+        }
+    }
+    for (int i = 0; i &lt; root-&gt;successors.size(); i++) {
+        dfs(root-&gt;successors[i]);
+        root-&gt;successors[i]-&gt;ancestor = root-&gt;name;
+    }
+    root-&gt;visited = 2;
+}
+
+int main() {
+    int N = 0, M = 0;
+    cin &gt;&gt; N;
+    string father, son;
+    cin &gt;&gt; father &gt;&gt; son;
+    tree[father] = new Node(father);
+    Node* root = tree[father];
+    tree[son] = new Node(son);
+    tree[father]-&gt;successors.push_back(tree[son]);
+    for (int i = 1; i &lt; N; i++) {
+        string father, son;
+        cin &gt;&gt; father &gt;&gt; son;
+        if (tree.find(father) == tree.end())
+            tree[father] = new Node(father);
+        tree[son] = new Node(son);
+        tree[father]-&gt;successors.push_back(tree[son]);
+    }
+    cin &gt;&gt; M;
+    Q1 = new Query[M];
+    Q2 = new Query[M];
+    for (int i = 0; i &lt; M; i++) {
+        string left, right;
+        cin &gt;&gt; left &gt;&gt; right;
+        Q1[i].to = right;
+        Q2[i].to = left;
+        queries[left].push_back(Q1 + i);
+        queries[right].push_back(Q2 + i);
+    }
+
+    dfs(root);
+
+    for (int i = 0; i &lt; M; i++) {
+        if (Q1[i].ans != "")
+            cout &lt;&lt; Q1[i].ans &lt;&lt; endl;
+        else
+            cout &lt;&lt; Q2[i].ans &lt;&lt; endl;
+    }
+
+    for (auto it = tree.begin(); it != tree.end(); it++)
+        delete it-&gt;second;
+    delete[] Q1, Q2;
+
+    return 0;
+}
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[hihoCoder#1066 - 无间道之并查集]]></title>
+    <link href="http://wangshenghu.github.io/blog/2016/05/15/hihocoder-union-set/"/>
+    <updated>2016-05-15T14:42:06+08:00</updated>
+    <id>http://wangshenghu.github.io/blog/2016/05/15/hihocoder-union-set</id>
+    <content type="html"><![CDATA[<h2>题目</h2>
+
+<p>给定一个n个不同元素的集合，这些元素被分成不相交集合，且最开始每个元素自成一个集合。现在考虑两种运算：find(x)和union(x, y)，find(x)返回包含x的集合名字，union(x, y)则将包含x和y的两个集合合并。设计一种数据结构满足高效率的上述两种运算。<br/>
+具体描述请见<a href="http://hihocoder.com/problemset/problem/1066">hihoCoder</a>。</p>
+
+<!--more-->
+
+
+<h2>解题思路</h2>
+
+<p>经典的Union-Find Set问题。首先很容易想到树形结构，每个集合对应一棵树，所有集合就是一片森林。find操作就是查找根节点，union操作就是合并两棵树。关键在于路径压缩，即每次执行find和union操作时我们应尽可能使树的高度降低，这样下次执行find和union操作时查找根节点的时间就大大减少了。</p>
+
+<h2>时间复杂度</h2>
+
+<p>时间复杂度为Mlog<sup><em></sup>N。在实际应用中由于log<sup></em></sup>N &lt;= 5，时间复杂度即M。</p>
+
+<h2>代码</h2>
+
+<pre><code class="c++">#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;unordered_map&gt;
+using namespace std;
+
+unordered_map&lt;string, string&gt; unionFindSet;
+
+string find(string n) {
+    if (unionFindSet[n] == n)
+        return n;
+    unionFindSet[n] = find(unionFindSet[n]);
+    return unionFindSet[n];
+}
+
+void unionset(string a, string b) {
+    if (unionFindSet.find(a) == unionFindSet.end())
+        unionFindSet[a] = a;
+    if (unionFindSet.find(b) == unionFindSet.end())
+        unionFindSet[b] = b;
+    unionFindSet[find(unionFindSet[a])] = find(unionFindSet[b]);
+}
+
+bool company(string a, string b) {
+    if (unionFindSet.find(a) == unionFindSet.end() || unionFindSet.find(b) == unionFindSet.end())
+        return false;
+    return find(unionFindSet[a]) == find(unionFindSet[b]);
+}
+
+int main() {
+    int N = 0;
+    cin &gt;&gt; N;
+    for (int i = 0; i &lt; N; i++) {
+        int op = 0;
+        string a, b;
+        cin &gt;&gt; op &gt;&gt; a &gt;&gt; b;
+        if (op)
+            cout &lt;&lt; (company(a, b) ? "yes" : "no") &lt;&lt; endl;
+        else
+            unionset(a, b);
+    }
+
+    return 0;
+}
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[hihocCoder#1062 - 最近公共祖先·一]]></title>
+    <link href="http://wangshenghu.github.io/blog/2016/05/15/hihocoder-lowest-common-ancestor/"/>
+    <updated>2016-05-15T14:24:56+08:00</updated>
+    <id>http://wangshenghu.github.io/blog/2016/05/15/hihocoder-lowest-common-ancestor</id>
+    <content type="html"><![CDATA[<h2>题目</h2>
+
+<p>给定N对节点之间的继承关系（一个节点仅有一个父节点），给定任意两个节点，求它们的最近公共祖先节点。<br/>
+具体描述请见<a href="http://hihocoder.com/problemset/problem/1062">hihoCoder</a>。</p>
+
+<!--more-->
+
+
+<h2>解题思路</h2>
+
+<p>采用链表存储节点信息，由于存储的是子节点->父节点的关系，因此可以先遍历其中一个节点的所有祖先节点并标记，再遍历另一个节点的所有祖先节点，当遍历到一个已被标记的祖先节点时，该节点即所求结果。也可以将两个节点遍历到根节点的路径反转然后进行比较，找到开始分叉的那个节点即所求结果。</p>
+
+<h2>时间复杂度</h2>
+
+<p>时间复杂度为T（T为树的高度），最坏情况是N。</p>
+
+<h2>代码</h2>
+
+<pre><code class="c++">#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;unordered_map&gt;
+using namespace std;
+
+struct Node {
+    string name;
+    bool visited = false;
+    Node* ancestor = NULL;
+
+    Node(string n) {
+        name = n;
+    }
+};
+
+string lowestComAnc(unordered_map&lt;string, Node*&gt; nodes, string a, string b) {
+    if (a == b)
+        return a;
+    if (nodes.find(a) == nodes.end() || nodes.find(b) == nodes.end())
+        return "-1";
+
+    for (auto it = nodes.begin(); it != nodes.end(); it++)
+        it-&gt;second-&gt;visited = false;
+
+    Node *A = nodes[a], *B = nodes[b];
+    while (A) {
+        A-&gt;visited = true;
+        A = A-&gt;ancestor;
+    }
+
+    while (B) {
+        if (B-&gt;visited)
+            return B-&gt;name;
+        B = B-&gt;ancestor;
+    }
+
+    return "-1";
+}
+
+int main() {
+    int N = 0, M = 0;
+    cin &gt;&gt; N;
+    unordered_map&lt;string, Node*&gt; nodes;
+    for (int i = 0; i &lt; N; i++) {
+        string father, son;
+        cin &gt;&gt; father &gt;&gt; son;
+        Node* node = new Node(son);
+        if (nodes.find(father) == nodes.end())
+            nodes.insert(make_pair(father, new Node(father)));
+        node-&gt;ancestor = nodes[father];
+        nodes.insert(make_pair(son, node));
+    }
+    cin &gt;&gt; M;
+    for (int i = 0; i &lt; M; i++) {
+        string a, b;
+        cin &gt;&gt; a &gt;&gt; b;
+        cout &lt;&lt; lowestComAnc(nodes, a, b) &lt;&lt; endl;
+    }
+
+    return 0;
+}
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[hihoCoder#1061 - Beautiful String]]></title>
+    <link href="http://wangshenghu.github.io/blog/2016/05/15/hihocoder-beautiful-string/"/>
+    <updated>2016-05-15T14:16:20+08:00</updated>
+    <id>http://wangshenghu.github.io/blog/2016/05/15/hihocoder-beautiful-string</id>
+    <content type="html"><![CDATA[<h2>题目</h2>
+
+<p>如果一个字符串包含数量相等的连续的3个或更多字符（递增序），则其是一个beautiful string（如aabbcc）。给定一个字符串，判断是否包含一个beautiful string。<br/>
+具体描述请见<a href="http://hihocoder.com/problemset/problem/1061">hihoCoder</a>。</p>
+
+<!--more-->
+
+
+<h2>解题思路</h2>
+
+<p>简单的搜索即可。</p>
+
+<h2>时间复杂度</h2>
+
+<p>最坏情况下是N<sup>2</sup>。</p>
+
+<h2>代码</h2>
+
+<pre><code class="c++">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+bool check(string str, int n) {
+    for (int i = 0; i &lt; n; i++) {
+        char cache[3] = { str[i], ' ', ' ' };
+        int len[3] = { 1, 0, 0 };
+        int k = 0;
+        for (int j = i + 1; j &lt; n; j++) {
+            if (cache[k] == str[j])
+                len[k]++;
+            else if (cache[k] + 1 == str[j]) {
+                if (k == 2)
+                    break;
+                k++;
+                cache[k] = str[j];
+                len[k]++;
+            }
+            else
+                break;
+            if (len[0] &lt; len[1] || len[1] &lt; len[2])
+                break;
+            if (k == 2 &amp;&amp; len[0] &gt; len[1])
+                break;
+            if (k == 2 &amp;&amp; len[1] == len[2])
+                return true;
+        }
+    }
+
+    return false;
+}
+
+int main() {
+    int t = 0;
+    cin &gt;&gt; t;
+    for (int i = 0; i &lt; t; i++) {
+        int n = 0;
+        string str;
+        cin &gt;&gt; n &gt;&gt; str;
+
+        cout &lt;&lt; (check(str, n) ? "YES" : "NO") &lt;&lt; endl;
+    }
+
+    return 0;
+}
+</code></pre>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[hihoCoder#1055 - 刷油漆]]></title>
@@ -123,311 +477,6 @@ int main() {
     Tree tree = Tree(nodes + 1, N, M);
 
     cout &lt;&lt; tree.maxScore() &lt;&lt; endl;
-
-    return 0;
-}
-</code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[hihoCoder#1052 - 基因工程]]></title>
-    <link href="http://wangshenghu.github.io/blog/2016/05/13/hihocoder-gene-project/"/>
-    <updated>2016-05-13T16:24:07+08:00</updated>
-    <id>http://wangshenghu.github.io/blog/2016/05/13/hihocoder-gene-project</id>
-    <content type="html"><![CDATA[<h2>题目</h2>
-
-<p>对一个长度为N的字符串，修改若干个字符使得其最前K个字符与最后K个完全一致。问最少修改数。<br/>
-具体描述请见<a href="http://hihocoder.com/problemset/problem/1052">hihoCoder</a>。</p>
-
-<!--more-->
-
-
-<h2>解题思路</h2>
-
-<p>仔细思考，最简单的情况是最前K个与最后K个没有重合，那么就是<code>s[i] = s[N-K+i] 其中1&lt;=i&lt;=K</code>；如果重合的话则是每隔N - K个都必须相等，即<code>s[i] = s[i+(N-K)] 其中1&lt;=i&lt;=K</code>，式子不变，但是要循环检查。注意遍历最前K个时只需要逐个检查到N-K就可以了，后面的已经被前面的覆盖了。</p>
-
-<h2>时间复杂度</h2>
-
-<p>时间复杂度为N。</p>
-
-<h2>代码</h2>
-
-<pre><code class="c++">#include &lt;iostream&gt;
-#include &lt;string&gt;
-#include &lt;algorithm&gt;
-using namespace std;
-
-int modify(string str, int K) {
-    int minC = 0;
-    int interval = str.size() - K;
-    for (int i = 0; i &lt; interval; i++) {
-        int num = 0;
-        int A = 0, T = 0, C = 0, G = 0;
-        for (int j = i; j &lt; str.size(); j += interval) {
-            num++;
-            if (str[j] == 'A')
-                A++;
-            else if (str[j] == 'T')
-                T++;
-            else if (str[j] == 'C')
-                C++;
-            else if (str[j] == 'G')
-                G++;
-        }
-        int maxC = max(max(A, T), max(C, G));
-        minC += num - maxC;
-    }
-
-    return minC;
-}
-
-int main() {
-    int T = 0;
-    cin &gt;&gt; T;
-    for (int i = 0; i &lt; T; i++) {
-        string str;
-        cin &gt;&gt; str;
-        int K = 0;
-        cin &gt;&gt; K;
-
-        cout &lt;&lt; modify(str, K) &lt;&lt; endl;
-    }
-
-    return 0;
-}
-</code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[hihoCoder#1050 - 树中的最长路]]></title>
-    <link href="http://wangshenghu.github.io/blog/2016/05/13/hihocoder-longest-path-in-tree/"/>
-    <updated>2016-05-13T16:01:46+08:00</updated>
-    <id>http://wangshenghu.github.io/blog/2016/05/13/hihocoder-longest-path-in-tree</id>
-    <content type="html"><![CDATA[<h2>题目</h2>
-
-<p>求一棵树中距离最长的两个节点的距离。<br/>
-具体描述请见<a href="http://hihocoder.com/problemset/problem/1050">hihoCoder</a>。</p>
-
-<!--more-->
-
-
-<h2>解题思路</h2>
-
-<p>仔细思考可以发现，对任一条路径，都存在一个“转折点”，路径从这个点开始会向下弯折。对任一个这样的“转折点”，最长的路径就发生在两条路径不重合的离该节点最长的两个节点。考虑如下性质：对任一个节点作为“转折点”，其所有子节点中最长路长度加1即为该节点最长路，所有子节点中次长路长度加1即为该节点次长路。因此可以用后序遍历求解。</p>
-
-<h2>时间复杂度</h2>
-
-<p>时间复杂度为N。</p>
-
-<h2>代码</h2>
-
-<pre><code class="c++">#include &lt;iostream&gt;
-#include &lt;vector&gt;
-#include &lt;algorithm&gt;
-using namespace std;
-
-struct Node {
-    int first = 0;
-    int second = 0;
-    bool visited = false;
-    vector&lt;Node*&gt; successors;
-};
-
-class Tree {
-private:
-    Node* root;
-
-    int traverse(Node* node, int&amp; first) {
-        node-&gt;visited = true;
-        bool hasChild = false;
-        int maxLen = 0, maxFir = 0, secFir = 0;
-        for (int i = 0; i &lt; node-&gt;successors.size(); i++) {
-            if (node-&gt;successors[i]-&gt;visited == false) {
-                hasChild = true;
-                int fir = 0;
-                maxLen = max(maxLen, traverse(node-&gt;successors[i], fir));
-                if (maxFir &lt;= fir) {
-                    secFir = maxFir;
-                    maxFir = fir;
-                }
-                else
-                    secFir = max(secFir, fir);
-            }
-        }
-        if (hasChild) {
-            first = maxFir + 1;
-            maxLen = max(maxLen, maxFir + secFir + 2);
-        }
-
-        return maxLen;
-    }
-
-public:
-    Tree(Node* node) {
-        root = node;
-    }
-
-    int longestPath() {
-        int first = 0;
-        return traverse(root, first);
-    }
-};
-
-int main() {
-    int N = 0;
-    cin &gt;&gt; N;
-    Node* nodes = new Node[N];
-    for (int i = 0; i &lt; N - 1; i++) {
-        int a = 0, b = 0;
-        cin &gt;&gt; a &gt;&gt; b;
-        nodes[a - 1].successors.push_back(nodes + b - 1);
-        nodes[b - 1].successors.push_back(nodes + a - 1);
-    }
-    Tree tree = Tree(nodes);
-
-    cout &lt;&lt; tree.longestPath();
-
-    delete[] nodes;
-
-    return 0;
-}
-</code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[hihoCoder#1049 - 后序遍历]]></title>
-    <link href="http://wangshenghu.github.io/blog/2016/05/13/hihocoder-post-order/"/>
-    <updated>2016-05-13T15:27:37+08:00</updated>
-    <id>http://wangshenghu.github.io/blog/2016/05/13/hihocoder-post-order</id>
-    <content type="html"><![CDATA[<h2>题目</h2>
-
-<p>给出一棵二叉树的前序和中序遍历的结果，还原这棵二叉树并输出其后序遍历的结果。<br/>
-具体描述请见<a href="http://hihocoder.com/problemset/problem/1049">hihoCoder</a>。</p>
-
-<!--more-->
-
-
-<h2>解题思路</h2>
-
-<p>经典问题。假设二叉树形如：<br/>
-<img src="/images/hihocoder-post-order-1.jpg"><br/>
-其前序为<code>ABDEGHCFIJ</code>，中序为'DBGEHACIJF'，后序为<code>DGHEBJIFCA</code>。由于前序遍历是<code>根节点</code>+<code>左子树</code>+<code>右子树</code>，中序遍历是<code>左子树</code>+<code>根节点</code>+<code>右子树</code>，因此<code>A</code>是根节点，且<code>BDEGH</code>是左子树的前序，<code>CFIJ</code>是左子树的中序，<code>DBGEH</code>为左子树的中序，<code>CIJF</code>为右子树的中序。此时我们可以发现后序即为<code>左子树</code>+<code>右子树</code>+<code>根节点</code>，即<code>A</code>一定是当前后序中最后的节点。因此可以递归的求出后序。</p>
-
-<h2>时间复杂度</h2>
-
-<p>时间复杂度为N。</p>
-
-<h2>代码</h2>
-
-<pre><code class="c++">#include &lt;iostream&gt;
-#include &lt;string&gt;
-using namespace std;
-
-string postOrder(string preOrder, string inOrder) {
-    int len = preOrder.size();
-    if (len == 0)
-        return "";
-
-    int idx = 0;
-    for (; idx &lt; len; idx++)
-        if (inOrder[idx] == preOrder[0])
-            break;
-
-    return postOrder(preOrder.substr(1, idx), inOrder.substr(0, idx)) +
-        postOrder(preOrder.substr(idx + 1, len - idx - 1), 
-            inOrder.substr(idx + 1, len - idx - 1)) + preOrder[0];
-}
-
-int main() {
-    string preOrder, inOrder;
-    cin &gt;&gt; preOrder &gt;&gt; inOrder;
-
-    cout &lt;&lt; postOrder(preOrder, inOrder);
-
-    return 0;
-}
-</code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[hihoCoder#1044 - 状态压缩]]></title>
-    <link href="http://wangshenghu.github.io/blog/2016/05/13/hihocoder-state-compress/"/>
-    <updated>2016-05-13T10:40:45+08:00</updated>
-    <id>http://wangshenghu.github.io/blog/2016/05/13/hihocoder-state-compress</id>
-    <content type="html"><![CDATA[<h2>题目</h2>
-
-<p>有连续的N个位置，编号为1&hellip;N，第i个位置有W<sub>i</sub>件物品。从某些位置收集物品，而连续的M个位置中不能有超过Q个位置的物品被收集。问最多能收集到的物品数量。<br/>
-具体描述请见<a href="http://hihocoder.com/problemset/problem/1044">hihoCoder</a>。</p>
-
-<!--more-->
-
-
-<h2>解题思路</h2>
-
-<p>动态规划。首先考虑如何列状态转移方程。<br/>
-首先计算第i个位置时需要考虑前M-1个位置是否已经取满Q个，来决定是否可以取第i个。如果单纯记录前M-1个位置里已取位置数，由于从i到i+1这个前M-1个位置也向前推进了1，我们无法决定第i+1个是否可取，递推式将无法向前推进。因此必须记录下前M-1个位置的状态。递推式为：<br/>
-<code>f[i, 0, p[1], p[2], ..., p[M-2]] = f[i-1, p[1], p[2], ..., p[M-1]] sum(p[j]) &gt;= Q</code><br/>
-<code>f[i, 1, p[1], p[2], ..., p[M-2]] = f[i-1, p[1], p[2], ..., p[M-1]] sum(p[j]) &lt; Q</code><br/>
-但是这样用来存储状态的数组维度太高，考虑用二进制数表示不同状态，则递推式改进为：<br/>
-<code>f[i, s/2] = f[i-1, s] sum(s在二进制下的各位数字) &gt;= Q</code><br/>
-<code>f[i, s/2 + 2&lt;sup&gt;M-2&lt;/sup&gt;] = f[i-1, s] + W[i] sum(s在二进制下的各位数字) &lt; Q</code></p>
-
-<h2>时间复杂度</h2>
-
-<p>时间复杂度为2<sup>M</sup>N。</p>
-
-<h2>代码</h2>
-
-<pre><code class="c++">#include &lt;iostream&gt;
-#include &lt;vector&gt;
-#include &lt;cmath&gt;
-#include &lt;algorithm&gt;
-using namespace std;
-
-int calMax(int *W, int N, int M, int Q) {
-    int states = 1 &lt;&lt; (M - 1);
-    vector&lt;vector&lt;int&gt;&gt; sum(N, vector&lt;int&gt;(states, -1));
-    sum[0][0] = 0;
-    sum[0][1 &lt;&lt; (M - 2)] = W[0];
-
-    for (int i = 1; i &lt; N; i++) {
-        for (int j = 0; j &lt; states; j++) {
-            if (sum[i - 1][j] != -1) {
-                int s = 0;
-                int t = j;
-                for (int k = 0; k &lt; M - 1; k++) {
-                    s += t &amp; 1;
-                    t &gt;&gt;= 1;
-                }
-                if (s &lt; Q)
-                    sum[i][(j &gt;&gt; 1) + (1 &lt;&lt; (M - 2))] = max(sum[i - 1][j] + W[i], sum[i][(j &gt;&gt; 1) + (1 &lt;&lt; (M - 2))]);
-                sum[i][j &gt;&gt; 1] = max(sum[i - 1][j], sum[i][j &gt;&gt; 1]);
-            }
-        }
-    }
-
-    int maxSum = 0;
-    for (int i = 0; i &lt; states; i++)
-        if (sum[N - 1][i] &gt; maxSum)
-            maxSum = sum[N - 1][i];
-
-    return maxSum;
-}
-
-int main() {
-    int N = 0, M = 0, Q = 0;
-    cin &gt;&gt; N &gt;&gt; M &gt;&gt; Q;
-    int *W = new int[N];
-    for (int i = 0; i &lt; N; i++)
-        cin &gt;&gt; W[i];
-
-    cout &lt;&lt; calMax(W, N, M, Q);
-
-    delete[] W;
 
     return 0;
 }

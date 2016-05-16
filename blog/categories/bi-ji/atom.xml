@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 笔记 | Lost & Found]]></title>
   <link href="http://wangshenghu.github.io/blog/categories/bi-ji/atom.xml" rel="self"/>
   <link href="http://wangshenghu.github.io/"/>
-  <updated>2016-05-16T21:05:03+08:00</updated>
+  <updated>2016-05-16T21:09:30+08:00</updated>
   <id>http://wangshenghu.github.io/</id>
   <author>
     <name><![CDATA[WangshengHu]]></name>
@@ -97,10 +97,9 @@
 </span><span class='line'><span class="sr">&lt;code&gt;``</span>
 </span><span class='line'><span class="sr">最后在&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="n">_config</span><span class="o">.</span><span class="n">yml</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="err">中</span><span class="o">&lt;</span><span class="sr">/code&gt;default_asides:&lt;code&gt;一栏添加&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="n">asides</span><span class="o">/</span><span class="n">category_list</span><span class="o">.</span><span class="n">html</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="err">（或</span><span class="o">&lt;</span><span class="sr">/code&gt;custom/</span><span class="n">asides</span><span class="o">/</span><span class="n">category_list</span><span class="o">.</span><span class="n">html</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="err">）即可。</span>
 </span><span class='line'><span class="o">**</span><span class="err">注意：上述步骤有一个问题，那就是如果</span><span class="n">category</span><span class="err">包含中文的话生成的侧边栏链接会是</span><span class="mi">404</span><span class="err">页面（因为链接中不能包含中文），需要将</span><span class="o">&lt;</span><span class="sr">/code&gt;category_list_tag.rb&lt;code&gt;文件中第11行代码里的&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="n">category_url</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="err">改成</span><span class="o">&lt;</span><span class="sr">/code&gt;category.to_url.downcase&lt;code&gt;，该代码会将中文转换成拼音。**  </span>
-</span><span class='line'><span class="sr">**另外，上面代码中第4行&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="p">{</span><span class="o">%</span> <span class="n">raw</span> <span class="sx">%}<li class='category'><a href='/blog/categories/hihocoder/'>hihocoder (33)</a></li>
+</span><span class='line'><span class="sr">**另外，上面代码中第4行&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="p">{</span><span class="o">%</span> <span class="n">raw</span> <span class="sx">%}<li class='category'><a href='/blog/categories/hihocoder/'>hihocoder (35)</a></li>
 <li class='category'><a href='/blog/categories/bi-ji/'>笔记 (2)</a></li>
-<li class='category'><a href='/blog/categories/suan-fa/'>算法 (33)</a></li>
-<li class='category'><a href='/blog/categories/suan-fa-,hihocoder/'>算法，hihocoder (2)</a></li>
+<li class='category'><a href='/blog/categories/suan-fa/'>算法 (35)</a></li>
 </span><span class="p">{</span><span class="o">%</span> <span class="n">endraw</span> <span class="sx">%}&lt;code&gt;若想在网页上正确显示必须使用&lt;/code&gt;</span><span class="p">{</span><span class="o">%</span> <span class="no">RAW</span> <span class="sx">%}</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">your_content</span><span class="o">&lt;</span><span class="sr">/code&gt;{% ENDRAW %}`（将大写改成小写）。这是markdown里强制显示原始字符串而不进行解释的语法**&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
 </span><span class='line'>
 </span><span class='line'><span class="o">&lt;</span><span class="n">h3</span><span class="o">&gt;</span><span class="mi">2</span><span class="o">.</span> <span class="err">首页文章缺省显示</span><span class="o">&lt;</span><span class="sr">/h3&gt;</span>

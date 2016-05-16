@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Hihocoder | Lost & Found]]></title>
   <link href="http://wangshenghu.github.io/blog/categories/hihocoder/atom.xml" rel="self"/>
   <link href="http://wangshenghu.github.io/"/>
-  <updated>2016-05-16T21:05:03+08:00</updated>
+  <updated>2016-05-16T21:09:30+08:00</updated>
   <id>http://wangshenghu.github.io/</id>
   <author>
     <name><![CDATA[WangshengHu]]></name>
@@ -120,6 +120,90 @@ int main() {
   </entry>
   
   <entry>
+    <title type="html"><![CDATA[hihoCoder#1097 - Prim算法]]></title>
+    <link href="http://wangshenghu.github.io/blog/2016/05/16/hihocoder-prim/"/>
+    <updated>2016-05-16T19:46:33+08:00</updated>
+    <id>http://wangshenghu.github.io/blog/2016/05/16/hihocoder-prim</id>
+    <content type="html"><![CDATA[<h2>题目</h2>
+
+<p>给定一个无向图，求最小生成树。<br/>
+具体描述请见<a href="http://hihocoder.com/problemset/problem/1097">hihoCoder</a>。</p>
+
+<!--more-->
+
+
+<h2>解题思路</h2>
+
+<p>经典的Prim算法。<br/>
+1. 初始化集合X和Y，X = {1}, Y = V - {1}；<br/>
+2. 查找最短的一条边(x, y)，其中x属于X，y属于Y，并将其加入最小生成树。</p>
+
+<h2>时间复杂度</h2>
+
+<p>时间复杂度为N<sup>2</sup>。采用堆实现的话可以减小到MlogN。</p>
+
+<h2>代码</h2>
+
+<pre><code class="c++">#include &lt;iostream&gt;
+#include &lt;algorithm&gt;
+#include &lt;bitset&gt;
+using namespace std;
+
+int prim(int** graph, int N) {
+    bitset&lt;1000&gt; set;
+    set.reset();
+    int* d = new int[N];
+    for (int i = 0; i &lt; N; i++)
+        d[i] = graph[0][i];
+    set[0] = 1;
+    int minCost = 0;
+    for (int i = 1; i &lt; N; i++) {
+        int minNode = 0;
+        int minEdge = -1;
+        for (int j = 0; j &lt; N; j++) {
+            if (set[j])
+                continue;
+            if (minEdge == -1 || (d[j] !=-1 &amp;&amp; minEdge &gt; d[j])) {
+                minEdge = d[j];
+                minNode = j;
+            }
+        }
+        minCost += minEdge;
+        set[minNode] = 1;
+        for (int j = 0; j &lt; N; j++) {
+            if (set[j])
+                continue;
+            if (d[j] == -1 || d[j] &gt; graph[minNode][j]) {
+                d[j] = graph[minNode][j];
+            }
+        }
+    }
+
+    return minCost;
+}
+
+int main() {
+    int N = 0;
+    cin &gt;&gt; N;
+    int** graph = new int*[N];
+    for (int i = 0; i &lt; N; i++) {
+        graph[i] = new int[N];
+        for (int j = 0; j &lt; N; j++) {
+            int edge = 0;
+            cin &gt;&gt; edge;
+            graph[i][j] = edge;
+        }
+    }
+
+    cout &lt;&lt; prim(graph, N) &lt;&lt; endl;
+
+    return 0;
+}
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[hihoCoder#1093 - SPFA算法]]></title>
     <link href="http://wangshenghu.github.io/blog/2016/05/16/hihocoder-spfa/"/>
     <updated>2016-05-16T19:12:45+08:00</updated>
@@ -191,6 +275,89 @@ int main() {
     }
 
     cout &lt;&lt; spfa(graph, S, T) &lt;&lt; endl;
+
+    return 0;
+}
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[hihoCoder#1089 - Floyd算法]]></title>
+    <link href="http://wangshenghu.github.io/blog/2016/05/16/hihocoder-floyd/"/>
+    <updated>2016-05-16T18:55:10+08:00</updated>
+    <id>http://wangshenghu.github.io/blog/2016/05/16/hihocoder-floyd</id>
+    <content type="html"><![CDATA[<h2>题目</h2>
+
+<p>给定一个无向图，两个顶点之间可能有多条边，求任意两个顶点之间的最短路径。  <br/>
+具体描述请见<a href="http://hihocoder.com/problemset/problem/1089">hihoCoder</a>。</p>
+
+<!--more-->
+
+
+<h2>解题思路</h2>
+
+<p>经典的Floyd算法。采用动态规划的思想，假设d[i, j]是从i到j的距离，且路径允许经过的节点数慢慢增加。写成递推式就是<br/>
+<code>d[i, j] = min(d[i, j], d[i, k] + d[k, j])</code></p>
+
+<h2>时间复杂度</h2>
+
+<p>时间复杂度为N<sup>3</sup>，空间复杂度为N<sup>2</sup>。</p>
+
+<h2>代码</h2>
+
+<pre><code class="c++">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+
+void floyd(int** graph, int N) {
+    for (int k = 1; k &lt;= N; k++) {
+        for (int i = 1; i &lt;= N; i++)
+            for (int j = 1; j &lt;= N; j++) {
+                if (graph[i][k] != -1 &amp;&amp; graph[k][j] != -1) {
+                    if (graph[i][j] == -1)
+                        graph[i][j] = graph[i][k] + graph[k][j];
+                    else
+                        graph[i][j] = min(graph[i][j], graph[i][k] + graph[k][j]);
+                }
+            }
+    }
+}
+
+int main() {
+    int N = 0, M = 0;
+    cin &gt;&gt; N &gt;&gt; M;
+    int** graph = new int*[N + 1];
+    for (int i = 1; i &lt; N + 1; i++) {
+        graph[i] = new int[N + 1];
+        for (int j = 1; j &lt; N + 1; j++)
+            graph[i][j] = -1;
+        graph[i][i] = 0;
+    }
+    for (int i = 0; i &lt; M; i++) {
+        int a = 0, b = 0, edge = 0;
+        cin &gt;&gt; a &gt;&gt; b &gt;&gt; edge;
+        if (graph[a][b] == -1) {
+            graph[a][b] = edge;
+            graph[b][a] = edge;
+        }
+        else if (graph[a][b] &gt; edge) {
+            graph[a][b] = edge;
+            graph[b][a] = edge;
+        }
+    }
+
+    floyd(graph, N);
+    for (int i = 1; i &lt;= N; i++) {
+        for (int j = 1; j &lt;= N; j++)
+            cout &lt;&lt; graph[i][j] &lt;&lt; " ";
+        cout &lt;&lt; endl;
+    }
+
+    for (int i = 1; i &lt; N + 1; i++)
+        delete[] graph[i];
+    delete[] graph;
 
     return 0;
 }
@@ -289,223 +456,6 @@ int main() {
     }
 
     cout &lt;&lt; dijkstra(graph, N, S, T) &lt;&lt; endl;
-
-    return 0;
-}
-</code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[hihoCoder#1069 - 最近公共祖先·三]]></title>
-    <link href="http://wangshenghu.github.io/blog/2016/05/16/hihocoder-lowest-common-ancestor-3/"/>
-    <updated>2016-05-16T15:40:40+08:00</updated>
-    <id>http://wangshenghu.github.io/blog/2016/05/16/hihocoder-lowest-common-ancestor-3</id>
-    <content type="html"><![CDATA[<h2>题目</h2>
-
-<p>给定N对节点之间的继承关系（一个节点仅有一个父节点），给定任意两个节点，求它们的最近公共祖先节点。<br/>
-具体描述请见<a href="http://hihocoder.com/problemset/problem/1069">hihoCoder</a>。</p>
-
-<!--more-->
-
-
-<h2>解题思路</h2>
-
-<p>这次用到的算法称为在线算法，与<a href="/blog/2016/05/15/hihocoder-lowest-common-ancestor-2/">离线算法</a>相对应。关键在于将树转换为数组进行求解。<br/>
-对树进行深度优先搜索，每次经过一个点时（无论是从父节点进来还是从子节点回来）都按顺序记录下来（<strong>实际上只需要记录每一次从子节点回来即可</strong>），得到的数组中，任意两个节点的最近公共祖先就是这两个节点在数组中的位置所包含起来的那一段区间中深度最小的那个点。这样就成功将问题转换成了<a href="/blog/2016/05/16/hihocoder-rmq-st/">RMQ-ST问题</a>。</p>
-
-<h2>时间复杂度</h2>
-
-<p>DFS的时间复杂度是N，RMQ-ST算法时间复杂度是NlogN，共M次询问，则整体时间复杂度为NlogN + M + N。</p>
-
-<h2>代码</h2>
-
-<pre><code class="c++">#include &lt;iostream&gt;
-#include &lt;string&gt;
-#include &lt;vector&gt;
-#include &lt;unordered_map&gt;
-#include &lt;algorithm&gt;
-using namespace std;
-
-const int MAX_SIZE = 100000;
-
-struct Node {
-    string name;
-    int level = 0;
-    vector&lt;Node*&gt; children;
-
-    Node(string n): name(n) {}
-};
-
-void dfs(Node* root, vector&lt;Node*&gt;&amp; vec) {
-    for (int i = 0; i &lt; root-&gt;children.size(); i++) {
-        root-&gt;children[i]-&gt;level = root-&gt;level + 1;
-        dfs(root-&gt;children[i], vec);
-        vec.push_back(root);
-    }
-    if (root-&gt;children.size() == 0)
-        vec.push_back(root);
-}
-
-unordered_map&lt;string, int&gt; names;
-Node* M[MAX_SIZE][32];
-void rmqSt(Node* root) {
-    vector&lt;Node*&gt; vec;
-    dfs(root, vec);
-
-    int N = vec.size();
-    for (int i = 0; i &lt; N; i++)
-        names[vec[i]-&gt;name] = i;
-
-    int p = -1;
-    int n = N;
-    while (n &gt; 0) {
-        n &gt;&gt;= 1;
-        p++;
-    }
-    for (int i = 0; i &lt; N; i++)
-        M[i][0] = vec[i];
-    for (int i = 1; i &lt;= p; i++) {
-        for (int j = 0; j &lt; N; j++) {
-            if (j + (1 &lt;&lt; i - 1) &lt; N)
-                M[j][i] = M[j][i - 1]-&gt;level &lt; M[j + (1 &lt;&lt; i - 1)][i - 1]-&gt;level ? M[j][i - 1] : M[j + (1 &lt;&lt; i - 1)][i - 1];
-            else
-                M[j][i] = M[j][i - 1];
-        }
-    }
-}
-
-string find(string a, string b) {
-    int l = names[a], r = names[b];
-    if (l &gt; r) {
-        int tmp = l;
-        l = r;
-        r = tmp;
-    }
-    int p = -1;
-    int n = r - l + 1;
-    while (n &gt; 0) {
-        n &gt;&gt;= 1;
-        p++;
-    }
-    Node* ancestor = M[l][p]-&gt;level &lt; M[r - (1 &lt;&lt; p) + 1][p]-&gt;level ? M[l][p] : M[r - (1 &lt;&lt; p) + 1][p];
-    return ancestor-&gt;name;
-}
-
-int main() {
-    int N = 0, M = 0;
-    cin &gt;&gt; N;
-    unordered_map&lt;string, Node*&gt; family;
-    string father, son;
-    cin &gt;&gt; father &gt;&gt; son;
-    Node* root = new Node(father);
-    root-&gt;level = 0;
-    family[son] = new Node(son);
-    root-&gt;children.push_back(family[son]);
-    family[father] = root;
-    for (int i = 1; i &lt; N; i++) {
-        cin &gt;&gt; father &gt;&gt; son;
-        if (family.find(father) == family.end())
-            family[father] = new Node(father);
-        family[son] = new Node(son);
-        family[father]-&gt;children.push_back(family[son]);
-    }
-
-    rmqSt(root);
-
-    cin &gt;&gt; M;
-    for (int i = 0; i &lt; M; i++) {
-        string a, b;
-        cin &gt;&gt; a &gt;&gt; b;
-        cout &lt;&lt; find(a, b) &lt;&lt; endl;
-    }
-
-    for (auto it = family.begin(); it != family.end(); it++)
-        delete it-&gt;second;
-
-    return 0;
-}
-</code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[hihoCoder#1068 - RMQ-ST算法]]></title>
-    <link href="http://wangshenghu.github.io/blog/2016/05/16/hihocoder-rmq-st/"/>
-    <updated>2016-05-16T15:21:26+08:00</updated>
-    <id>http://wangshenghu.github.io/blog/2016/05/16/hihocoder-rmq-st</id>
-    <content type="html"><![CDATA[<h2>题目</h2>
-
-<p>给定N个数字，标号为从1到N，有Q次询问，每次求一个区间[L, R]里最小的数字。<br/>
-具体描述请见<a href="http://hihocoder.com/problemset/problem/1068">hihoCoder</a>。</p>
-
-<!--more-->
-
-
-<h2>解题思路</h2>
-
-<p>直接暴力搜索的话时间复杂度是NQ，对N和Q都很大的情况不适用。RMQ-ST算法的核心思想是对数据进行预处理，对每一个位置i，预先计算所有[i, 2<sup>j</sup>]（0&lt;=j&lt;=logN+1）的最小值，那么对任一个询问[L, R]，答案就是min([L, T], [R-T+1, T])（T为小于[L, R]区间长度的最大的2的整数次幂）。<br/>
-而对每一个位置i计算[i, 2<sup>j</sup>]的过程可以采用动态规划。递推式为：
-<code>m[i, j] = min(m[i, j-1], m[i+2^(j-1), j-1])</code></p>
-
-<h2>时间复杂度</h2>
-
-<p>每次询问用时1，预处理时，对每个位置都要进行计算，计算耗时logN，时间复杂度恰为NlogN。因此整体时间复杂度为NlogN + Q。</p>
-
-<h2>代码</h2>
-
-<pre><code class="c++">#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;
-#include &lt;algorithm&gt;
-using namespace std;
-
-const int MAX_SIZE = 1000001;
-
-int M[MAX_SIZE][32] = { {0} };
-void rmqSt(int* W, int N) {
-    int p = -1;
-    int n = N;
-    while (n &gt; 0) {
-        n &gt;&gt;= 1;
-        p++;
-    }
-    for (int i = 1; i &lt;= N; i++)
-        M[i][0] = W[i];
-    for (int i = 1; i &lt;= p; i++)
-        for (int j = 1; j &lt;= N; j++) {
-            if (j + (1 &lt;&lt; i - 1) &lt;= N)
-                M[j][i] = min(M[j][i - 1], M[j + (1 &lt;&lt; i - 1)][i - 1]);
-            else
-                M[j][i] = M[j][i - 1];
-        }
-}
-
-int find(int L, int R) {
-    int p = -1;
-    int l = R - L + 1;
-    while (l &gt; 0) {
-        l &gt;&gt;= 1;
-        p++;
-    }
-    return min(M[L][p], M[R - (1 &lt;&lt; p) + 1][p]);
-}
-
-int main() {
-    int N = 0, Q = 0;
-    scanf_s("%d", &amp;N);
-    int* W = new int[N + 1];
-    for (int i = 1; i &lt;= N; i++)
-        scanf_s("%d", W + i);
-
-    rmqSt(W, N);
-
-    scanf_s("%d", &amp;Q);
-    for (int i = 1; i &lt;= Q; i++) {
-        int l = 0, r = 0;
-        scanf_s("%d", &amp;l);
-        scanf_s("%d", &amp;r);
-        printf("%d\n", find(l, r));
-    }
 
     return 0;
 }

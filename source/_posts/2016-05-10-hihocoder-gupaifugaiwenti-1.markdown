@@ -7,7 +7,7 @@ categories: [算法, hihoCoder]
 ---
 
 ## 题目
-一个2xN的棋盘，用1x2的骨牌进行覆盖，一共有多少种不同的覆盖方法。  
+一个2\*N的棋盘，用1\*2的骨牌进行覆盖，一共有多少种不同的覆盖方法。  
 具体描述请见[hihoCoder](http://hihocoder.com/problemset/problem/1143)。
 <!--more-->
 ## 解题思路

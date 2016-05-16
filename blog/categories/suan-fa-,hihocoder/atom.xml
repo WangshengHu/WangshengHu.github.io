@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: 算法，hihocoder | Lost & Found]]></title>
+  <link href="http://wangshenghu.github.io/blog/categories/suan-fa-,hihocoder/atom.xml" rel="self"/>
+  <link href="http://wangshenghu.github.io/"/>
+  <updated>2016-05-16T21:05:03+08:00</updated>
+  <id>http://wangshenghu.github.io/</id>
+  <author>
+    <name><![CDATA[WangshengHu]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[hihoCoder#1097 - Prim算法]]></title>
+    <link href="http://wangshenghu.github.io/blog/2016/05/16/hihocoder-prim/"/>
+    <updated>2016-05-16T19:46:33+08:00</updated>
+    <id>http://wangshenghu.github.io/blog/2016/05/16/hihocoder-prim</id>
+    <content type="html"><![CDATA[<h2>题目</h2>
+
+<p>给定一个无向图，求最小生成树。<br/>
+具体描述请见<a href="http://hihocoder.com/problemset/problem/1097">hihoCoder</a>。</p>
+
+<!--more-->
+
+
+<h2>解题思路</h2>
+
+<p>经典的Prim算法。<br/>
+1. 初始化集合X和Y，X = {1}, Y = V - {1}；<br/>
+2. 查找最短的一条边(x, y)，其中x属于X，y属于Y，并将其加入最小生成树。</p>
+
+<h2>时间复杂度</h2>
+
+<p>时间复杂度为N<sup>2</sup>。采用堆实现的话可以减小到MlogN。</p>
+
+<h2>代码</h2>
+
+<pre><code class="c++">#include &lt;iostream&gt;
+#include &lt;algorithm&gt;
+#include &lt;bitset&gt;
+using namespace std;
+
+int prim(int** graph, int N) {
+    bitset&lt;1000&gt; set;
+    set.reset();
+    int* d = new int[N];
+    for (int i = 0; i &lt; N; i++)
+        d[i] = graph[0][i];
+    set[0] = 1;
+    int minCost = 0;
+    for (int i = 1; i &lt; N; i++) {
+        int minNode = 0;
+        int minEdge = -1;
+        for (int j = 0; j &lt; N; j++) {
+            if (set[j])
+                continue;
+            if (minEdge == -1 || (d[j] !=-1 &amp;&amp; minEdge &gt; d[j])) {
+                minEdge = d[j];
+                minNode = j;
+            }
+        }
+        minCost += minEdge;
+        set[minNode] = 1;
+        for (int j = 0; j &lt; N; j++) {
+            if (set[j])
+                continue;
+            if (d[j] == -1 || d[j] &gt; graph[minNode][j]) {
+                d[j] = graph[minNode][j];
+            }
+        }
+    }
+
+    return minCost;
+}
+
+int main() {
+    int N = 0;
+    cin &gt;&gt; N;
+    int** graph = new int*[N];
+    for (int i = 0; i &lt; N; i++) {
+        graph[i] = new int[N];
+        for (int j = 0; j &lt; N; j++) {
+            int edge = 0;
+            cin &gt;&gt; edge;
+            graph[i][j] = edge;
+        }
+    }
+
+    cout &lt;&lt; prim(graph, N) &lt;&lt; endl;
+
+    return 0;
+}
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[hihoCoder#1089 - Floyd算法]]></title>
+    <link href="http://wangshenghu.github.io/blog/2016/05/16/hihocoder-floyd/"/>
+    <updated>2016-05-16T18:55:10+08:00</updated>
+    <id>http://wangshenghu.github.io/blog/2016/05/16/hihocoder-floyd</id>
+    <content type="html"><![CDATA[<h2>题目</h2>
+
+<p>给定一个无向图，两个顶点之间可能有多条边，求任意两个顶点之间的最短路径。  <br/>
+具体描述请见<a href="http://hihocoder.com/problemset/problem/1089">hihoCoder</a>。</p>
+
+<!--more-->
+
+
+<h2>解题思路</h2>
+
+<p>经典的Floyd算法。采用动态规划的思想，假设d[i, j]是从i到j的距离，且路径允许经过的节点数慢慢增加。写成递推式就是<br/>
+<code>d[i, j] = min(d[i, j], d[i, k] + d[k, j])</code></p>
+
+<h2>时间复杂度</h2>
+
+<p>时间复杂度为N<sup>3</sup>，空间复杂度为N<sup>2</sup>。</p>
+
+<h2>代码</h2>
+
+<pre><code class="c++">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+
+void floyd(int** graph, int N) {
+    for (int k = 1; k &lt;= N; k++) {
+        for (int i = 1; i &lt;= N; i++)
+            for (int j = 1; j &lt;= N; j++) {
+                if (graph[i][k] != -1 &amp;&amp; graph[k][j] != -1) {
+                    if (graph[i][j] == -1)
+                        graph[i][j] = graph[i][k] + graph[k][j];
+                    else
+                        graph[i][j] = min(graph[i][j], graph[i][k] + graph[k][j]);
+                }
+            }
+    }
+}
+
+int main() {
+    int N = 0, M = 0;
+    cin &gt;&gt; N &gt;&gt; M;
+    int** graph = new int*[N + 1];
+    for (int i = 1; i &lt; N + 1; i++) {
+        graph[i] = new int[N + 1];
+        for (int j = 1; j &lt; N + 1; j++)
+            graph[i][j] = -1;
+        graph[i][i] = 0;
+    }
+    for (int i = 0; i &lt; M; i++) {
+        int a = 0, b = 0, edge = 0;
+        cin &gt;&gt; a &gt;&gt; b &gt;&gt; edge;
+        if (graph[a][b] == -1) {
+            graph[a][b] = edge;
+            graph[b][a] = edge;
+        }
+        else if (graph[a][b] &gt; edge) {
+            graph[a][b] = edge;
+            graph[b][a] = edge;
+        }
+    }
+
+    floyd(graph, N);
+    for (int i = 1; i &lt;= N; i++) {
+        for (int j = 1; j &lt;= N; j++)
+            cout &lt;&lt; graph[i][j] &lt;&lt; " ";
+        cout &lt;&lt; endl;
+    }
+
+    for (int i = 1; i &lt; N + 1; i++)
+        delete[] graph[i];
+    delete[] graph;
+
+    return 0;
+}
+</code></pre>
+]]></content>
+  </entry>
+  
+</feed>

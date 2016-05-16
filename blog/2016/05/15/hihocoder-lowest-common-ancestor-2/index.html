@@ -10,8 +10,7 @@
 
   
   <meta name="description" content="题目 给定N对节点之间的继承关系（一个节点仅有一个父节点），并且所有这些节点有一个共同的根节点，给定任意两个节点，求它们的最近公共祖先节点。
-具体描述请见hihoCoder。 解题思路 这次用到的算法称为离线算法，因为要求一次收集若干次询问统一处理。仔细思考，可以发现：
-对树进行深度优先搜索， &hellip;">
+具体描述请见hihoCoder。 解题思路 这次用到的算法称为离线算法（Tarjan算法），因为要求一次收集若干次询问统一处理。仔细思考，可以发现： &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -109,7 +108,7 @@
 
 <h2>解题思路</h2>
 
-<p>这次用到的算法称为离线算法，因为要求一次收集若干次询问统一处理。仔细思考，可以发现：<br/>
+<p>这次用到的算法称为离线算法（Tarjan算法），因为要求一次收集若干次询问统一处理。仔细思考，可以发现：<br/>
 对树进行深度优先搜索，并且对节点进行染色（进去时染灰色，离开时染黑色），当遍历到某个询问的节点时，查看另一个节点，若未染色，则继续；若是灰色，则结果就是该灰色节点；若是黑色，则结果就是该黑色节点向上的第一个灰色节点（黑色节点表示其子树已经全部访问完，灰色节点表示当前仍在其子树中）。<br/>
 接下来的问题是如何快速查找一个黑色节点向上的第一个灰色节点。仔细思考，发现当刚要离开一个节点时，其所有子树中的节点向上的第一个灰色节点即为其自身，那么当该节点染黑后，以该节点为根节点的子树中所有节点向上的第一个灰色节点就变成了该节点的父节点。这很类似于并查集。</p>
 
@@ -348,6 +347,8 @@
         <a class="basic-alignment left" href="/blog/2016/05/15/hihocoder-union-set/" title="Previous Post: hihoCoder#1066 - 无间道之并查集">&laquo; hihoCoder#1066 - 无间道之并查集</a>
       
       
+        <a class="basic-alignment right" href="/blog/2016/05/16/hihocoder-rmq-st/" title="Next Post: hihoCoder#1068 - RMQ-ST算法">hihoCoder#1068 - RMQ-ST算法 &raquo;</a>
+      
     </p>
   </footer>
 </article>
@@ -371,9 +372,10 @@
 <section>
   <h1>Categories</h1>
   <ul id="categories">
-    <li class='category'><a href='/blog/categories/hihocoder/'>hihocoder (28)</a></li>
+    <li class='category'><a href='/blog/categories/hihocoder/'>hihocoder (33)</a></li>
 <li class='category'><a href='/blog/categories/bi-ji/'>笔记 (2)</a></li>
-<li class='category'><a href='/blog/categories/suan-fa/'>算法 (28)</a></li>
+<li class='category'><a href='/blog/categories/suan-fa/'>算法 (33)</a></li>
+<li class='category'><a href='/blog/categories/suan-fa-,hihocoder/'>算法，hihocoder (2)</a></li>
 
   </ul>
 </section><section>
@@ -381,23 +383,23 @@
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2016/05/15/hihocoder-lowest-common-ancestor-2/">hihoCoder#1067 - 最近公共祖先·二</a>
+        <a href="/blog/2016/05/16/hihocoder-kruscal/">hihoCoder#1098 - Kruskal算法</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2016/05/15/hihocoder-union-set/">hihoCoder#1066 - 无间道之并查集</a>
+        <a href="/blog/2016/05/16/hihocoder-prim/">hihoCoder#1097 - Prim算法</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2016/05/15/hihocoder-lowest-common-ancestor/">hihocCoder#1062 - 最近公共祖先·一</a>
+        <a href="/blog/2016/05/16/hihocoder-spfa/">hihoCoder#1093 - SPFA算法</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2016/05/15/hihocoder-beautiful-string/">hihoCoder#1061 - Beautiful String</a>
+        <a href="/blog/2016/05/16/hihocoder-floyd/">hihoCoder#1089 - Floyd算法</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2016/05/13/hihocoder-painting/">hihoCoder#1055 - 刷油漆</a>
+        <a href="/blog/2016/05/16/hihocoder-dijkstra/">hihoCoder#1081 - 最短路径·一</a>
       </li>
     
   </ul>

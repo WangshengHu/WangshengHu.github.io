@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 算法 | Lost & Found]]></title>
   <link href="http://wangshenghu.github.io/blog/categories/suan-fa/atom.xml" rel="self"/>
   <link href="http://wangshenghu.github.io/"/>
-  <updated>2016-05-16T21:18:14+08:00</updated>
+  <updated>2016-05-17T19:41:07+08:00</updated>
   <id>http://wangshenghu.github.io/</id>
   <author>
     <name><![CDATA[WangshengHu]]></name>
@@ -14,104 +14,60 @@
 
   
   <entry>
-    <title type="html"><![CDATA[hihoCoder#1098 - Kruskal算法]]></title>
-    <link href="http://wangshenghu.github.io/blog/2016/05/16/hihocoder-kruscal/"/>
-    <updated>2016-05-16T20:24:40+08:00</updated>
-    <id>http://wangshenghu.github.io/blog/2016/05/16/hihocoder-kruscal</id>
+    <title type="html"><![CDATA[hihoCoder#1295 - 数论二·Eular质数筛法]]></title>
+    <link href="http://wangshenghu.github.io/blog/2016/05/17/hihocoder-eular-prime-filter/"/>
+    <updated>2016-05-17T19:18:49+08:00</updated>
+    <id>http://wangshenghu.github.io/blog/2016/05/17/hihocoder-eular-prime-filter</id>
     <content type="html"><![CDATA[<h2>题目</h2>
 
-<p>给定一个无向图，求最小生成树。<br/>
-具体描述请见<a href="http://hihocoder.com/problemset/problem/1098">hihoCoder</a>。</p>
+<p>求解一个区间[1, N]所有质数的个数。<br/>
+具体描述请见<a href="http://hihocoder.com/problemset/problem/1295">hihoCoder</a>。</p>
 
 <!--more-->
 
 
 <h2>解题思路</h2>
 
-<p>经典的Kruskal算法。<br/>
-1. 对图中的边以非降序排列；<br/>
-2. 对排好序的每条边，如果加入最小生成树不会形成环（采用<a href="/blog/2016/05/15/hihocoder-union-set/">Union-Find Set</a>实现），则加入最小生成树。</p>
+<p><strong>Eratosthenes筛法</strong> 如果一个数p是质数，那么将它的倍数全部标记为质数。算法时间复杂度是NloglogN。对一个合数的每一个质因子都会计算一遍，造成了大量冗余。<br/>
+<strong>Eular筛法</strong> 在筛选时，无论是质数还是合数，都对它们的倍数进行标记，不过仅标记它们的质数倍。此外，在从小到大依次枚举质数p来计算i的倍数时，我们还需要检查i是否能够整除p。若i能够整除p，则停止枚举。这样可以确保每个合数仅被标记一次。时间复杂度为N。</p>
 
 <h2>时间复杂度</h2>
 
-<p>时间复杂度为MlogM。</p>
+<p>如上述，时间复杂度为N。</p>
 
 <h2>代码</h2>
 
 <pre><code class="c++">#include &lt;iostream&gt;
-#include &lt;vector&gt;
-#include &lt;algorithm&gt;
 using namespace std;
 
-struct Edge {
-    int a = 0;
-    int b = 0;
-    int length = 0;
-};
-
-class FindUnionSet {
-private:
-    int N;
-    int* nodes;
-
-public:
-    FindUnionSet(int N) {
-        nodes = new int[N + 1];
-        for (int i = 1; i &lt;= N; i++)
-            nodes[i] = i;
-    }
-
-    ~FindUnionSet() {
-        delete[] nodes;
-    }
-
-    int find(int node) {
-        if (nodes[node] == node)
-            return node;
-        nodes[node] = find(nodes[node]);
-        return nodes[node];
-    }
-
-    void unionset(int a, int b) {
-        nodes[find(nodes[a])] = find(nodes[b]);
-    }
-};
-
-bool edgesCmp(const Edge&amp; a, const Edge&amp; b) {
-    return a.length &lt; b.length;
-}
-
-int kruskal(vector&lt;Edge&gt; edges, int N, int M) {
-    sort(edges.begin(), edges.end(), edgesCmp);
-    FindUnionSet set = FindUnionSet(N);
-    int minCost = 0;
-    int i = 0;
-    int k = 0;
-    while (i &lt; N - 1) {
-        if (set.find(edges[k].a) != set.find(edges[k].b)) {
-            set.unionset(edges[k].a, edges[k].b);
-            minCost += edges[k].length;
-            i++;
+int eularPrime(int n) {
+    bool* isPrime = new bool[n + 1];
+    for (int i = 0; i &lt; n + 1; i++)
+        isPrime[i] = true;
+    int* primeList = new int[n + 1];
+    int primeCount = 0;
+    for (int i = 2; i &lt;= n; i++) {
+        if (isPrime[i]) {
+            primeCount++;
+            primeList[primeCount] = i;
         }
-        k++;
+        for (int j = 1; j &lt;= primeCount; j++) {
+            if (i * primeList[j] &gt; n)
+                break;
+            isPrime[i * primeList[j]] = false;
+            if (i % primeList[j] == 0)
+                break;
+        }
     }
 
-    return minCost;
+    return primeCount;
 }
 
 int main() {
-    int N = 0, M = 0;
-    cin &gt;&gt; N &gt;&gt; M;
-    vector&lt;Edge&gt; edges = vector&lt;Edge&gt;(M);
-    for (int i = 0; i &lt; M; i++) {
-        int a = 0, b = 0, edge = 0;
-        cin &gt;&gt; a &gt;&gt; b &gt;&gt; edge;
-        edges[i].a = a;
-        edges[i].b = b;
-        edges[i].length = edge;
-    }
+    int n = 0;
+    cin &gt;&gt; n;
 
-    cout &lt;&lt; kruskal(edges, N, M) &lt;&lt; endl;
+    cout &lt;&lt; eularPrime(n);
 
     return 0;
 }
@@ -120,342 +76,388 @@ int main() {
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[hihoCoder#1097 - Prim算法]]></title>
-    <link href="http://wangshenghu.github.io/blog/2016/05/16/hihocoder-prim/"/>
-    <updated>2016-05-16T19:46:33+08:00</updated>
-    <id>http://wangshenghu.github.io/blog/2016/05/16/hihocoder-prim</id>
+    <title type="html"><![CDATA[hihoCoder#1287 - 数论一·Miller-Rabin质数测试]]></title>
+    <link href="http://wangshenghu.github.io/blog/2016/05/17/hihocoder-miller-rabin/"/>
+    <updated>2016-05-17T19:00:54+08:00</updated>
+    <id>http://wangshenghu.github.io/blog/2016/05/17/hihocoder-miller-rabin</id>
     <content type="html"><![CDATA[<h2>题目</h2>
 
-<p>给定一个无向图，求最小生成树。<br/>
-具体描述请见<a href="http://hihocoder.com/problemset/problem/1097">hihoCoder</a>。</p>
+<p>给定一个数字（很大），判断它是否是质数。<br/>
+具体描述请见<a href="http://hihocoder.com/problemset/problem/1287">hihoCoder</a>。</p>
 
 <!--more-->
 
 
 <h2>解题思路</h2>
 
-<p>经典的Prim算法。<br/>
-1. 初始化集合X和Y，X = {1}, Y = V - {1}；<br/>
-2. 查找最短的一条边(x, y)，其中x属于X，y属于Y，并将其加入最小生成树。</p>
+<p><strong>Miller-Rabin质数测试</strong>是基于费马小定理的一个扩展。<br/>
+<strong>费马小定理</strong> <code>对于质数p和任意整数a，有a^p ≡ a(mod p)。对于质数p和任意正整数a &lt; p,有a^(p-1) ≡ 1(mod p)</code><br/>
+反过来，<code>如果一个数字p满足对任意正整数a &lt; p,有a^(p-1) ≡ 1(mod p)，那p很有可能是质数。</code>这就是<strong>Fermat测试</strong>。<br/>
+<strong>Miller-Rabin质数测试</strong>在Fermat测试的基础上，增加了一个二次探测定理。<br/>
+<strong>二次探测定理</strong> <code>如果p是奇素数，则 x^2 ≡ 1(mod p)的解为 x ≡ 1 或 x ≡ p - 1(mod p)</code><br/>
+如果a<sup>p-1</sup> ≡ 1(mod p)成立，Miller-Rabin算法会检查p-1是否是偶数，如果p-1偶数，那么令u=(p-1)/2，继续检查a<sup>u</sup> ≡ 1或a<sup>u</sup> ≡ n - 1(mod n)是否满足。<br/>
+Miller-Rabin每次测试失误的概率是1/4；进行S次后，失误的概率是4<sup>-S</sup>。<br/>
+如果n &lt; 2<sup>64</sup>，只用选取a=2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37做测试即可。（摘自<a href="http://www.matrix67.com/blog/archives/234">数论部分第一节：素数与素性测试</a>）</p>
 
 <h2>时间复杂度</h2>
 
-<p>时间复杂度为N<sup>2</sup>。采用堆实现的话可以减小到MlogN。</p>
+<p>进行S次测试的时间复杂度为SlogN。</p>
 
 <h2>代码</h2>
 
 <pre><code class="c++">#include &lt;iostream&gt;
-#include &lt;algorithm&gt;
-#include &lt;bitset&gt;
+#include &lt;cmath&gt;
+//#include &lt;ctime&gt;
 using namespace std;
 
-int prim(int** graph, int N) {
-    bitset&lt;1000&gt; set;
-    set.reset();
-    int* d = new int[N];
-    for (int i = 0; i &lt; N; i++)
-        d[i] = graph[0][i];
-    set[0] = 1;
-    int minCost = 0;
-    for (int i = 1; i &lt; N; i++) {
-        int minNode = 0;
-        int minEdge = -1;
-        for (int j = 0; j &lt; N; j++) {
-            if (set[j])
-                continue;
-            if (minEdge == -1 || (d[j] !=-1 &amp;&amp; minEdge &gt; d[j])) {
-                minEdge = d[j];
-                minNode = j;
-            }
-        }
-        minCost += minEdge;
-        set[minNode] = 1;
-        for (int j = 0; j &lt; N; j++) {
-            if (set[j])
-                continue;
-            if (d[j] == -1 || d[j] &gt; graph[minNode][j]) {
-                d[j] = graph[minNode][j];
-            }
-        }
+long long mulRem(long long a, long long b, long long p) {
+    if (b == 0)
+        return 0;
+    if (b == 1)
+        return a % p;
+
+    if ((b &amp; 1) == 0)
+        return mulRem((a &lt;&lt; 1) % p, b &gt;&gt; 1, p);
+    else
+        return (mulRem((a &lt;&lt; 1) % p, b &gt;&gt; 1, p) + a) % p;
+}
+
+long long powRem(long long a, long long power, long long p) {
+    if (power == 0)
+        return 1;
+    if (power == 1)
+        return a % p;
+
+    if ((power &amp; 1) == 0)
+        return powRem(mulRem(a, a, p), power &gt;&gt; 1, p);
+    else
+        return mulRem(powRem(mulRem(a, a, p), power &gt;&gt; 1, p), a, p);
+}
+
+bool minerRabin(long long n, int S) {
+    const int A[] = { 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37 };
+
+    if (n &lt;= 2) {
+        if (n == 2)
+            return true;
+        else
+            return false;
     }
 
-    return minCost;
+    if ((n &amp; 1) == 0)
+        return false;
+
+    long long u = n - 1;
+    while ((u &amp; 1) == 0)
+        u = u &gt;&gt; 1;
+
+    // srand(time(NULL));
+    for (int i = 0; i &lt; S; i++) {
+        long long v = u;
+        // long long a = rand() % (n - 2) + 2;
+        int a = A[i];
+        if (a &gt;= n)
+            break;
+        long long x = powRem(a, v, n);
+        v = v &lt;&lt; 1;
+        while (v &lt; n) {
+            long long y = mulRem(x, x, n);
+            if (y == 1 &amp;&amp; x != 1 &amp;&amp; x != n - 1)
+                return false;
+            x = y;
+            v = v &lt;&lt; 1;
+        }
+        if (x != 1)
+            return false;
+    }
+
+    return true;
 }
 
 int main() {
-    int N = 0;
-    cin &gt;&gt; N;
-    int** graph = new int*[N];
+    // long t1 = time(NULL);
+    int t = 0;
+    cin &gt;&gt; t;
+    long long *a = new long long[t];
+    for (int i = 0; i &lt; t; i++)
+        cin &gt;&gt; a[i];
+    for (int i = 0; i &lt; t; i++)
+        cout &lt;&lt; (minerRabin(a[i], 12) ? "Yes" : "No") &lt;&lt; endl;
+    delete[] a;
+    // long t2 = time(NULL);
+    // cout &lt;&lt; t2 - t1 &lt;&lt; "ms";
+    return 0;
+}
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[hihoCoder#1177 - 顺子]]></title>
+    <link href="http://wangshenghu.github.io/blog/2016/05/17/hihocoder-straight/"/>
+    <updated>2016-05-17T18:49:37+08:00</updated>
+    <id>http://wangshenghu.github.io/blog/2016/05/17/hihocoder-straight</id>
+    <content type="html"><![CDATA[<h2>题目</h2>
+
+<p>假设已经有4张牌，计算得到下一张牌后是顺子的概率是多少（不包含同花顺）。<br/>
+具体描述请见<a href="http://hihocoder.com/problemset/problem/1177">hihoCoder</a>。</p>
+
+<!--more-->
+
+
+<h2>解题思路</h2>
+
+<p>普通的分情况讨论。记得<strong>仔细，仔细，再仔细</strong>。</p>
+
+<h2>时间复杂度</h2>
+
+<p>时间复杂度为1。</p>
+
+<h2>代码</h2>
+
+<pre><code class="c++">#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;unordered_map&gt;
+using namespace std;
+
+unordered_map&lt;char, int&gt; map;
+
+int getNumber(string card, char&amp; color) {
+    color = card[card.size() - 1];
+    int number = 0;
+    if (card.size() == 3)
+        number = 10;
+    else
+        number = map[card[0]];
+
+    return number;
+}
+
+void probability(string* cards, int&amp; up, int&amp; down) {
+    int numbers[4];
+    bool sameColor = true;
+    char color = ' ';
+    for (int i = 0; i &lt; 4; i++) {
+        char colorTmp;
+        numbers[i] = getNumber(cards[i], colorTmp);
+        if (color != ' ' &amp;&amp; colorTmp != color)
+            sameColor = false;
+        color = colorTmp;
+    }
+
+    for (int i = 0; i &lt; 4; i++) {
+        int minN = numbers[i];
+        int minI = i;
+        for (int j = i; j &lt; 4; j++) {
+            if (numbers[j] &lt; minN) {
+                minN = numbers[j];
+                minI = j;
+            }
+        }
+        numbers[minI] = numbers[i];
+        numbers[i] = minN;
+    }
+    if (numbers[0] == 1 &amp;&amp; (numbers[1] == 11 &amp;&amp; numbers[2] == 12 &amp;&amp; numbers[3] == 13) ||
+        (numbers[1] == 2 &amp;&amp; numbers[2] == 3 &amp;&amp; numbers[3] == 4) || 
+        (numbers[1] == 10 &amp;&amp; numbers[2] == 11 &amp;&amp; numbers[3] == 12) ||
+        (numbers[1] == 10 &amp;&amp; numbers[2] == 11 &amp;&amp; numbers[3] == 13) ||
+        (numbers[1] == 10 &amp;&amp; numbers[2] == 12 &amp;&amp; numbers[3] == 13)) {
+        if (sameColor) {
+            up = 1;
+            down = 16;
+        }
+        else {
+            up = 1;
+            down = 12;
+        }
+        return;
+    }
+
+    bool straight = true;
+    for (int i = 0; i &lt; 3; i++)
+        if (numbers[i + 1] - numbers[i] != 1) {
+            straight = false;
+            break;
+        }
+
+    if (straight) {
+        if (sameColor) {
+            up = 1;
+            down = 8;
+        }
+        else {
+            up = 1;
+            down = 6;
+        }
+    }
+    else {
+        bool unStraight = false;
+        for (int i = 0; i &lt; 3; i++) {
+            if (numbers[i + 1] - numbers[i] == 2) {
+                if (!unStraight)
+                    unStraight = true;
+                else {
+                    unStraight = false;
+                    break;
+                }
+            }
+            else if (numbers[i + 1] - numbers[i] != 1) {
+                unStraight = false;
+                break;
+            }
+        }
+        if (unStraight) {
+            if (sameColor) {
+                up = 1;
+                down = 16;
+            }
+            else {
+                up = 1;
+                down = 12;
+            }
+        }
+        else {
+            up = 0;
+            down = 1;
+        }
+    }
+}
+
+int main() {
+    for (int i = 2; i &lt; 10; i++)
+        map.insert(make_pair((char) ('0' + i), i));
+    map.insert(make_pair('A', 1));
+    map.insert(make_pair('J', 11));
+    map.insert(make_pair('Q', 12));
+    map.insert(make_pair('K', 13));
+    string cards[4];
+    for (int i = 0; i &lt; 4; i++)
+        cin &gt;&gt; cards[i];
+
+    int up = 0, down = 0;
+    probability(cards, up, down);
+
+    cout &lt;&lt; up &lt;&lt; "/" &lt;&lt; down &lt;&lt; endl;
+
+    return 0;
+}
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[hihoCoder#1164 - 随机斐波那契]]></title>
+    <link href="http://wangshenghu.github.io/blog/2016/05/17/hihocoder-random-fibonacci/"/>
+    <updated>2016-05-17T18:35:29+08:00</updated>
+    <id>http://wangshenghu.github.io/blog/2016/05/17/hihocoder-random-fibonacci</id>
+    <content type="html"><![CDATA[<h2>题目</h2>
+
+<p>考虑如下生成的斐波那契数列:<br/>
+<code>a[0] = 1, a[i] = a[j] + a[k], i &gt; 0, j, k从[0, i-1]的整数中随机选出（j和k独立）</code><br/>
+现在给定n，要求求出E(a<sub>n</sub>)，即各种可能的a数列中a<sub>n</sub>的期望值。<br/>
+具体描述请见<a href="http://hihocoder.com/problemset/problem/1164">hihoCoder</a>。</p>
+
+<!--more-->
+
+
+<h2>解题思路</h2>
+
+<p>本题其实很简单。考虑期望的定义，可以得到递推式：<br/>
+<code>f[i] = 1/i * sum(f[0], f[1], ..., f[i-1] + 1/i * sum(f[0], f[1], ..., f[i-1]</code></p>
+
+<h2>时间复杂度</h2>
+
+<p>时间复杂度为N，空间复杂度为1。</p>
+
+<h2>代码</h2>
+
+<pre><code class="c++">#include &lt;iostream&gt;
+using namespace std;
+
+float randomFib(int n) {
+    float sum = 1;
+    float fib = 0;
+    for (int i = 1; i &lt;= n; i++) {
+        fib = 2 * sum / i;
+        sum += fib;
+    }
+
+    return fib;
+}
+
+int main() {
+    int n = 0;
+    cin &gt;&gt; n;
+
+    cout &lt;&lt; randomFib(n) &lt;&lt; endl;
+
+    return 0;
+}
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[hihoCoder#1149 - 回文字符序列]]></title>
+    <link href="http://wangshenghu.github.io/blog/2016/05/17/hihocoder-palindrome-sub-sequence/"/>
+    <updated>2016-05-17T18:18:05+08:00</updated>
+    <id>http://wangshenghu.github.io/blog/2016/05/17/hihocoder-palindrome-sub-sequence</id>
+    <content type="html"><![CDATA[<h2>题目</h2>
+
+<p>给定字符串，求它的回文子序列个数。<br/>
+具体描述请见<a href="http://hihocoder.com/problemset/problem/1149">hihoCoder</a>。</p>
+
+<!--more-->
+
+
+<h2>解题思路</h2>
+
+<p>本题与求最长回文子序列很类似，只要在算法上稍作修改即可。<br/>
+仍然采用动态规划的思想。在求f[i, j]时，注意到包含第i个字符且不包含第j个字符的回文子序列个数为f[i, j-1] - f[i+1, j-1]，包含第j个字符且不包含第i个字符的回文子序列个数为f[i+1, j] - f[i+1, j-1]，均不包含则是f[i+1, j-1]，均包含则是f[i+1, j-1] + 1。因此列出递推式：<br/>
+<code>f[i, j] = f[i, j-1] + f[i+1, j] - f[i+1, j-1]  如果str[i] != str[j]</code><br/>
+<code>f[i, j] = f[i, j-1] + f[i+1, j] + 1  如果str[i] == str[j]</code><br/>
+<strong>注意，凡是涉及到动态规划的问题最好都要画出递推进行的矩阵，弄明白起始点和结束点，以及递推方向。</strong></p>
+
+<h2>时间复杂度</h2>
+
+<p>时间复杂度为N<sup>2</sup>，空间复杂度为N<sup>2</sup>，可进一步优化为2N。</p>
+
+<h2>代码</h2>
+
+<pre><code class="c++">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+int calSum(string str) {
+    int N = str.size();
+    int** S = new int*[N];
     for (int i = 0; i &lt; N; i++) {
-        graph[i] = new int[N];
-        for (int j = 0; j &lt; N; j++) {
-            int edge = 0;
-            cin &gt;&gt; edge;
-            graph[i][j] = edge;
+        S[i] = new int[N];
+        for (int j = 0; j &lt; N; j++)
+            S[i][j] = 0;
+        S[i][i] = 1;
+    }
+    for (int i = N - 2; i &gt;= 0; i--) {
+        for (int j = i + 1; j &lt; N; j++) {
+            S[i][j] = (S[i + 1][j] + S[i][j - 1] - S[i + 1][j - 1]);
+            if (str[i] == str[j])
+                S[i][j] += S[i + 1][j - 1] + 1;
+            S[i][j] = (S[i][j] + 100007) % 100007;
         }
     }
 
-    cout &lt;&lt; prim(graph, N) &lt;&lt; endl;
-
-    return 0;
-}
-</code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[hihoCoder#1093 - SPFA算法]]></title>
-    <link href="http://wangshenghu.github.io/blog/2016/05/16/hihocoder-spfa/"/>
-    <updated>2016-05-16T19:12:45+08:00</updated>
-    <id>http://wangshenghu.github.io/blog/2016/05/16/hihocoder-spfa</id>
-    <content type="html"><![CDATA[<h2>题目</h2>
-
-<p>给定一个无向图，两个顶点之间可能有多条边，求顶点1到顶点N的最短路径。给定的图中边的数量较少。<br/>
-具体描述请见<a href="http://hihocoder.com/problemset/problem/1093">hihoCoder</a>。</p>
-
-<!--more-->
-
-
-<h2>解题思路</h2>
-
-<p>SPFA算法，即Shortest Path Faster Algorithm。对图进行广度优先搜索，并且在搜索的过程中实时更新所有顶点到顶点1的最短距离。具体来说，是在一个顶点出队时查看它的所有邻接顶点，并更新它们的最短距离，如果它们不在队列中则入队。</p>
-
-<h2>时间复杂度</h2>
-
-<p>时间复杂度为O(kE)，k是个比较小的系数（并且在绝大多数的图中，k&lt;=2，然而在一些精心构造的图中可能会上升到很高）（摘自<a href="https://zh.wikipedia.org/wiki/%E8%B4%9D%E5%B0%94%E6%9B%BC-%E7%A6%8F%E7%89%B9%E7%AE%97%E6%B3%95">维基百科</a>）。</p>
-
-<h2>代码</h2>
-
-<pre><code class="c++">#include &lt;iostream&gt;
-#include &lt;vector&gt;
-#include &lt;queue&gt;
-using namespace std;
-
-struct Node {
-    int d = -1;
-    bool inQueue = false;
-    vector&lt;Node*&gt; neighbors;
-    vector&lt;int&gt; edges;
-};
-
-int spfa(Node* graph, int s, int t) {
-    Node* S = graph + s;
-    S-&gt;d = 0;
-    queue&lt;Node*&gt; queue;
-    queue.push(S);
-    while (!queue.empty()) {
-        Node* cur = queue.front();
-        cur-&gt;inQueue = false;
-        queue.pop();
-        for (int i = 0; i &lt; cur-&gt;neighbors.size(); i++) {
-            if (cur-&gt;neighbors[i]-&gt;d == -1 || cur-&gt;neighbors[i]-&gt;d &gt; cur-&gt;d + cur-&gt;edges[i]) {
-                cur-&gt;neighbors[i]-&gt;d = cur-&gt;d + cur-&gt;edges[i];
-                if (!cur-&gt;neighbors[i]-&gt;inQueue) {
-                    cur-&gt;neighbors[i]-&gt;inQueue = true;
-                    queue.push(cur-&gt;neighbors[i]);
-                }
-            }
-        }
-    }
-
-    return graph[t].d;
+    return S[0][N - 1];
 }
 
 int main() {
-    int N = 0, M = 0, S = 0, T = 0;
-    cin &gt;&gt; N &gt;&gt; M &gt;&gt; S &gt;&gt; T;
-    Node* graph = new Node[N + 1];
-    for (int i = 0; i &lt; M; i++) {
-        int a = 0, b = 0, edge = 0;
-        cin &gt;&gt; a &gt;&gt; b &gt;&gt; edge;
-        graph[a].neighbors.push_back(graph + b);
-        graph[a].edges.push_back(edge);
-        graph[b].neighbors.push_back(graph + a);
-        graph[b].edges.push_back(edge);
+    int T = 0;
+    cin &gt;&gt; T;
+    for (int i = 1; i &lt;= T; i++) {
+        string str;
+        cin &gt;&gt; str;
+
+        cout &lt;&lt; "Case #" &lt;&lt; i &lt;&lt; ": " &lt;&lt; calSum(str) &lt;&lt; endl;
     }
-
-    cout &lt;&lt; spfa(graph, S, T) &lt;&lt; endl;
-
-    return 0;
-}
-</code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[hihoCoder#1089 - Floyd算法]]></title>
-    <link href="http://wangshenghu.github.io/blog/2016/05/16/hihocoder-floyd/"/>
-    <updated>2016-05-16T18:55:10+08:00</updated>
-    <id>http://wangshenghu.github.io/blog/2016/05/16/hihocoder-floyd</id>
-    <content type="html"><![CDATA[<h2>题目</h2>
-
-<p>给定一个无向图，两个顶点之间可能有多条边，求任意两个顶点之间的最短路径。  <br/>
-具体描述请见<a href="http://hihocoder.com/problemset/problem/1089">hihoCoder</a>。</p>
-
-<!--more-->
-
-
-<h2>解题思路</h2>
-
-<p>经典的Floyd算法。采用动态规划的思想，假设d[i, j]是从i到j的距离，且路径允许经过的节点数慢慢增加。写成递推式就是<br/>
-<code>d[i, j] = min(d[i, j], d[i, k] + d[k, j])</code></p>
-
-<h2>时间复杂度</h2>
-
-<p>时间复杂度为N<sup>3</sup>，空间复杂度为N<sup>2</sup>。</p>
-
-<h2>代码</h2>
-
-<pre><code class="c++">#include &lt;iostream&gt;
-#include &lt;vector&gt;
-#include &lt;algorithm&gt;
-using namespace std;
-
-void floyd(int** graph, int N) {
-    for (int k = 1; k &lt;= N; k++) {
-        for (int i = 1; i &lt;= N; i++)
-            for (int j = 1; j &lt;= N; j++) {
-                if (graph[i][k] != -1 &amp;&amp; graph[k][j] != -1) {
-                    if (graph[i][j] == -1)
-                        graph[i][j] = graph[i][k] + graph[k][j];
-                    else
-                        graph[i][j] = min(graph[i][j], graph[i][k] + graph[k][j]);
-                }
-            }
-    }
-}
-
-int main() {
-    int N = 0, M = 0;
-    cin &gt;&gt; N &gt;&gt; M;
-    int** graph = new int*[N + 1];
-    for (int i = 1; i &lt; N + 1; i++) {
-        graph[i] = new int[N + 1];
-        for (int j = 1; j &lt; N + 1; j++)
-            graph[i][j] = -1;
-        graph[i][i] = 0;
-    }
-    for (int i = 0; i &lt; M; i++) {
-        int a = 0, b = 0, edge = 0;
-        cin &gt;&gt; a &gt;&gt; b &gt;&gt; edge;
-        if (graph[a][b] == -1) {
-            graph[a][b] = edge;
-            graph[b][a] = edge;
-        }
-        else if (graph[a][b] &gt; edge) {
-            graph[a][b] = edge;
-            graph[b][a] = edge;
-        }
-    }
-
-    floyd(graph, N);
-    for (int i = 1; i &lt;= N; i++) {
-        for (int j = 1; j &lt;= N; j++)
-            cout &lt;&lt; graph[i][j] &lt;&lt; " ";
-        cout &lt;&lt; endl;
-    }
-
-    for (int i = 1; i &lt; N + 1; i++)
-        delete[] graph[i];
-    delete[] graph;
-
-    return 0;
-}
-</code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[hihoCoder#1081 - 最短路径·一]]></title>
-    <link href="http://wangshenghu.github.io/blog/2016/05/16/hihocoder-dijkstra/"/>
-    <updated>2016-05-16T17:21:52+08:00</updated>
-    <id>http://wangshenghu.github.io/blog/2016/05/16/hihocoder-dijkstra</id>
-    <content type="html"><![CDATA[<h2>题目</h2>
-
-<p>给定一个无向图，两个顶点之间可能有多条边，求顶点1到顶点N的最短路径。<br/>
-具体描述请见<a href="http://hihocoder.com/problemset/problem/1081">hihoCoder</a>。</p>
-
-<!--more-->
-
-
-<h2>解题思路</h2>
-
-<p>经典Dijkstra算法。<br/>
-1. 初始化集合X和Y，X = {1}, Y = V - {1}；<br/>
-2. 对顶点1的所有相邻顶点，更新d[i] = 边长；否则d[i] = 无穷大；<br/>
-3. 从Y中选取一个d最小的顶点v，将v从Y中删除并加入X，更新所有与v相邻顶点的d。<br/>
-注意我在实现时采用了C++ STL的priority_queue结构。由于priority_queue不提供随机访问的功能（即获取其中一个元素的具体位置）这样会导致第3步中每次更新时都要进行一次入队操作。</p>
-
-<h2>时间复杂度</h2>
-
-<p>朴素的实现是N<sup>2</sup>，如果采用堆实现的话可以减小到MlogN。</p>
-
-<h2>代码</h2>
-
-<pre><code class="c++">#include &lt;iostream&gt;
-#include &lt;vector&gt;
-#include &lt;queue&gt;
-#include &lt;bitset&gt;
-using namespace std;
-
-struct Node {
-    int id = -1;
-    int d = -1;
-    vector&lt;int&gt; neighbors;
-    vector&lt;int&gt; edges;
-};
-
-struct NodeCmp {
-    bool operator()(const Node &amp;a, const Node &amp;b) const {
-        return b.d &lt; a.d;
-    }
-};
-
-int dijkstra(Node* graph, int N, int s, int t) {
-    bitset&lt;1001&gt; set;
-    set.reset();
-    priority_queue&lt;Node, vector&lt;Node&gt;, NodeCmp&gt; heap;
-    graph[s].d = 0;
-    set[s] = 1;
-    for (int i = 0; i &lt; graph[s].neighbors.size(); i++) {
-        graph[graph[s].neighbors[i]].d = graph[s].edges[i];
-        heap.push(graph[graph[s].neighbors[i]]);
-    }
-
-    int i = 0;
-    while (i &lt; N - 1) {
-        Node nearestNode = heap.top();
-        heap.pop();
-        if (set[nearestNode.id])
-            continue;
-        i++;
-        set[nearestNode.id] = 1;
-        for (int j = 0; j &lt; nearestNode.neighbors.size(); j++) {
-            if (graph[nearestNode.neighbors[j]].d == -1 || nearestNode.edges[j] + nearestNode.d &lt; graph[nearestNode.neighbors[j]].d)
-                graph[nearestNode.neighbors[j]].d = nearestNode.edges[j] + nearestNode.d;
-            heap.push(graph[nearestNode.neighbors[j]]);
-        }
-    }
-
-    return graph[t].d;
-}
-
-int main() {
-    int N = 0, M = 0, S = 0, T = 0;
-    cin &gt;&gt; N &gt;&gt; M &gt;&gt; S &gt;&gt; T;
-    Node* graph = new Node[N + 1];
-    for (int i = 0; i &lt; N + 1; i++)
-        graph[i].id = i;
-    for (int i = 0; i &lt; M; i++) {
-        int a = 0, b = 0, edge = 0;
-        cin &gt;&gt; a &gt;&gt; b &gt;&gt; edge;
-        graph[a].neighbors.push_back(b);
-        graph[a].edges.push_back(edge);
-        graph[b].neighbors.push_back(a);
-        graph[b].edges.push_back(edge);
-    }
-
-    cout &lt;&lt; dijkstra(graph, N, S, T) &lt;&lt; endl;
 
     return 0;
 }

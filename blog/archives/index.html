@@ -803,13 +803,7 @@ May 17 2016 posted in &hellip;">
     <section>
   <h1>About Me</h1>
   <p>上海交通大学软件学院在读研究生一枚。</p>
-  <p>喜欢玩炉石传说，喜欢看Marvel也喜欢看日漫，喜欢跑步.</p>
-</section>
-<section>
-  <h1>Music</h1>
-  <ul id="cloud_music">
-    <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=280 height=52 src="http://music.163.com/outchain/player?type=2&id=31209775&auto=0&height=32"></iframe>
-  </ul>
+  <p>喜欢玩炉石传说，喜欢看Marvel也喜欢看日漫，喜欢跑步。</p>
 </section>
 <section>
   <h1>Categories</h1>
@@ -875,16 +869,18 @@ May 17 2016 posted in &hellip;">
   <script src="/javascripts/github.js" type="text/javascript"> </script>
 </section>
 
-
-
-
+<section>
+  <h1>Musics</h1>
+  <ul id="cloud_music">
+    <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=280 height=52 src="http://music.163.com/outchain/player?type=2&id=31209775&auto=0&height=32"></iframe>
+  </ul>
+</section>
 <section>
   <h1>Friend Links</h1>
   <ul>
   	<li>
-  		<p><a href="http://smwlover.github.io/">大神室友的博客</a></p>
-  		<p>一个半只脚已经踏进二次元的，精通日本麻将的，coding能力超强的偶尔看看肉番的男人。一个脱离了低级趣味的、大写的人。</p>
-  		<p align="right">—— 某人</p>
+  		<a href="http://smwlover.github.io/">大神室友的博客</a>
+  		<p>一个半只脚已经踏进二次元的大神级coder，会日语，精通日本麻将，大家可以去逛逛，膜拜一下。</p>
   	</li>
   </ul>
 </section>
@@ -895,7 +891,87 @@ May 17 2016 posted in &hellip;">
 
     </div>
   </div>
-  <footer role="contentinfo"><p>
+  <footer role="contentinfo"><script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+
+  // hide #back-top first
+  $("#back-top").hide();
+  
+  // fade in #back-top
+  $(function () {
+      $(window).scroll(function () {
+          if ($(this).scrollTop() > 100) {
+              $('#back-top').fadeIn();
+          } else {
+              $('#back-top').fadeOut();
+          }
+      });
+
+      // scroll body to 0px on click
+      $('#back-top a').click(function () {
+          $('body,html').animate({
+              scrollTop: 0
+          }, 800);
+          return false;
+      });
+  });
+
+});
+</script>
+
+<style type="text/css">
+#back-top {
+  position: fixed;
+  bottom: 50px;
+  right: 100px;
+}
+
+#back-top a {
+  width: 80px;
+  display: block;
+  text-align: center;
+  font: 11px/100% Arial, Helvetica, sans-serif;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: rgba(#bbb, 0);
+
+  /* transition */
+  -webkit-transition: 1s;
+  -moz-transition: 1s;
+  transition: 1s;
+}
+
+/* arrow icon (span tag) */
+#back-top span {
+  width: 80px;
+  height: 80px;
+  display: block;
+  margin-bottom: 7px;
+  background: #ddd url(/images/top.png) no-repeat center center;
+
+  /* rounded corners */
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 15px;
+
+  /* transition */
+  -webkit-transition: 1s;
+  -moz-transition: 1s;
+  transition: 1s;
+}
+#back-top a:hover span {
+  background-color: #888;
+}
+</style>
+
+<p id="back-top">
+  <a href="#top"><span></span></a>
+</p>
+
+
+<p>
   Copyright &copy; 2016 - WangshengHu -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>

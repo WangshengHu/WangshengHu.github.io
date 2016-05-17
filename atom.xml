@@ -4,7 +4,7 @@
   <title><![CDATA[Lost & Found]]></title>
   <link href="http://wangshenghu.github.io/atom.xml" rel="self"/>
   <link href="http://wangshenghu.github.io/"/>
-  <updated>2016-05-17T20:09:05+08:00</updated>
+  <updated>2016-05-17T21:42:54+08:00</updated>
   <id>http://wangshenghu.github.io/</id>
   <author>
     <name><![CDATA[WangshengHu]]></name>
@@ -923,6 +923,9 @@ Miller-Rabin每次测试失误的概率是1/4；进行S次后，失误的概率�
 另外在每一个战略点会发生一次战斗，需要消耗1/K的燃料和子弹。必须在燃料和子弹未用完的情况下进入boss点才能与boss进行战斗，所以舰队最多只能走过K条航路。
 现在Nettle想要以最高的战力来进攻boss点，所以他希望能够找出一条从起始点(编号为1的点)到boss点的航路，使得舰队需要达到的索敌值最低，并且有剩余的燃料和子弹。<br/>
 具体描述请见<a href="http://hihocoder.com/problemset/problem/1139">hihoCoder</a>。</p>
+
+<!--more-->
+
 
 <h2>解题思路</h2>
 

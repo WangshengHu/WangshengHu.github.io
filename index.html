@@ -9,8 +9,8 @@
   <meta name="author" content="WangshengHu">
 
   
-  <meta name="description" content="题目 求解一个区间[1, N]所有质数的个数。
-具体描述请见hihoCoder。 ">
+  <meta name="description" content="时间 2016年7月 - 2016年8月 项目 一个小型nginx日志收集处理系统，用于收集美购网的用户行为日志。 具体工作 为公司的两台nginx日志服务器搭建的一个伪分布式的实时的小型日志收集处理系统，以方便今后的实时日志分析。
+架构设计采用flume->kafka->flume->hdfs &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -47,6 +47,7 @@
 
 </head>
 
+
 <body   >
   <header role="banner"><hgroup>
   <h1><a href="/">Lost & Found</a></h1>
@@ -79,6 +80,206 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2016/09/06/internship-meigo/">实习经历 - 美购</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-09-06T19:54:13+08:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>7:54 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>时间</h2>
+
+<p>2016年7月 - 2016年8月</p>
+
+<h2>项目</h2>
+
+<p>一个小型nginx日志收集处理系统，用于收集美购网的用户行为日志。</p>
+
+<h2>具体工作</h2>
+
+<p>为公司的两台nginx日志服务器搭建的一个伪分布式的实时的小型日志收集处理系统，以方便今后的实时日志分析。<br/>
+架构设计采用flume->kafka->flume->hdfs->hive的形式。<br/>
+两台nginx日志服务器各配置一个flume agent，采用tail -F命令实时收集原始日志作为source，并sink到第三台机器的kafka中间件，然后再接一个flume agnet，将数据以分钟为单位sink到hdfs。然后采用map reduce程序对hdfs里的原始数据进行分析，提取键值对，并入库（hive）永久化存储。</p>
+
+<h2>语言技术</h2>
+
+<p>语言：Java<br/>
+技术：flume，kafka，hadoop，hive</p>
+
+<h2>开发及同步工具</h2>
+
+<p>开发：linux，vim
+同步：git</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2016/09/06/internship-msra/">实习经历 - MSRA</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-09-06T17:38:18+08:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>5:38 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>时间</h2>
+
+<p>2015年6月 - 2016年3月</p>
+
+<h2>项目</h2>
+
+<p><a href="http://bda-codehow.cloudapp.net/">CodeHow</a>，一个自然语言查询的代码搜索引擎。</p>
+
+<h2>具体工作</h2>
+
+<p>CodeHow是一个用于自然语言查询的代码搜索工具。目前支持C#、C++、Java、JavaScript。同时它还可用于Api Example查询。<br/>
+前端采用MVC框架，负责接收用户输入并与后台搜索引擎交互。<br/>
+后台采用<a href="https://www.elastic.co/products/elasticsearch">Elasticsearch</a>以及Sql Server。其中基于自然语言搜索的代码库使用elasticsearch，而Api Example部分的代码库使用sql server。<br/>
+代码库源代码收集：Nodejs脚本编写的github爬虫。<br/>
+代码库数据分析：C#和VB采用<a href="https://roslyn.codeplex.com/">Roslyn</a>以及<a href="https://www.nuget.org/">Nuget</a>，Java采用jdk，C++采用Clang，JavaScript采用<a href="http://esprima.org/demo/parse.html">esprima</a>。<br/>
+部分研究工作：通过NLP领域的词向量提取方法（如流行的word2vec）尝试提取软件工程领域的同义词，并应用到代码搜索上以提高搜索精度。</p>
+
+<h2>语言技术</h2>
+
+<p>语言：C#，Java，Javascript<br/>
+技术：MVC，AST分析，信息检索，自然语言处理</p>
+
+<h2>开发及同步工具</h2>
+
+<p>开发：Visual Studio 2015/eclipse/sublime
+同步：git</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2016/09/06/internship-intel/">实习经历 - Intel</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-09-06T17:08:48+08:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>5:08 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>时间</h2>
+
+<p>2014年10月 - 2015年6月</p>
+
+<h2>公司</h2>
+
+<p>上海紫竹intel</p>
+
+<h2>项目</h2>
+
+<p>参与开源项目<a href="http://dpdk.org/">DPDK</a>（Data Plane Development Kit）的开发与测试。DPDK是一系列用来支持快速网络包处理的库及驱动。</p>
+
+<h2>具体工作</h2>
+
+<p>DPDK测试用例编写及性能分析，如l3fwd（层三转发）。<br/>
+DPDK中igb driver的rx_queue中断功能。<br/>
+DPDK中对Ethernet+NSH包头的faked encapsulation和faked decapsulation。</p>
+
+<h2>语言技术</h2>
+
+<p>语言：C<br/>
+技术：linux内核驱动</p>
+
+<h2>开发及同步工具</h2>
+
+<p>开发：vim/gcc
+同步：git</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2016/09/06/internship-dazhongdianping/">实习经历 - 大众点评</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-09-06T16:48:07+08:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>4:48 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>时间</h2>
+
+<p>2013年7月 - 2013年9月</p>
+
+<h2>公司</h2>
+
+<p>上海大众点评</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2016/09/06/internship-dazhongdianping/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -304,161 +505,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2016/05/17/hihocoder-binary-search-answer/">hihoCoder#1139 - 二分·二分答案</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2016-05-17T16:19:44+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>4:19 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>题目</h2>
-
-<p>在游戏《艦これ》中，海域是N个战略点(编号1..N)组成，如下图所示<br/>
-<img src="/images/hihocoder-binary-search-answer-1.png"><br/>
-其中红色的点表示有敌人驻扎，猫头像的的点表示该地图敌军主力舰队(boss)的驻扎点，虚线表示各个战略点之间的航线(无向边)。
-在游戏中要从一个战略点到相邻战略点需要满足一定的条件，即需要舰队的索敌值大于等于这两点之间航线的索敌值需求。
-由于提高索敌值需要将攻击机、轰炸机换成侦察机，舰队索敌值越高，也就意味着舰队的战力越低。
-另外在每一个战略点会发生一次战斗，需要消耗1/K的燃料和子弹。必须在燃料和子弹未用完的情况下进入boss点才能与boss进行战斗，所以舰队最多只能走过K条航路。
-现在Nettle想要以最高的战力来进攻boss点，所以他希望能够找出一条从起始点(编号为1的点)到boss点的航路，使得舰队需要达到的索敌值最低，并且有剩余的燃料和子弹。<br/>
-具体描述请见<a href="http://hihocoder.com/problemset/problem/1139">hihoCoder</a>。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2016/05/17/hihocoder-binary-search-answer/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2016/05/17/hihocoder-binary-search-kth/">hihoCoder#1133 - 二分·二分查找之k小数</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2016-05-17T16:13:20+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>4:13 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>题目</h2>
-
-<p>给定一个数组，求排好序的该数组中第k小的数。<br/>
-具体描述请见<a href="http://hihocoder.com/problemset/problem/1133">hihoCoder</a>。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2016/05/17/hihocoder-binary-search-kth/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2016/05/17/hihocoder-binary-search/">hihoCoder#1128 - 二分·二分查找</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2016-05-17T16:01:15+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>4:01 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>题目</h2>
-
-<p>给定一个数组，求一个数字K在排好序的该数组中哪个位置。<br/>
-具体描述请见<a href="http://hihocoder.com/problemset/problem/1128">hihoCoder</a>。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2016/05/17/hihocoder-binary-search/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2016/05/17/hihocoder-vertex-cover/">hihoCoder#1127 - 二分图三·二分图最小点覆盖和最大独立集</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2016-05-17T13:48:13+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>1:48 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>题目</h2>
-
-<p>顶点覆盖是一些顶点（或边）的集合，使得图中的每一条边（每一个顶点）都至少接触集合中的一个顶点（边）。<br/>
-独立集是指图中两两互不相邻的顶点构成的集合。<br/>
-具体描述请见<a href="http://hihocoder.com/problemset/problem/1127">hihoCoder</a>。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2016/05/17/hihocoder-vertex-cover/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/2">&larr; Older</a>
@@ -478,8 +524,10 @@
   <h1>Categories</h1>
   <ul id="categories">
     <li class='category'><a href='/blog/categories/hihocoder/'>hihocoder (48)</a></li>
+<li class='category'><a href='/blog/categories/shi-xi-jing-li/'>实习经历 (4)</a></li>
 <li class='category'><a href='/blog/categories/bi-ji/'>笔记 (2)</a></li>
 <li class='category'><a href='/blog/categories/suan-fa/'>算法 (48)</a></li>
+<li class='category'><a href='/blog/categories/xiang-mu/'>项目 (4)</a></li>
 
   </ul>
 </section><section>
@@ -487,23 +535,23 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2016/09/06/internship-meigo/">实习经历 - 美购</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/09/06/internship-msra/">实习经历 - MSRA</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/09/06/internship-intel/">实习经历 - Intel</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/09/06/internship-dazhongdianping/">实习经历 - 大众点评</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/05/17/hihocoder-eular-prime-filter/">hihoCoder#1295 - 数论二·Eular质数筛法</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/05/17/hihocoder-miller-rabin/">hihoCoder#1287 - 数论一·Miller-Rabin质数测试</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/05/17/hihocoder-straight/">hihoCoder#1177 - 顺子</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/05/17/hihocoder-random-fibonacci/">hihoCoder#1164 - 随机斐波那契</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/05/17/hihocoder-palindrome-sub-sequence/">hihoCoder#1149 - 回文字符序列</a>
       </li>
     
   </ul>
@@ -589,51 +637,6 @@ $(document).ready(function(){
 });
 </script>
 
-<style type="text/css">
-#back-top {
-  position: fixed;
-  bottom: 50px;
-  right: 100px;
-}
-
-#back-top a {
-  width: 80px;
-  display: block;
-  text-align: center;
-  font: 11px/100% Arial, Helvetica, sans-serif;
-  text-transform: uppercase;
-  text-decoration: none;
-  color: rgba(#bbb, 0);
-
-  /* transition */
-  -webkit-transition: 1s;
-  -moz-transition: 1s;
-  transition: 1s;
-}
-
-/* arrow icon (span tag) */
-#back-top span {
-  width: 80px;
-  height: 80px;
-  display: block;
-  margin-bottom: 7px;
-  background: #ddd url(/images/top.png) no-repeat center center;
-
-  /* rounded corners */
-  -webkit-border-radius: 15px;
-  -moz-border-radius: 15px;
-  border-radius: 15px;
-
-  /* transition */
-  -webkit-transition: 1s;
-  -moz-transition: 1s;
-  transition: 1s;
-}
-#back-top a:hover span {
-  background-color: #888;
-}
-</style>
-
 <p id="back-top">
   <a href="#top"><span></span></a>
 </p>
@@ -670,5 +673,17 @@ $(document).ready(function(){
 
 
 
+  <p id="plane-start">
+  <a href="#" onclick="showBoard(); return false;"><span></span></a>
+</p>
+
+<dialog id="board" onclick="mouseClick(event); return false">
+  	<canvas id="myCanvas">Your browser does not support the canvas element. </canvas>
+	<script src="/javascripts/plane.js" type="text/javascript"></script>
+</dialog>
+
+<script src="/javascripts/plane.js" type="text/javascript"></script>
+
 </body>
+
 </html>

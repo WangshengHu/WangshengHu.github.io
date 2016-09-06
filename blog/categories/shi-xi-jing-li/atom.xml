@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: 实习经历 | Lost & Found]]></title>
+  <link href="http://wangshenghu.github.io/blog/categories/shi-xi-jing-li/atom.xml" rel="self"/>
+  <link href="http://wangshenghu.github.io/"/>
+  <updated>2016-09-06T20:43:22+08:00</updated>
+  <id>http://wangshenghu.github.io/</id>
+  <author>
+    <name><![CDATA[WangshengHu]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[实习经历 - 美购]]></title>
+    <link href="http://wangshenghu.github.io/blog/2016/09/06/internship-meigo/"/>
+    <updated>2016-09-06T19:54:13+08:00</updated>
+    <id>http://wangshenghu.github.io/blog/2016/09/06/internship-meigo</id>
+    <content type="html"><![CDATA[<h2>时间</h2>
+
+<p>2016年7月 - 2016年8月</p>
+
+<h2>项目</h2>
+
+<p>一个小型nginx日志收集处理系统，用于收集美购网的用户行为日志。</p>
+
+<h2>具体工作</h2>
+
+<p>为公司的两台nginx日志服务器搭建的一个伪分布式的实时的小型日志收集处理系统，以方便今后的实时日志分析。<br/>
+架构设计采用flume->kafka->flume->hdfs->hive的形式。<br/>
+两台nginx日志服务器各配置一个flume agent，采用tail -F命令实时收集原始日志作为source，并sink到第三台机器的kafka中间件，然后再接一个flume agnet，将数据以分钟为单位sink到hdfs。然后采用map reduce程序对hdfs里的原始数据进行分析，提取键值对，并入库（hive）永久化存储。</p>
+
+<h2>语言技术</h2>
+
+<p>语言：Java<br/>
+技术：flume，kafka，hadoop，hive</p>
+
+<h2>开发及同步工具</h2>
+
+<p>开发：linux，vim
+同步：git</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[实习经历 - MSRA]]></title>
+    <link href="http://wangshenghu.github.io/blog/2016/09/06/internship-msra/"/>
+    <updated>2016-09-06T17:38:18+08:00</updated>
+    <id>http://wangshenghu.github.io/blog/2016/09/06/internship-msra</id>
+    <content type="html"><![CDATA[<h2>时间</h2>
+
+<p>2015年6月 - 2016年3月</p>
+
+<h2>项目</h2>
+
+<p><a href="http://bda-codehow.cloudapp.net/">CodeHow</a>，一个自然语言查询的代码搜索引擎。</p>
+
+<h2>具体工作</h2>
+
+<p>CodeHow是一个用于自然语言查询的代码搜索工具。目前支持C#、C++、Java、JavaScript。同时它还可用于Api Example查询。<br/>
+前端采用MVC框架，负责接收用户输入并与后台搜索引擎交互。<br/>
+后台采用<a href="https://www.elastic.co/products/elasticsearch">Elasticsearch</a>以及Sql Server。其中基于自然语言搜索的代码库使用elasticsearch，而Api Example部分的代码库使用sql server。<br/>
+代码库源代码收集：Nodejs脚本编写的github爬虫。<br/>
+代码库数据分析：C#和VB采用<a href="https://roslyn.codeplex.com/">Roslyn</a>以及<a href="https://www.nuget.org/">Nuget</a>，Java采用jdk，C++采用Clang，JavaScript采用<a href="http://esprima.org/demo/parse.html">esprima</a>。<br/>
+部分研究工作：通过NLP领域的词向量提取方法（如流行的word2vec）尝试提取软件工程领域的同义词，并应用到代码搜索上以提高搜索精度。</p>
+
+<h2>语言技术</h2>
+
+<p>语言：C#，Java，Javascript<br/>
+技术：MVC，AST分析，信息检索，自然语言处理</p>
+
+<h2>开发及同步工具</h2>
+
+<p>开发：Visual Studio 2015/eclipse/sublime
+同步：git</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[实习经历 - Intel]]></title>
+    <link href="http://wangshenghu.github.io/blog/2016/09/06/internship-intel/"/>
+    <updated>2016-09-06T17:08:48+08:00</updated>
+    <id>http://wangshenghu.github.io/blog/2016/09/06/internship-intel</id>
+    <content type="html"><![CDATA[<h2>时间</h2>
+
+<p>2014年10月 - 2015年6月</p>
+
+<h2>公司</h2>
+
+<p>上海紫竹intel</p>
+
+<h2>项目</h2>
+
+<p>参与开源项目<a href="http://dpdk.org/">DPDK</a>（Data Plane Development Kit）的开发与测试。DPDK是一系列用来支持快速网络包处理的库及驱动。</p>
+
+<h2>具体工作</h2>
+
+<p>DPDK测试用例编写及性能分析，如l3fwd（层三转发）。<br/>
+DPDK中igb driver的rx_queue中断功能。<br/>
+DPDK中对Ethernet+NSH包头的faked encapsulation和faked decapsulation。</p>
+
+<h2>语言技术</h2>
+
+<p>语言：C<br/>
+技术：linux内核驱动</p>
+
+<h2>开发及同步工具</h2>
+
+<p>开发：vim/gcc
+同步：git</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[实习经历 - 大众点评]]></title>
+    <link href="http://wangshenghu.github.io/blog/2016/09/06/internship-dazhongdianping/"/>
+    <updated>2016-09-06T16:48:07+08:00</updated>
+    <id>http://wangshenghu.github.io/blog/2016/09/06/internship-dazhongdianping</id>
+    <content type="html"><![CDATA[<h2>时间</h2>
+
+<p>2013年7月 - 2013年9月</p>
+
+<h2>公司</h2>
+
+<p>上海大众点评</p>
+
+<!--more-->
+
+
+<h2>项目</h2>
+
+<p>项目名称K-Board，为提高公司技术部生产效率设计的一款基于Kinect手势控制的PC白板软件。该软件支持手势控制操作，多媒体元素信息存储等功能。</p>
+
+<h2>具体实现</h2>
+
+<p>实现选择了UI和手势控制逻辑解耦的方式，白板UI采用html实现，手势控制则用Kinect for windows sdk。两部分的整合采用WPF/Awesomium。</p>
+
+<h2>语言技术</h2>
+
+<p>语言：C#，html，javascript<br/>
+技术：Kinect for windows sdk</p>
+
+<h2>开发及同步工具</h2>
+
+<p>开发：Notepad++/Visual Studio 2010/Chrome开发者工具<br/>
+同步：SVN</p>
+]]></content>
+  </entry>
+  
+</feed>

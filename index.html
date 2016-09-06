@@ -9,8 +9,7 @@
   <meta name="author" content="WangshengHu">
 
   
-  <meta name="description" content="时间 2016年7月 - 2016年8月 项目 一个小型nginx日志收集处理系统，用于收集美购网的用户行为日志。 具体工作 为公司的两台nginx日志服务器搭建的一个伪分布式的实时的小型日志收集处理系统，以方便今后的实时日志分析。
-架构设计采用flume->kafka->flume->hdfs &hellip;">
+  <meta name="description" content="时间 2016年7月 - 2016年8月 公司 上海美购 ">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -106,27 +105,16 @@
 
 <p>2016年7月 - 2016年8月</p>
 
-<h2>项目</h2>
+<h2>公司</h2>
 
-<p>一个小型nginx日志收集处理系统，用于收集美购网的用户行为日志。</p>
+<p>上海美购</p>
 
-<h2>具体工作</h2>
-
-<p>为公司的两台nginx日志服务器搭建的一个伪分布式的实时的小型日志收集处理系统，以方便今后的实时日志分析。<br/>
-架构设计采用flume->kafka->flume->hdfs->hive的形式。<br/>
-两台nginx日志服务器各配置一个flume agent，采用tail -F命令实时收集原始日志作为source，并sink到第三台机器的kafka中间件，然后再接一个flume agnet，将数据以分钟为单位sink到hdfs。然后采用map reduce程序对hdfs里的原始数据进行分析，提取键值对，并入库（hive）永久化存储。</p>
-
-<h2>语言技术</h2>
-
-<p>语言：Java<br/>
-技术：flume，kafka，hadoop，hive</p>
-
-<h2>开发及同步工具</h2>
-
-<p>开发：linux，vim
-同步：git</p>
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2016/09/06/internship-meigo/">Read on &rarr;</a>
+    </footer>
   
 
 
@@ -157,30 +145,16 @@
 
 <p>2015年6月 - 2016年3月</p>
 
-<h2>项目</h2>
+<h2>公司</h2>
 
-<p><a href="http://bda-codehow.cloudapp.net/">CodeHow</a>，一个自然语言查询的代码搜索引擎。</p>
+<p>北京微软亚洲研究院</p>
 
-<h2>具体工作</h2>
-
-<p>CodeHow是一个用于自然语言查询的代码搜索工具。目前支持C#、C++、Java、JavaScript。同时它还可用于Api Example查询。<br/>
-前端采用MVC框架，负责接收用户输入并与后台搜索引擎交互。<br/>
-后台采用<a href="https://www.elastic.co/products/elasticsearch">Elasticsearch</a>以及Sql Server。其中基于自然语言搜索的代码库使用elasticsearch，而Api Example部分的代码库使用sql server。<br/>
-代码库源代码收集：Nodejs脚本编写的github爬虫。<br/>
-代码库数据分析：C#和VB采用<a href="https://roslyn.codeplex.com/">Roslyn</a>以及<a href="https://www.nuget.org/">Nuget</a>，Java采用jdk，C++采用Clang，JavaScript采用<a href="http://esprima.org/demo/parse.html">esprima</a>。<br/>
-部分研究工作：通过NLP领域的词向量提取方法（如流行的word2vec）尝试提取软件工程领域的同义词，并应用到代码搜索上以提高搜索精度。</p>
-
-<h2>语言技术</h2>
-
-<p>语言：C#，Java，Javascript<br/>
-技术：MVC，AST分析，信息检索，自然语言处理</p>
-
-<h2>开发及同步工具</h2>
-
-<p>开发：Visual Studio 2015/eclipse/sublime
-同步：git</p>
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2016/09/06/internship-msra/">Read on &rarr;</a>
+    </footer>
   
 
 

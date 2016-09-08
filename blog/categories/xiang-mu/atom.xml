@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 项目 | Lost & Found]]></title>
   <link href="http://wangshenghu.github.io/blog/categories/xiang-mu/atom.xml" rel="self"/>
   <link href="http://wangshenghu.github.io/"/>
-  <updated>2016-09-06T21:00:30+08:00</updated>
+  <updated>2016-09-08T12:57:03+08:00</updated>
   <id>http://wangshenghu.github.io/</id>
   <author>
     <name><![CDATA[WangshengHu]]></name>
@@ -24,7 +24,7 @@
 
 <h2>公司</h2>
 
-<p>上海美购</p>
+<p>上海淘玺电子商务有限公司（美购网）</p>
 
 <!--more-->
 
@@ -77,7 +77,7 @@
 前端采用MVC框架，负责接收用户输入并与后台搜索引擎交互。<br/>
 后台采用<a href="https://www.elastic.co/products/elasticsearch">Elasticsearch</a>以及Sql Server。其中基于自然语言搜索的代码库使用elasticsearch，而Api Example部分的代码库使用sql server。<br/>
 代码库源代码收集：Nodejs脚本编写的github爬虫。<br/>
-代码库数据分析：C#和VB采用<a href="https://roslyn.codeplex.com/">Roslyn</a>以及<a href="https://www.nuget.org/">Nuget</a>，Java采用jdk，C++采用Clang，JavaScript采用<a href="http://esprima.org/demo/parse.html">esprima</a>。<br/>
+代码库源代码AST分析：C#和VB采用<a href="https://roslyn.codeplex.com/">Roslyn</a>以及<a href="https://www.nuget.org/">Nuget</a>，Java采用jdk，C++采用Clang，JavaScript采用<a href="http://esprima.org/demo/parse.html">esprima</a>。<br/>
 部分研究工作：通过NLP领域的词向量提取方法（如流行的word2vec）尝试提取软件工程领域的同义词，并应用到代码搜索上以提高搜索精度。</p>
 
 <h2>语言技术</h2>

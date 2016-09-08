@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 笔记 | Lost & Found]]></title>
   <link href="http://wangshenghu.github.io/blog/categories/bi-ji/atom.xml" rel="self"/>
   <link href="http://wangshenghu.github.io/"/>
-  <updated>2016-09-06T21:00:30+08:00</updated>
+  <updated>2016-09-08T12:57:03+08:00</updated>
   <id>http://wangshenghu.github.io/</id>
   <author>
     <name><![CDATA[WangshengHu]]></name>
@@ -30,46 +30,88 @@
 <h3>1. 增加Categories列表</h3>
 
 <p>首先在<code>plugins</code>目录下添加<code>category_list_tag.rb</code>文件，代码如下：
-```ruby
-module Jekyll
-  class CategoryListTag &lt; Liquid::Tag
-    def render(context)
-      html = &ldquo;&rdquo;
-      categories = context.registers[:site].categories.keys
-      categories.sort.each do |category|
-        posts_in_category = context.registers[:site].categories[category].size
-        category_dir = context.registers[:site].config[&lsquo;category_dir&rsquo;]
-        category_url = File.join(category_dir, category.gsub(/_|\P{Word}/, &lsquo;-&rsquo;).gsub(/-{2,}/, &lsquo;-&rsquo;).downcase)
-        html &lt;&lt; &ldquo;<li class='category'><a href='http://wangshenghu.github.io/#{category_url}/'>#{category} (#{posts_in_category})</a></li>\n&rdquo;
-      end
-      html
-    end
-  end
-end</p>
-
-<p>Liquid::Template.register_tag(&lsquo;category_list&rsquo;, Jekyll::CategoryListTag)
-<code>
-然后在`\source\_includes\asides`目录（或`\source\_includes\custom\asides`目录）下添加`category_list.html`文件，代码如下：
-</code>html
-<section>
-  <h1>Categories</h1>
-  <ul id="categories">
-    {% raw %}{% category_list %}{% endraw %}
-  </ul>
-</section>
-<code>``
-最后在</code>_config.yml<code>中</code>default_asides:<code>一栏添加</code>asides/category_list.html<code>（或</code>custom/asides/category_list.html<code>）即可。  
-**注意：上述步骤有一个问题，那就是如果category包含中文的话生成的侧边栏链接会是404页面（因为链接中不能包含中文），需要将</code>category_list_tag.rb<code>文件中第11行代码里的</code>category_url<code>改成</code>category.to_url.downcase<code>，该代码会将中文转换成拼音。**  
-**另外，上面代码中第4行</code>{% raw %}{% category_list %}{% endraw %}<code>若想在网页上正确显示必须使用</code>{% raw %}{% RAW %}{% endraw %}<code>your_content</code>{% raw %}{% ENDRAW %}{% endraw %}`（将大写改成小写）。这是markdown里强制显示原始字符串而不进行解释的语法**</p>
-
-<h3>2. 首页文章缺省显示</h3>
-
-<p>只需要在每篇你写的markdown格式的博文中在你想要在首页显示的文字后面加上<code>&lt;!--more--&gt;</code>即可。</p>
-
-<h3>3. 设置链接默认在新窗口打开</h3>
-
-<p>在<code>\source\_includes\custom\head.html</code>文件中添加如下代码：
-```html</p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">Jekyll</span>
+</span><span class='line'>  <span class="k">class</span> <span class="nc">CategoryListTag</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="no">Liquid</span><span class="o">::</span><span class="no">Tag</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">html</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">ldquo</span><span class="p">;</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;</span>
+</span><span class='line'>      <span class="n">categories</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">registers</span><span class="o">[</span><span class="ss">:site</span><span class="o">].</span><span class="n">categories</span><span class="o">.</span><span class="n">keys</span>
+</span><span class='line'>      <span class="n">categories</span><span class="o">.</span><span class="n">sort</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">category</span><span class="o">|</span>
+</span><span class='line'>        <span class="n">posts_in_category</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">registers</span><span class="o">[</span><span class="ss">:site</span><span class="o">].</span><span class="n">categories</span><span class="o">[</span><span class="n">category</span><span class="o">].</span><span class="n">size</span>
+</span><span class='line'>        <span class="n">category_dir</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">registers</span><span class="o">[</span><span class="ss">:site</span><span class="o">].</span><span class="n">config</span><span class="o">[&amp;</span><span class="n">lsquo</span><span class="p">;</span><span class="n">category_dir</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="p">;</span><span class="o">]</span>
+</span><span class='line'>        <span class="n">category_url</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">category_dir</span><span class="p">,</span> <span class="n">category</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="sr">/_|\P{Word}/</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">lsquo</span><span class="p">;</span><span class="o">-&amp;</span><span class="n">rsquo</span><span class="p">;)</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="sr">/-{2,}/</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">lsquo</span><span class="p">;</span><span class="o">-&amp;</span><span class="n">rsquo</span><span class="p">;)</span><span class="o">.</span><span class="n">downcase</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">html</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="o">&amp;</span><span class="n">ldquo</span><span class="p">;</span><span class="o">&lt;</span><span class="n">li</span> <span class="n">class</span><span class="o">=</span><span class="s1">&#39;category&#39;</span><span class="o">&gt;&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s1">&#39;http://wangshenghu.github.io/#{category_url}/&#39;</span><span class="o">&gt;</span><span class="c1">#{category} (#{posts_in_category})&lt;/a&gt;&lt;/li&gt;\n&amp;rdquo;</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>      <span class="n">html</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;Liquid::Template.register_tag(&amp;lsquo;category_list&amp;rsquo;, Jekyll::CategoryListTag)</span>
+</span><span class='line'><span class="sr">&lt;code&gt;</span>
+</span><span class='line'><span class="sr">然后在`\source\_includes\asides`目录（或`\source\_includes\custom\asides`目录）下添加`category_list.html`文件，代码如下：</span>
+</span><span class='line'><span class="sr">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="n">html</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">section</span><span class="o">&gt;</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="no">Categories</span><span class="o">&lt;</span><span class="sr">/h1&gt;</span>
+</span><span class='line'><span class="sr">  &lt;ul id=&quot;categories&quot;&gt;</span>
+</span><span class='line'><span class="sr">    {% category_list %}</span>
+</span><span class='line'><span class="sr">  &lt;/u</span><span class="n">l</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="sr">/section&gt;</span>
+</span><span class='line'><span class="sr">&lt;code&gt;``</span>
+</span><span class='line'><span class="sr">最后在&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="n">_config</span><span class="o">.</span><span class="n">yml</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="err">中</span><span class="o">&lt;</span><span class="sr">/code&gt;default_asides:&lt;code&gt;一栏添加&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="n">asides</span><span class="o">/</span><span class="n">category_list</span><span class="o">.</span><span class="n">html</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="err">（或</span><span class="o">&lt;</span><span class="sr">/code&gt;custom/</span><span class="n">asides</span><span class="o">/</span><span class="n">category_list</span><span class="o">.</span><span class="n">html</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="err">）即可。</span>
+</span><span class='line'><span class="o">**</span><span class="err">注意：上述步骤有一个问题，那就是如果</span><span class="n">category</span><span class="err">包含中文的话生成的侧边栏链接会是</span><span class="mi">404</span><span class="err">页面（因为链接中不能包含中文），需要将</span><span class="o">&lt;</span><span class="sr">/code&gt;category_list_tag.rb&lt;code&gt;文件中第11行代码里的&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="n">category_url</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="err">改成</span><span class="o">&lt;</span><span class="sr">/code&gt;category.to_url.downcase&lt;code&gt;，该代码会将中文转换成拼音。**  </span>
+</span><span class='line'><span class="sr">**另外，上面代码中第4行&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="p">{</span><span class="o">%</span> <span class="n">raw</span> <span class="sx">%}<li class='category'><a href='/blog/categories/hihocoder/'>hihocoder (48)</a></li>
+<li class='category'><a href='/blog/categories/shi-xi-jing-li/'>实习经历 (4)</a></li>
+<li class='category'><a href='/blog/categories/bi-ji/'>笔记 (2)</a></li>
+<li class='category'><a href='/blog/categories/suan-fa/'>算法 (48)</a></li>
+<li class='category'><a href='/blog/categories/xiang-mu/'>项目 (4)</a></li>
+</span><span class="p">{</span><span class="o">%</span> <span class="n">endraw</span> <span class="sx">%}&lt;code&gt;若想在网页上正确显示必须使用&lt;/code&gt;</span><span class="p">{</span><span class="o">%</span> <span class="no">RAW</span> <span class="sx">%}</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">your_content</span><span class="o">&lt;</span><span class="sr">/code&gt;{% ENDRAW %}`（将大写改成小写）。这是markdown里强制显示原始字符串而不进行解释的语法**&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h3</span><span class="o">&gt;</span><span class="mi">2</span><span class="o">.</span> <span class="err">首页文章缺省显示</span><span class="o">&lt;</span><span class="sr">/h3&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;只需要在每篇你写的markdown格式的博文中在你想要在首页显示的文字后面加上&lt;code&gt;&amp;lt;!--more--&amp;gt;&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">即可。</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;h3&gt;3. 设置链接默认在新窗口打开&lt;/</span><span class="n">h3</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span><span class="err">在</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="p">\</span><span class="n">source</span><span class="p">\</span><span class="n">_includes</span><span class="p">\</span><span class="n">custom</span><span class="p">\</span><span class="n">head</span><span class="o">.</span><span class="n">html</span><span class="o">&lt;</span><span class="sr">/code&gt;文件中添加如下代码：</span>
+</span></code></pre></td></tr></table></div></figure>html</p>
 
 <script>
     function addBlankTargetForLinks () {
@@ -160,25 +202,41 @@ rake preview
 <h3>5. 部署到Github</h3>
 
 <p>在Github上新建一个Repository，命名为<code>username.github.io</code>。然后在cmd中进行部署。
-```bash
-cd <wherever_your_octopress_is>
-rake setup_github_pages
-<a href="https://github.com/your_username/your_username.github.io">https://github.com/your_username/your_username.github.io</a></p>
-
-<p>rake deploy</p>
-
-<h1>新建一篇博文</h1>
-
-<p>rake new_post[&lsquo;title of post&rsquo;]</p>
-
-<h1>新建一个网页</h1>
-
-<p>rake new_page[&lsquo;name of page&rsquo;]</p>
-
-<p>rake generate</p>
-
-<p>rake deploy
-```
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> &lt;wherever_your_octopress_is&gt;
+</span><span class='line'>rake setup_github_pages
+</span><span class='line'>&lt;a <span class="nv">href</span><span class="o">=</span><span class="s2">&quot;https://github.com/your_username/your_username.github.io&quot;</span>&gt;https://github.com/your_username/your_username.github.io&lt;/a&gt;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;rake deploy&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h1&gt;新建一篇博文&lt;/h1&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;rake new_post<span class="o">[</span><span class="p">&amp;</span>lsquo<span class="p">;</span>title of post<span class="p">&amp;</span>rsquo<span class="p">;</span><span class="o">]</span>&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h1&gt;新建一个网页&lt;/h1&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;rake new_page<span class="o">[</span><span class="p">&amp;</span>lsquo<span class="p">;</span>name of page<span class="p">&amp;</span>rsquo<span class="p">;</span><span class="o">]</span>&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;rake generate&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;rake deploy
+</span></code></pre></td></tr></table></div></figure>
 访问username.github.io即可查看，可能会有延迟，一般不超过1分钟。</p>
 
 <h3>6. 源码维护</h3>

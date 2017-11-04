@@ -46,7 +46,6 @@
 
 </head>
 
-
 <body   >
   <header role="banner"><hgroup>
   <h1><a href="/">Lost & Found</a></h1>
@@ -382,13 +381,58 @@ $(document).ready(function(){
 });
 </script>
 
+<style type="text/css">
+#back-top {
+  position: fixed;
+  bottom: 50px;
+  right: 100px;
+}
+
+#back-top a {
+  width: 80px;
+  display: block;
+  text-align: center;
+  font: 11px/100% Arial, Helvetica, sans-serif;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: rgba(#bbb, 0);
+
+  /* transition */
+  -webkit-transition: 1s;
+  -moz-transition: 1s;
+  transition: 1s;
+}
+
+/* arrow icon (span tag) */
+#back-top span {
+  width: 80px;
+  height: 80px;
+  display: block;
+  margin-bottom: 7px;
+  background: #ddd url(/images/top.png) no-repeat center center;
+
+  /* rounded corners */
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 15px;
+
+  /* transition */
+  -webkit-transition: 1s;
+  -moz-transition: 1s;
+  transition: 1s;
+}
+#back-top a:hover span {
+  background-color: #888;
+}
+</style>
+
 <p id="back-top">
   <a href="#top"><span></span></a>
 </p>
 
 
 <p>
-  Copyright &copy; 2016 - WangshengHu -
+  Copyright &copy; 2017 - WangshengHu -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 
@@ -421,17 +465,5 @@ $(document).ready(function(){
 
 
 
-<!--  <p id="plane-start">
-  <a href="#" onclick="showBoard(); return false;"><span></span></a>
-</p>
-
-<dialog id="board" onclick="mouseClick(event); return false">
-  	<canvas id="myCanvas">Your browser does not support the canvas element. </canvas>
-	<script src="/javascripts/plane.js" type="text/javascript"></script>
-</dialog>
-
-<script src="/javascripts/plane.js" type="text/javascript"></script>-->
-
 </body>
-
 </html>

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>Hexo</title>
+  <title>WW&#39;s Studio</title>
   
   
-  <link href="http://example.com/atom.xml" rel="self"/>
+  <link href="https://wangshenghu.github.io/atom.xml" rel="self"/>
   
-  <link href="http://example.com/"/>
+  <link href="https://wangshenghu.github.io/"/>
   <updated>2022-11-21T08:44:02.055Z</updated>
-  <id>http://example.com/</id>
+  <id>https://wangshenghu.github.io/</id>
   
   <author>
-    <name>John Doe</name>
+    <name>Who Watson</name>
     
   </author>
   
@@ -18,8 +18,8 @@
   
   <entry>
     <title>Hello World</title>
-    <link href="http://example.com/2022/11/21/hello-world/"/>
-    <id>http://example.com/2022/11/21/hello-world/</id>
+    <link href="https://wangshenghu.github.io/2022/11/21/hello-world/"/>
+    <id>https://wangshenghu.github.io/2022/11/21/hello-world/</id>
     <published>2022-11-21T08:43:25.000Z</published>
     <updated>2022-11-21T08:44:02.055Z</updated>
     
@@ -39,8 +39,8 @@ first post. Check &lt;a href=&quot;https://hexo.io/docs/&quot;&gt;documentation&
   
   <entry>
     <title>test</title>
-    <link href="http://example.com/2022/11/21/test/"/>
-    <id>http://example.com/2022/11/21/test/</id>
+    <link href="https://wangshenghu.github.io/2022/11/21/test/"/>
+    <id>https://wangshenghu.github.io/2022/11/21/test/</id>
     <published>2022-11-21T08:35:12.000Z</published>
     <updated>2022-11-21T08:49:58.969Z</updated>
     
@@ -61,7 +61,7 @@ first post. Check &lt;a href=&quot;https://hexo.io/docs/&quot;&gt;documentation&
     
     
     
-    <category term="test" scheme="http://example.com/tags/test/"/>
+    <category term="test" scheme="https://wangshenghu.github.io/tags/test/"/>
     
   </entry>
   

@@ -1,11 +1,11 @@
 <svg width="105" height="105" viewBox="0 0 105 105" xmlns="http://www.w3.org/2000/svg" fill="#ccc">
     <circle cx="50" cy="50" r="50">
         <animate attributeName="r"
-         begin="0s" dur="2s"
+         begin="0s" dur="1600ms"
          values="50;45;35;20;5;20;35;45;50" calcMode="linear"
          repeatCount="indefinite" />
         <animate attributeName="fill-opacity"
-         begin="0s" dur="2s"
+         begin="0s" dur="1600ms"
          values="1;.2;1" calcMode="linear"
          repeatCount="indefinite" />
     </circle>

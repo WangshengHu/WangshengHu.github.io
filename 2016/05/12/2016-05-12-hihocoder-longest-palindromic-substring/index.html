@@ -27,7 +27,7 @@
 <meta property="og:description" content="题目 回文串定义为从左往右及从右往左是完全一样的字符串。 具体描述请见hihoCoder。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2016-05-12T08:04:46.000Z">
-<meta property="article:modified_time" content="2022-11-24T11:23:26.996Z">
+<meta property="article:modified_time" content="2022-12-04T09:05:57.042Z">
 <meta property="article:author" content="Who Watson">
 <meta name="twitter:card" content="summary">
     <meta http-equiv="Cache-control" content="no-cache">
@@ -496,8 +496,9 @@
 <p>回文串定义为从左往右及从右往左是完全一样的字符串。<br />
 具体描述请见<a
 target="_blank" rel="noopener" href="http://hihocoder.com/problemset/problem/1032">hihoCoder</a>。
-<span id="more"></span> ## 解题思路
-直接暴力搜索复杂度为N<sup>2</sup>。因为是求子串而非子序列，所以动态规划的思路也不可行。考虑对搜索过程进行优化：<br />
+<span id="more"></span></p>
+<h2 id="解题思路">解题思路</h2>
+<p>直接暴力搜索复杂度为N<sup>2</sup>。因为是求子串而非子序列，所以动态规划的思路也不可行。考虑对搜索过程进行优化：<br />
 首先仅考虑长度为奇数的子串，那么以字符串中任意一个字符为中心搜索其最长的回文子串（利用对称）。<br />
 其次考虑可利用的现有信息。如下：<br />
 <code>caabaacd</code><br />
@@ -509,11 +510,14 @@ target="_blank" rel="noopener" href="http://hihocoder.com/problemset/problem/103
 + f[j]/2，这样我们可以得到一个下述关系：<br />
 <code>f[i] &gt;= min(f[2j-i], f[2j-2i+f[j])</code><br />
 这样每次搜索时可以省去很多冗余搜索。<br />
-最后一个问题是怎么将上述方法推广到求偶数长度的回文子串。只需要在原字符串的基础上每两个相邻字符间插入一个特殊字符，那么原字符串的最长回文子串一定对应着新串的一个奇数最长回文子串。
-## 时间复杂度 每一步里如果f[2j-i] &lt; 2j-2i+f[j]那么f[i] =
+最后一个问题是怎么将上述方法推广到求偶数长度的回文子串。只需要在原字符串的基础上每两个相邻字符间插入一个特殊字符，那么原字符串的最长回文子串一定对应着新串的一个奇数最长回文子串。</p>
+<h2 id="时间复杂度">时间复杂度</h2>
+<p>每一步里如果f[2j-i] &lt; 2j-2i+f[j]那么f[i] =
 f[2j-i]，否则我们以i为中心进行扩展，此时要么最大右边界P不移动；要么最大右边界P会往右移动，最多N次。总共2N次操作。时间复杂度为2N。（参考<a
 target="_blank" rel="noopener" href="http://articles.leetcode.com/longest-palindromic-substring-part-ii/">Longest
-Palindromic Substring Part II</a>） ## 代码 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">longestPalSubStr</span><span class="params">(string str)</span> </span>&#123;</span><br><span class="line">	string modStr = <span class="string">&quot;&quot;</span>;</span><br><span class="line">	modStr += str[<span class="number">0</span>];</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt; str.<span class="built_in">size</span>(); i++) &#123;</span><br><span class="line">		modStr += <span class="string">&#x27;$&#x27;</span>;</span><br><span class="line">		modStr += str[i];</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="type">int</span> maxL = <span class="number">0</span>;</span><br><span class="line">	<span class="type">int</span>* f = <span class="keyword">new</span> <span class="type">int</span>[modStr.<span class="built_in">size</span>()];</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; modStr.<span class="built_in">size</span>(); i++)</span><br><span class="line">		f[i] = <span class="number">1</span>;</span><br><span class="line">	<span class="type">int</span> maxBorder = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; modStr.<span class="built_in">size</span>(); i++) &#123;</span><br><span class="line">		<span class="type">int</span> minL = <span class="built_in">min</span>(f[<span class="number">2</span> * maxBorder - i], f[maxBorder] - <span class="number">2</span> * (i - maxBorder));</span><br><span class="line">		f[i] = minL &gt; <span class="number">0</span> ? minL : <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">int</span> j = (minL - <span class="number">1</span>) / <span class="number">2</span> + <span class="number">1</span>; i - j &gt;= <span class="number">0</span> &amp;&amp; i + j &lt; modStr.<span class="built_in">size</span>(); j++) &#123;</span><br><span class="line">			<span class="keyword">if</span> (modStr[i + j] != modStr[i - j])</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			f[i] += <span class="number">2</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		maxBorder = f[i] / <span class="number">2</span> + i &gt; f[maxBorder] / <span class="number">2</span> + maxBorder ? i : maxBorder;</span><br><span class="line">		maxL = <span class="built_in">max</span>(maxL, i % <span class="number">2</span> == <span class="number">1</span> ? (f[i] + <span class="number">1</span>) / <span class="number">4</span> * <span class="number">2</span> : (f[i] - <span class="number">1</span>) / <span class="number">4</span> * <span class="number">2</span> + <span class="number">1</span> );</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> maxL;</span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="type">int</span> N = <span class="number">0</span>; </span><br><span class="line">	cin &gt;&gt; N;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; N; i++) &#123;</span><br><span class="line">		string str;</span><br><span class="line">		cin &gt;&gt; str;</span><br><span class="line"></span><br><span class="line">		cout &lt;&lt; <span class="built_in">longestPalSubStr</span>(str) &lt;&lt; endl;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+Palindromic Substring Part II</a>）</p>
+<h2 id="代码">代码</h2>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">longestPalSubStr</span><span class="params">(string str)</span> </span>&#123;</span><br><span class="line">	string modStr = <span class="string">&quot;&quot;</span>;</span><br><span class="line">	modStr += str[<span class="number">0</span>];</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt; str.<span class="built_in">size</span>(); i++) &#123;</span><br><span class="line">		modStr += <span class="string">&#x27;$&#x27;</span>;</span><br><span class="line">		modStr += str[i];</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="type">int</span> maxL = <span class="number">0</span>;</span><br><span class="line">	<span class="type">int</span>* f = <span class="keyword">new</span> <span class="type">int</span>[modStr.<span class="built_in">size</span>()];</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; modStr.<span class="built_in">size</span>(); i++)</span><br><span class="line">		f[i] = <span class="number">1</span>;</span><br><span class="line">	<span class="type">int</span> maxBorder = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; modStr.<span class="built_in">size</span>(); i++) &#123;</span><br><span class="line">		<span class="type">int</span> minL = <span class="built_in">min</span>(f[<span class="number">2</span> * maxBorder - i], f[maxBorder] - <span class="number">2</span> * (i - maxBorder));</span><br><span class="line">		f[i] = minL &gt; <span class="number">0</span> ? minL : <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">int</span> j = (minL - <span class="number">1</span>) / <span class="number">2</span> + <span class="number">1</span>; i - j &gt;= <span class="number">0</span> &amp;&amp; i + j &lt; modStr.<span class="built_in">size</span>(); j++) &#123;</span><br><span class="line">			<span class="keyword">if</span> (modStr[i + j] != modStr[i - j])</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			f[i] += <span class="number">2</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		maxBorder = f[i] / <span class="number">2</span> + i &gt; f[maxBorder] / <span class="number">2</span> + maxBorder ? i : maxBorder;</span><br><span class="line">		maxL = <span class="built_in">max</span>(maxL, i % <span class="number">2</span> == <span class="number">1</span> ? (f[i] + <span class="number">1</span>) / <span class="number">4</span> * <span class="number">2</span> : (f[i] - <span class="number">1</span>) / <span class="number">4</span> * <span class="number">2</span> + <span class="number">1</span> );</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> maxL;</span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="type">int</span> N = <span class="number">0</span>; </span><br><span class="line">	cin &gt;&gt; N;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; N; i++) &#123;</span><br><span class="line">		string str;</span><br><span class="line">		cin &gt;&gt; str;</span><br><span class="line"></span><br><span class="line">		cout &lt;&lt; <span class="built_in">longestPalSubStr</span>(str) &lt;&lt; endl;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
     </article>
     <!-- license -->
@@ -522,7 +526,7 @@ Palindromic Substring Part II</a>） ## 代码 <figure class="highlight c++"><ta
             <p>Author：<a href="https://wangshenghu.github.io">Who Watson</a>
             <p>Link：<a href="https://wangshenghu.github.io/2016/05/12/2016-05-12-hihocoder-longest-palindromic-substring/">https://wangshenghu.github.io/2016/05/12/2016-05-12-hihocoder-longest-palindromic-substring/</a>
             <p>Publish date：<a href="https://wangshenghu.github.io/2016/05/12/2016-05-12-hihocoder-longest-palindromic-substring/">May 12th 2016, 4:04:46 pm</a>
-            <p>Update date：<a href="https://wangshenghu.github.io/2016/05/12/2016-05-12-hihocoder-longest-palindromic-substring/">November 24th 2022, 7:23:26 pm</a>
+            <p>Update date：<a href="https://wangshenghu.github.io/2016/05/12/2016-05-12-hihocoder-longest-palindromic-substring/">December 4th 2022, 5:05:57 pm</a>
             <p>License：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
         </div>
     
@@ -684,7 +688,7 @@ Palindromic Substring Part II</a>） ## 代码 <figure class="highlight c++"><ta
                 <div class="toc-catalog">
                     <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
                 </div>
-                <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE"><span class="toc-number">1.</span> <span class="toc-text">题目</span></a></li></ol>
+                <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE"><span class="toc-number">1.</span> <span class="toc-text">题目</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF"><span class="toc-number">2.</span> <span class="toc-text">解题思路</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6"><span class="toc-number">3.</span> <span class="toc-text">时间复杂度</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81"><span class="toc-number">4.</span> <span class="toc-text">代码</span></a></li></ol>
             </div>
         
         <!-- sidebar -->
@@ -1495,6 +1499,10 @@ Palindromic Substring Part II</a>） ## 代码 <figure class="highlight c++"><ta
         
         
         
+        
+        
+        
+        
     
     
     
@@ -1518,13 +1526,13 @@ Palindromic Substring Part II</a>） ## 代码 <figure class="highlight c++"><ta
         
         <li class="archive-post-item">
             <span class="archive-post-date">11/21</span>
-            <a class="archive-post-title" href="/2022/11/21/test/">test</a>
+            <a class="archive-post-title" href="/2022/11/21/hello-world/">Hello World</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">11/21</span>
-            <a class="archive-post-title" href="/2022/11/21/hello-world/">Hello World</a>
+            <a class="archive-post-title" href="/2022/11/21/test/">test</a>
         </li>
     
         
@@ -1545,13 +1553,13 @@ Palindromic Substring Part II</a>） ## 代码 <figure class="highlight c++"><ta
         
         <li class="archive-post-item">
             <span class="archive-post-date">09/06</span>
-            <a class="archive-post-title" href="/2016/09/06/2016-09-06-internship-msra/">实习经历 - MSRA</a>
+            <a class="archive-post-title" href="/2016/09/06/2016-09-06-internship-intel/">实习经历 - Intel</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">09/06</span>
-            <a class="archive-post-title" href="/2016/09/06/2016-09-06-internship-intel/">实习经历 - Intel</a>
+            <a class="archive-post-title" href="/2016/09/06/2016-09-06-internship-msra/">实习经历 - MSRA</a>
         </li>
     
         
@@ -1647,13 +1655,13 @@ Palindromic Substring Part II</a>） ## 代码 <figure class="highlight c++"><ta
         
         <li class="archive-post-item">
             <span class="archive-post-date">05/16</span>
-            <a class="archive-post-title" href="/2016/05/16/2016-05-16-hihocoder-prim/">hihoCoder#1097 - Prim算法</a>
+            <a class="archive-post-title" href="/2016/05/16/2016-05-16-hihocoder-spfa/">hihoCoder#1093 - SPFA算法</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">05/16</span>
-            <a class="archive-post-title" href="/2016/05/16/2016-05-16-hihocoder-spfa/">hihoCoder#1093 - SPFA算法</a>
+            <a class="archive-post-title" href="/2016/05/16/2016-05-16-hihocoder-prim/">hihoCoder#1097 - Prim算法</a>
         </li>
     
         
@@ -1671,13 +1679,13 @@ Palindromic Substring Part II</a>） ## 代码 <figure class="highlight c++"><ta
         
         <li class="archive-post-item">
             <span class="archive-post-date">05/16</span>
-            <a class="archive-post-title" href="/2016/05/16/2016-05-16-hihocoder-lowest-common-ancestor-3/">hihoCoder#1069 - 最近公共祖先·三</a>
+            <a class="archive-post-title" href="/2016/05/16/2016-05-16-hihocoder-rmq-st/">hihoCoder#1068 - RMQ-ST算法</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">05/16</span>
-            <a class="archive-post-title" href="/2016/05/16/2016-05-16-hihocoder-rmq-st/">hihoCoder#1068 - RMQ-ST算法</a>
+            <a class="archive-post-title" href="/2016/05/16/2016-05-16-hihocoder-lowest-common-ancestor-3/">hihoCoder#1069 - 最近公共祖先·三</a>
         </li>
     
         
@@ -1713,13 +1721,13 @@ Palindromic Substring Part II</a>） ## 代码 <figure class="highlight c++"><ta
         
         <li class="archive-post-item">
             <span class="archive-post-date">05/13</span>
-            <a class="archive-post-title" href="/2016/05/13/2016-05-13-hihocoder-painting/">hihoCoder#1055 - 刷油漆</a>
+            <a class="archive-post-title" href="/2016/05/13/2016-05-13-hihocoder-longest-path-in-tree/">hihoCoder#1050 - 树中的最长路</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">05/13</span>
-            <a class="archive-post-title" href="/2016/05/13/2016-05-13-hihocoder-longest-path-in-tree/">hihoCoder#1050 - 树中的最长路</a>
+            <a class="archive-post-title" href="/2016/05/13/2016-05-13-hihocoder-painting/">hihoCoder#1055 - 刷油漆</a>
         </li>
     
         

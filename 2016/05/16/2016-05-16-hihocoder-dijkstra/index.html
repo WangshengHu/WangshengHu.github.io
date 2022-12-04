@@ -27,7 +27,7 @@
 <meta property="og:description" content="题目 给定一个无向图，两个顶点之间可能有多条边，求顶点1到顶点N的最短路径。 具体描述请见hihoCoder。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2016-05-16T09:21:52.000Z">
-<meta property="article:modified_time" content="2022-11-24T11:23:27.000Z">
+<meta property="article:modified_time" content="2022-12-04T09:08:20.222Z">
 <meta property="article:author" content="Who Watson">
 <meta name="twitter:card" content="summary">
     <meta http-equiv="Cache-control" content="no-cache">
@@ -496,16 +496,19 @@
 <p>给定一个无向图，两个顶点之间可能有多条边，求顶点1到顶点N的最短路径。<br />
 具体描述请见<a
 target="_blank" rel="noopener" href="http://hihocoder.com/problemset/problem/1081">hihoCoder</a>。
-<span id="more"></span> ## 解题思路 经典Dijkstra算法。<br />
+<span id="more"></span></p>
+<h2 id="解题思路">解题思路</h2>
+<p>经典Dijkstra算法。<br />
 1. 初始化集合X和Y，X = {1}, Y = V - {1}；<br />
 2. 对顶点1的所有相邻顶点，更新d[i] = 边长；否则d[i] = 无穷大；<br />
 3.
 从Y中选取一个d最小的顶点v，将v从Y中删除并加入X，更新所有与v相邻顶点的d。<br />
 注意我在实现时采用了C++
-STL的priority_queue结构。由于priority_queue不提供随机访问的功能（即获取其中一个元素的具体位置）这样会导致第3步中每次更新时都要进行一次入队操作。
-## 时间复杂度
-朴素的实现是N<sup>2</sup>，如果采用堆实现的话可以减小到MlogN。 ## 代码
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;queue&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bitset&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Node</span> &#123;</span><br><span class="line">	<span class="type">int</span> id = <span class="number">-1</span>;</span><br><span class="line">	<span class="type">int</span> d = <span class="number">-1</span>;</span><br><span class="line">	vector&lt;<span class="type">int</span>&gt; neighbors;</span><br><span class="line">	vector&lt;<span class="type">int</span>&gt; edges;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">NodeCmp</span> &#123;</span><br><span class="line">	<span class="function"><span class="type">bool</span> <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="type">const</span> Node &amp;a, <span class="type">const</span> Node &amp;b)</span> <span class="type">const</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> b.d &lt; a.d;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">dijkstra</span><span class="params">(Node* graph, <span class="type">int</span> N, <span class="type">int</span> s, <span class="type">int</span> t)</span> </span>&#123;</span><br><span class="line">	bitset&lt;1001&gt; set;</span><br><span class="line">	set.<span class="built_in">reset</span>();</span><br><span class="line">	priority_queue&lt;Node, vector&lt;Node&gt;, NodeCmp&gt; heap;</span><br><span class="line">	graph[s].d = <span class="number">0</span>;</span><br><span class="line">	set[s] = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; graph[s].neighbors.<span class="built_in">size</span>(); i++) &#123;</span><br><span class="line">		graph[graph[s].neighbors[i]].d = graph[s].edges[i];</span><br><span class="line">		heap.<span class="built_in">push</span>(graph[graph[s].neighbors[i]]);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="type">int</span> i = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span> (i &lt; N - <span class="number">1</span>) &#123;</span><br><span class="line">		Node nearestNode = heap.<span class="built_in">top</span>();</span><br><span class="line">		heap.<span class="built_in">pop</span>();</span><br><span class="line">		<span class="keyword">if</span> (set[nearestNode.id])</span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line">		i++;</span><br><span class="line">		set[nearestNode.id] = <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span>; j &lt; nearestNode.neighbors.<span class="built_in">size</span>(); j++) &#123;</span><br><span class="line">			<span class="keyword">if</span> (graph[nearestNode.neighbors[j]].d == <span class="number">-1</span> || nearestNode.edges[j] + nearestNode.d &lt; graph[nearestNode.neighbors[j]].d)</span><br><span class="line">				graph[nearestNode.neighbors[j]].d = nearestNode.edges[j] + nearestNode.d;</span><br><span class="line">			heap.<span class="built_in">push</span>(graph[nearestNode.neighbors[j]]);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> graph[t].d;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="type">int</span> N = <span class="number">0</span>, M = <span class="number">0</span>, S = <span class="number">0</span>, T = <span class="number">0</span>;</span><br><span class="line">	cin &gt;&gt; N &gt;&gt; M &gt;&gt; S &gt;&gt; T;</span><br><span class="line">	Node* graph = <span class="keyword">new</span> Node[N + <span class="number">1</span>];</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; N + <span class="number">1</span>; i++)</span><br><span class="line">		graph[i].id = i;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; M; i++) &#123;</span><br><span class="line">		<span class="type">int</span> a = <span class="number">0</span>, b = <span class="number">0</span>, edge = <span class="number">0</span>;</span><br><span class="line">		cin &gt;&gt; a &gt;&gt; b &gt;&gt; edge;</span><br><span class="line">		graph[a].neighbors.<span class="built_in">push_back</span>(b);</span><br><span class="line">		graph[a].edges.<span class="built_in">push_back</span>(edge);</span><br><span class="line">		graph[b].neighbors.<span class="built_in">push_back</span>(a);</span><br><span class="line">		graph[b].edges.<span class="built_in">push_back</span>(edge);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	cout &lt;&lt; <span class="built_in">dijkstra</span>(graph, N, S, T) &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+STL的priority_queue结构。由于priority_queue不提供随机访问的功能（即获取其中一个元素的具体位置）这样会导致第3步中每次更新时都要进行一次入队操作。</p>
+<h2 id="时间复杂度">时间复杂度</h2>
+<p>朴素的实现是N<sup>2</sup>，如果采用堆实现的话可以减小到MlogN。</p>
+<h2 id="代码">代码</h2>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;queue&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bitset&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Node</span> &#123;</span><br><span class="line">	<span class="type">int</span> id = <span class="number">-1</span>;</span><br><span class="line">	<span class="type">int</span> d = <span class="number">-1</span>;</span><br><span class="line">	vector&lt;<span class="type">int</span>&gt; neighbors;</span><br><span class="line">	vector&lt;<span class="type">int</span>&gt; edges;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">NodeCmp</span> &#123;</span><br><span class="line">	<span class="function"><span class="type">bool</span> <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="type">const</span> Node &amp;a, <span class="type">const</span> Node &amp;b)</span> <span class="type">const</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> b.d &lt; a.d;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">dijkstra</span><span class="params">(Node* graph, <span class="type">int</span> N, <span class="type">int</span> s, <span class="type">int</span> t)</span> </span>&#123;</span><br><span class="line">	bitset&lt;1001&gt; set;</span><br><span class="line">	set.<span class="built_in">reset</span>();</span><br><span class="line">	priority_queue&lt;Node, vector&lt;Node&gt;, NodeCmp&gt; heap;</span><br><span class="line">	graph[s].d = <span class="number">0</span>;</span><br><span class="line">	set[s] = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; graph[s].neighbors.<span class="built_in">size</span>(); i++) &#123;</span><br><span class="line">		graph[graph[s].neighbors[i]].d = graph[s].edges[i];</span><br><span class="line">		heap.<span class="built_in">push</span>(graph[graph[s].neighbors[i]]);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="type">int</span> i = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span> (i &lt; N - <span class="number">1</span>) &#123;</span><br><span class="line">		Node nearestNode = heap.<span class="built_in">top</span>();</span><br><span class="line">		heap.<span class="built_in">pop</span>();</span><br><span class="line">		<span class="keyword">if</span> (set[nearestNode.id])</span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line">		i++;</span><br><span class="line">		set[nearestNode.id] = <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span>; j &lt; nearestNode.neighbors.<span class="built_in">size</span>(); j++) &#123;</span><br><span class="line">			<span class="keyword">if</span> (graph[nearestNode.neighbors[j]].d == <span class="number">-1</span> || nearestNode.edges[j] + nearestNode.d &lt; graph[nearestNode.neighbors[j]].d)</span><br><span class="line">				graph[nearestNode.neighbors[j]].d = nearestNode.edges[j] + nearestNode.d;</span><br><span class="line">			heap.<span class="built_in">push</span>(graph[nearestNode.neighbors[j]]);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> graph[t].d;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="type">int</span> N = <span class="number">0</span>, M = <span class="number">0</span>, S = <span class="number">0</span>, T = <span class="number">0</span>;</span><br><span class="line">	cin &gt;&gt; N &gt;&gt; M &gt;&gt; S &gt;&gt; T;</span><br><span class="line">	Node* graph = <span class="keyword">new</span> Node[N + <span class="number">1</span>];</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; N + <span class="number">1</span>; i++)</span><br><span class="line">		graph[i].id = i;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; M; i++) &#123;</span><br><span class="line">		<span class="type">int</span> a = <span class="number">0</span>, b = <span class="number">0</span>, edge = <span class="number">0</span>;</span><br><span class="line">		cin &gt;&gt; a &gt;&gt; b &gt;&gt; edge;</span><br><span class="line">		graph[a].neighbors.<span class="built_in">push_back</span>(b);</span><br><span class="line">		graph[a].edges.<span class="built_in">push_back</span>(edge);</span><br><span class="line">		graph[b].neighbors.<span class="built_in">push_back</span>(a);</span><br><span class="line">		graph[b].edges.<span class="built_in">push_back</span>(edge);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	cout &lt;&lt; <span class="built_in">dijkstra</span>(graph, N, S, T) &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
     </article>
     <!-- license -->
@@ -514,7 +517,7 @@ STL的priority_queue结构。由于priority_queue不提供随机访问的功能�
             <p>Author：<a href="https://wangshenghu.github.io">Who Watson</a>
             <p>Link：<a href="https://wangshenghu.github.io/2016/05/16/2016-05-16-hihocoder-dijkstra/">https://wangshenghu.github.io/2016/05/16/2016-05-16-hihocoder-dijkstra/</a>
             <p>Publish date：<a href="https://wangshenghu.github.io/2016/05/16/2016-05-16-hihocoder-dijkstra/">May 16th 2016, 5:21:52 pm</a>
-            <p>Update date：<a href="https://wangshenghu.github.io/2016/05/16/2016-05-16-hihocoder-dijkstra/">November 24th 2022, 7:23:27 pm</a>
+            <p>Update date：<a href="https://wangshenghu.github.io/2016/05/16/2016-05-16-hihocoder-dijkstra/">December 4th 2022, 5:08:20 pm</a>
             <p>License：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
         </div>
     
@@ -676,7 +679,7 @@ STL的priority_queue结构。由于priority_queue不提供随机访问的功能�
                 <div class="toc-catalog">
                     <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
                 </div>
-                <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE"><span class="toc-number">1.</span> <span class="toc-text">题目</span></a></li></ol>
+                <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE"><span class="toc-number">1.</span> <span class="toc-text">题目</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF"><span class="toc-number">2.</span> <span class="toc-text">解题思路</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6"><span class="toc-number">3.</span> <span class="toc-text">时间复杂度</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81"><span class="toc-number">4.</span> <span class="toc-text">代码</span></a></li></ol>
             </div>
         
         <!-- sidebar -->
@@ -1487,6 +1490,10 @@ STL的priority_queue结构。由于priority_queue不提供随机访问的功能�
         
         
         
+        
+        
+        
+        
     
     
     
@@ -1510,13 +1517,13 @@ STL的priority_queue结构。由于priority_queue不提供随机访问的功能�
         
         <li class="archive-post-item">
             <span class="archive-post-date">11/21</span>
-            <a class="archive-post-title" href="/2022/11/21/test/">test</a>
+            <a class="archive-post-title" href="/2022/11/21/hello-world/">Hello World</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">11/21</span>
-            <a class="archive-post-title" href="/2022/11/21/hello-world/">Hello World</a>
+            <a class="archive-post-title" href="/2022/11/21/test/">test</a>
         </li>
     
         
@@ -1537,13 +1544,13 @@ STL的priority_queue结构。由于priority_queue不提供随机访问的功能�
         
         <li class="archive-post-item">
             <span class="archive-post-date">09/06</span>
-            <a class="archive-post-title" href="/2016/09/06/2016-09-06-internship-msra/">实习经历 - MSRA</a>
+            <a class="archive-post-title" href="/2016/09/06/2016-09-06-internship-intel/">实习经历 - Intel</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">09/06</span>
-            <a class="archive-post-title" href="/2016/09/06/2016-09-06-internship-intel/">实习经历 - Intel</a>
+            <a class="archive-post-title" href="/2016/09/06/2016-09-06-internship-msra/">实习经历 - MSRA</a>
         </li>
     
         
@@ -1639,13 +1646,13 @@ STL的priority_queue结构。由于priority_queue不提供随机访问的功能�
         
         <li class="archive-post-item">
             <span class="archive-post-date">05/16</span>
-            <a class="archive-post-title" href="/2016/05/16/2016-05-16-hihocoder-prim/">hihoCoder#1097 - Prim算法</a>
+            <a class="archive-post-title" href="/2016/05/16/2016-05-16-hihocoder-spfa/">hihoCoder#1093 - SPFA算法</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">05/16</span>
-            <a class="archive-post-title" href="/2016/05/16/2016-05-16-hihocoder-spfa/">hihoCoder#1093 - SPFA算法</a>
+            <a class="archive-post-title" href="/2016/05/16/2016-05-16-hihocoder-prim/">hihoCoder#1097 - Prim算法</a>
         </li>
     
         
@@ -1663,13 +1670,13 @@ STL的priority_queue结构。由于priority_queue不提供随机访问的功能�
         
         <li class="archive-post-item">
             <span class="archive-post-date">05/16</span>
-            <a class="archive-post-title" href="/2016/05/16/2016-05-16-hihocoder-lowest-common-ancestor-3/">hihoCoder#1069 - 最近公共祖先·三</a>
+            <a class="archive-post-title" href="/2016/05/16/2016-05-16-hihocoder-rmq-st/">hihoCoder#1068 - RMQ-ST算法</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">05/16</span>
-            <a class="archive-post-title" href="/2016/05/16/2016-05-16-hihocoder-rmq-st/">hihoCoder#1068 - RMQ-ST算法</a>
+            <a class="archive-post-title" href="/2016/05/16/2016-05-16-hihocoder-lowest-common-ancestor-3/">hihoCoder#1069 - 最近公共祖先·三</a>
         </li>
     
         
@@ -1705,13 +1712,13 @@ STL的priority_queue结构。由于priority_queue不提供随机访问的功能�
         
         <li class="archive-post-item">
             <span class="archive-post-date">05/13</span>
-            <a class="archive-post-title" href="/2016/05/13/2016-05-13-hihocoder-painting/">hihoCoder#1055 - 刷油漆</a>
+            <a class="archive-post-title" href="/2016/05/13/2016-05-13-hihocoder-longest-path-in-tree/">hihoCoder#1050 - 树中的最长路</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">05/13</span>
-            <a class="archive-post-title" href="/2016/05/13/2016-05-13-hihocoder-longest-path-in-tree/">hihoCoder#1050 - 树中的最长路</a>
+            <a class="archive-post-title" href="/2016/05/13/2016-05-13-hihocoder-painting/">hihoCoder#1055 - 刷油漆</a>
         </li>
     
         

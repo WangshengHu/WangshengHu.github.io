@@ -27,7 +27,7 @@
 <meta property="og:description" content="写在前面 本文主要记录一些关于octopress的个性化配置方法。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2016-05-07T05:30:22.000Z">
-<meta property="article:modified_time" content="2022-11-24T11:23:26.990Z">
+<meta property="article:modified_time" content="2022-11-25T13:30:01.677Z">
 <meta property="article:author" content="Who Watson">
 <meta name="twitter:card" content="summary">
     <meta http-equiv="Cache-control" content="no-cache">
@@ -493,33 +493,38 @@
                 <main class="main post-page">
     <article class="article-entry">
         <h2 id="写在前面">写在前面</h2>
-<p>本文主要记录一些关于octopress的个性化配置方法。 <span id="more"></span> ##
-个性化配置 ### 1. 增加Categories列表
-首先在<code>plugins</code>目录下添加<code>category_list_tag.rb</code>文件，代码如下：
+<p>本文主要记录一些关于octopress的个性化配置方法。 <span id="more"></span></p>
+<h2 id="个性化配置">个性化配置</h2>
+<h3 id="增加categories列表">1. 增加Categories列表</h3>
+<p>首先在<code>plugins</code>目录下添加<code>category_list_tag.rb</code>文件，代码如下：
 <figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">module</span> Jekyll </span><br><span class="line">  <span class="keyword">class</span> <span class="title class_">CategoryListTag</span> &lt; <span class="title class_ inherited__">Liquid::Tag</span> </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">render</span>(<span class="params">context</span>) </span><br><span class="line">      html = <span class="string">&quot;&quot;</span> </span><br><span class="line">      categories = context.registers[<span class="symbol">:site</span>].categories.keys </span><br><span class="line">      categories.sort.each <span class="keyword">do</span> |<span class="params">category</span>| </span><br><span class="line">        posts_in_category = context.registers[<span class="symbol">:site</span>].categories[category].size </span><br><span class="line">        category_dir = context.registers[<span class="symbol">:site</span>].config[<span class="string">&#x27;category_dir&#x27;</span>] </span><br><span class="line">        category_url = File.join(category_dir, category.gsub(<span class="regexp">/_|\P&#123;Word&#125;/</span>, <span class="string">&#x27;-&#x27;</span>).gsub(<span class="regexp">/-&#123;2,&#125;/</span>, <span class="string">&#x27;-&#x27;</span>).downcase) </span><br><span class="line">        html &lt;&lt; <span class="string">&quot;&lt;li class=&#x27;category&#x27;&gt;&lt;a href=&#x27;/<span class="subst">#&#123;category_url&#125;</span>/&#x27;&gt;<span class="subst">#&#123;category&#125;</span> (<span class="subst">#&#123;posts_in_category&#125;</span>)&lt;/a&gt;&lt;/li&gt;\n&quot;</span> </span><br><span class="line">      <span class="keyword">end</span> </span><br><span class="line">      html </span><br><span class="line">    <span class="keyword">end</span> </span><br><span class="line">  <span class="keyword">end</span> </span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">Liquid::Template.register_tag(<span class="string">&#x27;category_list&#x27;</span>, Jekyll::CategoryListTag)</span><br></pre></td></tr></table></figure>
 然后在<code>\source\_includes\asides</code>目录（或<code>\source\_includes\custom\asides</code>目录）下添加<code>category_list.html</code>文件，代码如下：
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">section</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">h1</span>&gt;</span>Categories<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">ul</span> <span class="attr">id</span>=<span class="string">&quot;categories&quot;</span>&gt;</span></span><br><span class="line">    &#123;% raw %&#125;&#123;% category_list %&#125;&#123;% endraw %&#125;</span><br><span class="line">  <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">section</span>&gt;</span></span><br></pre></td></tr></table></figure>
 最后在<code>_config.yml</code>中<code>default_asides:</code>一栏添加<code>asides/category_list.html</code>（或<code>custom/asides/category_list.html</code>）即可。<br />
 <strong>注意：上述步骤有一个问题，那就是如果category包含中文的话生成的侧边栏链接会是404页面（因为链接中不能包含中文），需要将<code>category_list_tag.rb</code>文件中第11行代码里的<code>category_url</code>改成<code>category.to_url.downcase</code>，该代码会将中文转换成拼音。</strong><br />
-<strong>另外，上面代码中第4行<code>{% category_list %}</code>若想在网页上正确显示必须使用<code>{% RAW %}</code>your_content<code>{% ENDRAW %}</code>（将大写改成小写）。这是markdown里强制显示原始字符串而不进行解释的语法</strong>
-### 2. 首页文章缺省显示
-只需要在每篇你写的markdown格式的博文中在你想要在首页显示的文字后面加上<code>&lt;!--more--&gt;</code>即可。
-### 3. 设置链接默认在新窗口打开
-在<code>\source\_includes\custom\head.html</code>文件中添加如下代码：
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">    <span class="keyword">function</span> <span class="title function_">addBlankTargetForLinks</span> () &#123;</span></span><br><span class="line"><span class="language-javascript">      $(<span class="string">&#x27;a[href^=&quot;http&quot;]&#x27;</span>).<span class="title function_">each</span>(<span class="keyword">function</span>(<span class="params"></span>)&#123;</span></span><br><span class="line"><span class="language-javascript">          $(<span class="variable language_">this</span>).<span class="title function_">attr</span>(<span class="string">&#x27;target&#x27;</span>, <span class="string">&#x27;_blank&#x27;</span>);</span></span><br><span class="line"><span class="language-javascript">      &#125;);</span></span><br><span class="line"><span class="language-javascript">    &#125;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">    $(<span class="variable language_">document</span>).<span class="title function_">bind</span>(<span class="string">&#x27;DOMNodeInserted&#x27;</span>, <span class="keyword">function</span>(<span class="params">event</span>) &#123;</span></span><br><span class="line"><span class="language-javascript">      <span class="title function_">addBlankTargetForLinks</span>();</span></span><br><span class="line"><span class="language-javascript">    &#125;);</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure> ### 4. 在首页添加选项卡
-首先运行<code>rake new_page['about']</code>，在<code>source</code>目录下会新生成一个<code>about</code>目录，里面包含一个<code>index.markdown</code>文件。编辑该文件，然后运行<code>rake generate</code>将会在<code>public</code>目录下生成一个对应的<code>index.html</code>文件。然后编辑<code>\source\_includes\custom\navigation.html</code>文件，即可将生成的about页面链接添加到首页选项卡。
-### 5. 添加disqus评论功能
-只需要编辑<code>_config.yml</code>中相应部分即可。具体操作为在<code>_config.yml</code>文件中对应位置填写自己的账号。
-### 6. 添加访客计数功能 我采用了Flag Counter，直接去<a
-target="_blank" rel="noopener" href="http://www.flagcounter.com/">官网</a>生成html代码，然后拷贝到<code>source\_includes\asides\flag_counter.html</code>文件（需新建），最后在<code>_config.yml</code>中<code>default_asides:</code>一栏添加<code>asides/flag_counter.html</code>即可。
-### 7. 优化加载速度
-由于国内墙的原因，请求墙外网站资源的速度极慢，因此需要删除某些用到国外网站资源的功能。具体如下：<br />
+<strong>另外，上面代码中第4行<code>{% category_list %}</code>若想在网页上正确显示必须使用<code>{% RAW %}</code>your_content<code>{% ENDRAW %}</code>（将大写改成小写）。这是markdown里强制显示原始字符串而不进行解释的语法</strong></p>
+<h3 id="首页文章缺省显示">2. 首页文章缺省显示</h3>
+<p>只需要在每篇你写的markdown格式的博文中在你想要在首页显示的文字后面加上<code>&lt;!--more--&gt;</code>即可。</p>
+<h3 id="设置链接默认在新窗口打开">3. 设置链接默认在新窗口打开</h3>
+<p>在<code>\source\_includes\custom\head.html</code>文件中添加如下代码：
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">    <span class="keyword">function</span> <span class="title function_">addBlankTargetForLinks</span> () &#123;</span></span><br><span class="line"><span class="language-javascript">      $(<span class="string">&#x27;a[href^=&quot;http&quot;]&#x27;</span>).<span class="title function_">each</span>(<span class="keyword">function</span>(<span class="params"></span>)&#123;</span></span><br><span class="line"><span class="language-javascript">          $(<span class="variable language_">this</span>).<span class="title function_">attr</span>(<span class="string">&#x27;target&#x27;</span>, <span class="string">&#x27;_blank&#x27;</span>);</span></span><br><span class="line"><span class="language-javascript">      &#125;);</span></span><br><span class="line"><span class="language-javascript">    &#125;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">    $(<span class="variable language_">document</span>).<span class="title function_">bind</span>(<span class="string">&#x27;DOMNodeInserted&#x27;</span>, <span class="keyword">function</span>(<span class="params">event</span>) &#123;</span></span><br><span class="line"><span class="language-javascript">      <span class="title function_">addBlankTargetForLinks</span>();</span></span><br><span class="line"><span class="language-javascript">    &#125;);</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="在首页添加选项卡">4. 在首页添加选项卡</h3>
+<p>首先运行<code>rake new_page['about']</code>，在<code>source</code>目录下会新生成一个<code>about</code>目录，里面包含一个<code>index.markdown</code>文件。编辑该文件，然后运行<code>rake generate</code>将会在<code>public</code>目录下生成一个对应的<code>index.html</code>文件。然后编辑<code>\source\_includes\custom\navigation.html</code>文件，即可将生成的about页面链接添加到首页选项卡。</p>
+<h3 id="添加disqus评论功能">5. 添加disqus评论功能</h3>
+<p>只需要编辑<code>_config.yml</code>中相应部分即可。具体操作为在<code>_config.yml</code>文件中对应位置填写自己的账号。</p>
+<h3 id="添加访客计数功能">6. 添加访客计数功能</h3>
+<p>我采用了Flag Counter，直接去<a
+target="_blank" rel="noopener" href="http://www.flagcounter.com/">官网</a>生成html代码，然后拷贝到<code>source\_includes\asides\flag_counter.html</code>文件（需新建），最后在<code>_config.yml</code>中<code>default_asides:</code>一栏添加<code>asides/flag_counter.html</code>即可。</p>
+<h3 id="优化加载速度">7. 优化加载速度</h3>
+<p>由于国内墙的原因，请求墙外网站资源的速度极慢，因此需要删除某些用到国外网站资源的功能。具体如下：<br />
 1.
 将<code>\source\_includes\head.html</code>文件中的google的jquery脚本地址改成<a
 target="_blank" rel="noopener" href="http://developer.baidu.com/wiki/index.php?title=docs/cplat/libs">百度</a>的。<br />
 2. 将<code>\source\_includes\custom\head.html</code>文件中的google
 font请求注释掉。<br />
-3. 将<code>_config.yml</code>文件中的twitter内容注释掉。 ## 参考文献 <a
+3. 将<code>_config.yml</code>文件中的twitter内容注释掉。</p>
+<h2 id="参考文献">参考文献</h2>
+<p><a
 target="_blank" rel="noopener" href="http://tianweili.github.io/blog/2015/01/11/setup-octopress-blog/">Octopress博客的个性化配置</a><br />
 <a
 target="_blank" rel="noopener" href="https://shengmingzhiqing.com/blog/octopress-lean-modification-5.html/">Octopress
@@ -532,7 +537,7 @@ target="_blank" rel="noopener" href="https://shengmingzhiqing.com/blog/octopress
             <p>Author：<a href="https://wangshenghu.github.io">Who Watson</a>
             <p>Link：<a href="https://wangshenghu.github.io/2016/05/07/2016-05-07-personal-settings-of-octopress/">https://wangshenghu.github.io/2016/05/07/2016-05-07-personal-settings-of-octopress/</a>
             <p>Publish date：<a href="https://wangshenghu.github.io/2016/05/07/2016-05-07-personal-settings-of-octopress/">May 7th 2016, 1:30:22 pm</a>
-            <p>Update date：<a href="https://wangshenghu.github.io/2016/05/07/2016-05-07-personal-settings-of-octopress/">November 24th 2022, 7:23:26 pm</a>
+            <p>Update date：<a href="https://wangshenghu.github.io/2016/05/07/2016-05-07-personal-settings-of-octopress/">November 25th 2022, 9:30:01 pm</a>
             <p>License：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
         </div>
     
@@ -694,7 +699,7 @@ target="_blank" rel="noopener" href="https://shengmingzhiqing.com/blog/octopress
                 <div class="toc-catalog">
                     <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
                 </div>
-                <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2"><span class="toc-number">1.</span> <span class="toc-text">写在前面</span></a></li></ol>
+                <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2"><span class="toc-number">1.</span> <span class="toc-text">写在前面</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%AA%E6%80%A7%E5%8C%96%E9%85%8D%E7%BD%AE"><span class="toc-number">2.</span> <span class="toc-text">个性化配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A2%9E%E5%8A%A0categories%E5%88%97%E8%A1%A8"><span class="toc-number">2.1.</span> <span class="toc-text">1. 增加Categories列表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A6%96%E9%A1%B5%E6%96%87%E7%AB%A0%E7%BC%BA%E7%9C%81%E6%98%BE%E7%A4%BA"><span class="toc-number">2.2.</span> <span class="toc-text">2. 首页文章缺省显示</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E9%93%BE%E6%8E%A5%E9%BB%98%E8%AE%A4%E5%9C%A8%E6%96%B0%E7%AA%97%E5%8F%A3%E6%89%93%E5%BC%80"><span class="toc-number">2.3.</span> <span class="toc-text">3. 设置链接默认在新窗口打开</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%A8%E9%A6%96%E9%A1%B5%E6%B7%BB%E5%8A%A0%E9%80%89%E9%A1%B9%E5%8D%A1"><span class="toc-number">2.4.</span> <span class="toc-text">4. 在首页添加选项卡</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0disqus%E8%AF%84%E8%AE%BA%E5%8A%9F%E8%83%BD"><span class="toc-number">2.5.</span> <span class="toc-text">5. 添加disqus评论功能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0%E8%AE%BF%E5%AE%A2%E8%AE%A1%E6%95%B0%E5%8A%9F%E8%83%BD"><span class="toc-number">2.6.</span> <span class="toc-text">6. 添加访客计数功能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%98%E5%8C%96%E5%8A%A0%E8%BD%BD%E9%80%9F%E5%BA%A6"><span class="toc-number">2.7.</span> <span class="toc-text">7. 优化加载速度</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="toc-number">3.</span> <span class="toc-text">参考文献</span></a></li></ol>
             </div>
         
         <!-- sidebar -->
@@ -1505,12 +1510,6 @@ target="_blank" rel="noopener" href="https://shengmingzhiqing.com/blog/octopress
         
         
         
-        
-        
-        
-        
-        
-        
     
     
     
@@ -1534,13 +1533,13 @@ target="_blank" rel="noopener" href="https://shengmingzhiqing.com/blog/octopress
         
         <li class="archive-post-item">
             <span class="archive-post-date">11/21</span>
-            <a class="archive-post-title" href="/2022/11/21/hello-world/">Hello World</a>
+            <a class="archive-post-title" href="/2022/11/21/test/">test</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">11/21</span>
-            <a class="archive-post-title" href="/2022/11/21/test/">test</a>
+            <a class="archive-post-title" href="/2022/11/21/hello-world/">Hello World</a>
         </li>
     
         
@@ -1561,13 +1560,13 @@ target="_blank" rel="noopener" href="https://shengmingzhiqing.com/blog/octopress
         
         <li class="archive-post-item">
             <span class="archive-post-date">09/06</span>
-            <a class="archive-post-title" href="/2016/09/06/2016-09-06-internship-intel/">实习经历 - Intel</a>
+            <a class="archive-post-title" href="/2016/09/06/2016-09-06-internship-msra/">实习经历 - MSRA</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">09/06</span>
-            <a class="archive-post-title" href="/2016/09/06/2016-09-06-internship-msra/">实习经历 - MSRA</a>
+            <a class="archive-post-title" href="/2016/09/06/2016-09-06-internship-intel/">实习经历 - Intel</a>
         </li>
     
         
@@ -1723,12 +1722,6 @@ target="_blank" rel="noopener" href="https://shengmingzhiqing.com/blog/octopress
         
         <li class="archive-post-item">
             <span class="archive-post-date">05/13</span>
-            <a class="archive-post-title" href="/2016/05/13/2016-05-13-hihocoder-longest-path-in-tree/">hihoCoder#1050 - 树中的最长路</a>
-        </li>
-    
-        
-        <li class="archive-post-item">
-            <span class="archive-post-date">05/13</span>
             <a class="archive-post-title" href="/2016/05/13/2016-05-13-hihocoder-gene-project/">hihoCoder#1052 - 基因工程</a>
         </li>
     
@@ -1736,6 +1729,12 @@ target="_blank" rel="noopener" href="https://shengmingzhiqing.com/blog/octopress
         <li class="archive-post-item">
             <span class="archive-post-date">05/13</span>
             <a class="archive-post-title" href="/2016/05/13/2016-05-13-hihocoder-painting/">hihoCoder#1055 - 刷油漆</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/13</span>
+            <a class="archive-post-title" href="/2016/05/13/2016-05-13-hihocoder-longest-path-in-tree/">hihoCoder#1050 - 树中的最长路</a>
         </li>
     
         
